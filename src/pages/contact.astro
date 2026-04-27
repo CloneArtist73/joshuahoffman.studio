@@ -1,0 +1,39 @@
+---
+import ContactForm from '../components/ContactForm.astro';
+import CTAButton from '../components/CTAButton.astro';
+import Layout from '../components/Layout.astro';
+import { siteConfig } from '../data/site';
+import { contactClick } from '../utils/analytics';
+---
+
+<Layout
+  description="Simple contact page for portrait sessions, legacy work, musician portraits, print questions, and licensing inquiries."
+  path="/contact/"
+  title="Contact"
+>
+  <section class="section-block">
+    <div class="shell grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
+      <div class="space-y-5">
+        <span class="eyebrow">Contact</span>
+        <h1 class="headline max-w-3xl">Start with a short message.</h1>
+        <p class="max-w-copy text-base text-steel sm:text-lg">
+          Use the form for portrait sessions, legacy work, musician portraits, print questions, licensing, or anything else that fits the site.
+        </p>
+        <div class="surface space-y-4 p-6">
+          <p class="text-sm text-steel">
+            Direct email: <a class="panel-link text-paper underline decoration-white/20 underline-offset-4 hover:decoration-sage" href={`mailto:${siteConfig.email}`} {...contactClick({ location: 'contact_page_intro_email' })}>{siteConfig.email}</a>
+          </p>
+          <p class="text-sm text-steel">Service area: {siteConfig.serviceArea}</p>
+          <CTAButton href="/about/" label="About Joshua" variant="ghost" />
+        </div>
+      </div>
+
+      <div class="space-y-5">
+        <ContactForm />
+        <p class="text-sm text-steel">
+          After submit, the thank-you page is ready. Before launch, connect the form to Netlify Forms or replace the action with your chosen static form provider.
+        </p>
+      </div>
+    </div>
+  </section>
+</Layout>

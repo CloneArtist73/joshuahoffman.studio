@@ -1,0 +1,56 @@
+---
+import type { ImageItem } from '../data/types';
+import { galleryImageClick } from '../utils/analytics';
+
+interface Props {
+  image: ImageItem;
+  eager?: boolean;
+  showCategory?: boolean;
+  context?: string;
+}
+
+const {
+  image,
+  eager = false,
+  showCategory = true,
+  context = 'gallery_card',
+} = Astro.props;
+
+const aspectClass =
+  image.orientation === 'horizontal'
+    ? 'aspect-[6/4]'
+    : image.orientation === 'square'
+      ? 'aspect-square'
+      : 'aspect-[4/5]';
+---
+
+<article class="surface h-full overflow-hidden">
+  <a
+    class="panel-link group block h-full"
+    href={`/p/${image.slug}/`}
+    {...galleryImageClick({
+      imageSlug: image.slug,
+      category: image.category,
+      location: context,
+    })}
+  >
+    <div class={`overflow-hidden ${aspectClass}`}>
+      <img
+        alt={image.alt}
+        class="h-full w-full object-cover transition duration-500 group-hover:scale-[1.02]"
+        height="1600"
+        loading={eager ? 'eager' : 'lazy'}
+        src={image.imageSrc}
+        width="1200"
+      />
+    </div>
+    <div class="space-y-3 p-5">
+      {showCategory && <span class="tag-pill">{image.category}</span>}
+      <h3 class="text-2xl">{image.title}</h3>
+      <p class="text-sm text-steel">{image.hook}</p>
+      <span class="inline-flex items-center text-sm font-semibold text-paper">
+        View image
+      </span>
+    </div>
+  </a>
+</article>

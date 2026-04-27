@@ -1,0 +1,51 @@
+---
+import CTAButton from '../components/CTAButton.astro';
+import Layout from '../components/Layout.astro';
+import { siteConfig } from '../data/site';
+import { contactClick } from '../utils/analytics';
+---
+
+<Layout
+  description="Short trust page explaining what Joshua photographs, why the work matters, and where he works."
+  path="/about/"
+  title="About"
+>
+  <section class="section-block">
+    <div class="shell grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+      <div class="surface overflow-hidden shadow-soft">
+        <img
+          alt="Placeholder portrait for Joshua."
+          class="aspect-[4/5] w-full object-cover"
+          height="1600"
+          loading="eager"
+          src="/images/placeholders/joshua-placeholder.svg"
+          width="1200"
+        />
+      </div>
+
+      <div class="space-y-5">
+        <span class="eyebrow">About Joshua</span>
+        <h1 class="headline max-w-4xl">Joshua photographs people, rooms, artists, and memory with as little noise as possible.</h1>
+        <div class="rich-copy max-w-copy">
+          <p>
+            This site is built to show emotional work clearly: portraits that feel like the person, legacy images that treat memory carefully, and prints that can live outside a screen.
+          </p>
+          <p>
+            The work stays grounded in family, grief, music, ordinary rooms, and the weight people carry in their faces and hands. It is made for people who want more than a pose.
+          </p>
+          <p>
+            Service area: {siteConfig.serviceArea}. When a real portrait of Joshua is available, replace the placeholder file at <code>/public/images/placeholders/joshua-placeholder.svg</code>.
+          </p>
+        </div>
+        <div class="flex flex-col gap-3 sm:flex-row">
+          <CTAButton
+            href="/contact/"
+            label="Contact Joshua"
+            tracking={contactClick({ location: 'about_primary_cta' })}
+          />
+          <CTAButton href="/gallery/" label="View the Gallery" variant="secondary" />
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

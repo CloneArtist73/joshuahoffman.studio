@@ -1,0 +1,180 @@
+---
+import CTAButton from '../../components/CTAButton.astro';
+import ImageCard from '../../components/ImageCard.astro';
+import Layout from '../../components/Layout.astro';
+import ProductRouteButtons from '../../components/ProductRouteButtons.astro';
+import { ctas } from '../../data/ctas';
+import { getImageBySlug, getRelatedImages, images } from '../../data/images';
+import { getProductByImageSlug, getProductBySlug } from '../../data/products';
+import type { ImageItem } from '../../data/types';
+import { bookSessionClick, contactClick } from '../../utils/analytics';
+
+export function getStaticPaths() {
+  return images.map((image) => ({
+    params: { slug: image.slug },
+    props: { image },
+  }));
+}
+
+const { image } = Astro.props as { image: ImageItem };
+const product =
+  (image.productSlug ? getProductBySlug(image.productSlug) : undefined) ??
+  getProductByImageSlug(image.slug);
+const relatedImages = getRelatedImages(image, 3);
+
+const metadata = [
+  ['Category', image.category],
+  ['Orientation', image.orientation],
+  ['Year', image.year],
+  ['Location', image.location],
+  ['Medium', image.medium],
+  ['Best format', image.bestFormat],
+].filter((entry): entry is [string, string] => Boolean(entry[1]));
+
+const serviceCtas = {
+  portrait: {
+    label: 'Book Something Like This',
+    href: '/contact/?type=Portrait%20session',
+    tracking: bookSessionClick({
+      service: 'portrait',
+      location: 'image_page_primary_cta',
+      imageSlug: image.slug,
+    }),
+  },
+  legacy: {
+    label: 'Start a Conversation',
+    href: '/contact/?type=Legacy%20%2F%20memorial%20work',
+    tracking: bookSessionClick({
+      service: 'legacy',
+      location: 'image_page_primary_cta',
+      imageSlug: image.slug,
+    }),
+  },
+  musician: {
+    label: 'Book Something Like This',
+    href: '/contact/?type=Musician%20%2F%20artist%20portraits',
+    tracking: bookSessionClick({
+      service: 'musician',
+      location: 'image_page_primary_cta',
+      imageSlug: image.slug,
+    }),
+  },
+  custom: {
+    label: ctas.customPrintInquiry.label,
+    href: `/contact/?type=Print%20or%20product%20question&image=${encodeURIComponent(image.slug)}`,
+    tracking: contactClick({
+      location: 'image_page_primary_cta',
+      imageSlug: image.slug,
+      intent: 'custom_print',
+    }),
+  },
+};
+
+const fallbackCta =
+  image.serviceCTA && image.serviceCTA in serviceCtas
+    ? serviceCtas[image.serviceCTA]
+    : {
+        label: 'Contact Joshua',
+        href: '/contact/',
+        tracking: contactClick({
+          location: 'image_page_primary_cta',
+          imageSlug: image.slug,
+        }),
+      };
+---
+
+<Layout
+  description={image.story ?? image.hook}
+  ogImage={image.imageSrc}
+  ogType="article"
+  pageViewEventName="image_page_view"
+  pageViewProps={{
+    imageSlug: image.slug,
+    category: image.category,
+  }}
+  path={`/p/${image.slug}/`}
+  title={image.title}
+>
+  <section class="section-block">
+    <div class="shell grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
+      <div class="surface overflow-hidden shadow-soft">
+        <img
+          alt={image.alt}
+          class="w-full object-cover"
+          height="1600"
+          loading="eager"
+          src={image.imageSrc}
+          width="1200"
+        />
+      </div>
+
+      <div class="space-y-6">
+        <div class="space-y-4">
+          <span class="tag-pill">{image.category}</span>
+          <h1 class="headline max-w-3xl">{image.title}</h1>
+          <p class="max-w-copy text-lg text-paper">{image.hook}</p>
+        </div>
+
+        {image.story && (
+          <div class="rich-copy max-w-copy">
+            {image.story.split('. ').map((sentence) => (
+              <p>{sentence.endsWith('.') ? sentence : `${sentence}.`}</p>
+            ))}
+          </div>
+        )}
+
+        <div class="flex flex-wrap gap-3">
+          {product ? (
+            <ProductRouteButtons
+              imageSlug={image.slug}
+              includeInquiry={product.inquiryAllowed}
+              productSlug={product.slug}
+              routeKeys={product.routeKeys}
+            />
+          ) : (
+            <CTAButton
+              href={fallbackCta.href}
+              label={fallbackCta.label}
+              tracking={fallbackCta.tracking}
+            />
+          )}
+
+          <CTAButton
+            href={`/contact/?type=Licensing&image=${encodeURIComponent(image.slug)}`}
+            label="License Image"
+            tracking={contactClick({
+              location: 'image_page_license_cta',
+              imageSlug: image.slug,
+              intent: 'licensing',
+            })}
+            variant="ghost"
+          />
+          <CTAButton href="#related-work" label="View Related Work" variant="secondary" />
+        </div>
+
+        {metadata.length > 0 && (
+          <dl class="surface grid gap-4 p-6 sm:grid-cols-2">
+            {metadata.map(([label, value]) => (
+              <div>
+                <dt class="text-xs font-semibold uppercase tracking-hush text-steel">{label}</dt>
+                <dd class="mt-1 text-sm text-paper">{value}</dd>
+              </div>
+            ))}
+          </dl>
+        )}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-block pt-0" id="related-work">
+    <div class="shell space-y-8">
+      <div class="max-w-3xl space-y-4">
+        <span class="eyebrow">Related work</span>
+        <h2 class="text-3xl sm:text-4xl">Three nearby frames for people who want to keep looking.</h2>
+      </div>
+      <div class="grid gap-6 lg:grid-cols-3">
+        {relatedImages.map((relatedImage) => <ImageCard context="image_page_related" image={relatedImage} />)}
+      </div>
+    </div>
+  </section>
+</Layout>

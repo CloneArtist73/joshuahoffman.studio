@@ -1,0 +1,74 @@
+---
+import type { CtaItem } from '../data/types';
+import CTAButton from './CTAButton.astro';
+import { trackingAttributes } from '../utils/analytics';
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  text: string;
+  imageSrc: string;
+  imageAlt: string;
+  primaryCta: CtaItem;
+  secondaryCta?: CtaItem;
+}
+
+const {
+  eyebrow = 'Joshua Photography MVP',
+  title,
+  text,
+  imageSrc,
+  imageAlt,
+  primaryCta,
+  secondaryCta,
+} = Astro.props;
+
+function ctaTracking(cta: CtaItem, fallbackLocation: string) {
+  if (!cta.eventName) {
+    return {};
+  }
+
+  return trackingAttributes(cta.eventName as never, {
+    location: fallbackLocation,
+    ...(cta.eventProps ?? {}),
+  });
+}
+---
+
+<section class="section-block pt-10 sm:pt-14">
+  <div class="shell grid items-center gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
+    <div class="space-y-6">
+      <span class="eyebrow">{eyebrow}</span>
+      <h1 class="headline max-w-4xl">{title}</h1>
+      <p class="max-w-copy text-base text-steel sm:text-lg">{text}</p>
+      <div class="flex flex-col gap-3 sm:flex-row">
+        <CTAButton
+          href={primaryCta.href}
+          label={primaryCta.label}
+          tracking={ctaTracking(primaryCta, 'hero_primary')}
+        />
+        {
+          secondaryCta && (
+            <CTAButton
+              href={secondaryCta.href}
+              label={secondaryCta.label}
+              tracking={ctaTracking(secondaryCta, 'hero_secondary')}
+              variant="secondary"
+            />
+          )
+        }
+      </div>
+    </div>
+
+    <div class="surface overflow-hidden shadow-soft">
+      <img
+        alt={imageAlt}
+        class="aspect-[6/5] w-full object-cover"
+        height="1100"
+        loading="eager"
+        src={imageSrc}
+        width="1320"
+      />
+    </div>
+  </div>
+</section>

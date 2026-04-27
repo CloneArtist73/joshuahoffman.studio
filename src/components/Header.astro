@@ -1,0 +1,63 @@
+---
+import CTAButton from './CTAButton.astro';
+import { primaryNavLinks, secondaryNavLinks, siteConfig } from '../data/site';
+import { bookSessionClick } from '../utils/analytics';
+---
+
+<header class="sticky top-0 z-40 border-b border-white/10 bg-obsidian/80 backdrop-blur">
+  <div class="shell flex items-center justify-between gap-4 py-4">
+    <a class="panel-link min-w-0" href="/">
+      <span class="block truncate font-display text-2xl text-paper">{siteConfig.brandName}</span>
+      <span class="copy-muted block truncate text-xs uppercase tracking-hush">
+        {siteConfig.ownerName} · {siteConfig.serviceArea}
+      </span>
+    </a>
+
+    <nav class="hidden items-center gap-6 md:flex">
+      {
+        primaryNavLinks.map((item) => (
+          <a class="panel-link text-sm text-steel hover:text-paper" href={item.href}>
+            {item.label}
+          </a>
+        ))
+      }
+      {
+        secondaryNavLinks.map((item) => (
+          <a class="panel-link text-sm text-steel hover:text-paper" href={item.href}>
+            {item.label}
+          </a>
+        ))
+      }
+      <CTAButton
+        href="/contact/?type=Portrait%20session"
+        label="Book a Portrait"
+        tracking={bookSessionClick({ service: 'portrait', location: 'header' })}
+      />
+    </nav>
+
+    <details class="relative md:hidden">
+      <summary class="panel-link inline-flex items-center rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-paper">
+        Menu
+      </summary>
+      <div class="surface absolute right-0 top-[calc(100%+0.75rem)] min-w-64 p-4 shadow-soft">
+        <nav class="flex flex-col gap-2">
+          {
+            [...primaryNavLinks, ...secondaryNavLinks].map((item) => (
+              <a class="panel-link rounded-2xl px-3 py-2 text-sm text-steel hover:bg-white/5 hover:text-paper" href={item.href}>
+                {item.label}
+              </a>
+            ))
+          }
+          <div class="pt-2">
+            <CTAButton
+              href="/contact/?type=Portrait%20session"
+              label="Book a Portrait"
+              class="w-full"
+              tracking={bookSessionClick({ service: 'portrait', location: 'mobile_menu' })}
+            />
+          </div>
+        </nav>
+      </div>
+    </details>
+  </div>
+</header>

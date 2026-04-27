@@ -1,0 +1,63 @@
+---
+import CTAButton from './CTAButton.astro';
+import { externalLinks } from '../data/externalLinks';
+import { printBuyClick, contactClick } from '../utils/analytics';
+
+interface Props {
+  routeKeys: string[];
+  imageSlug: string;
+  productSlug: string;
+  includeInquiry?: boolean;
+  inquiryHref?: string;
+  compact?: boolean;
+}
+
+const {
+  routeKeys,
+  imageSlug,
+  productSlug,
+  includeInquiry = false,
+  inquiryHref = `/contact/?type=Print%20or%20product%20question&image=${encodeURIComponent(imageSlug)}`,
+  compact = false,
+} = Astro.props;
+
+const routes = routeKeys
+  .map((routeKey) => externalLinks[routeKey])
+  .filter(Boolean);
+---
+
+<div class={`flex flex-wrap gap-3 ${compact ? 'pt-1' : 'pt-2'}`}>
+  {
+    routes.map((route) => (
+      <CTAButton
+        external
+        href={route.url}
+        label={route.label}
+        tracking={printBuyClick(
+          {
+            imageSlug,
+            productSlug,
+            platform: route.platform,
+          },
+          route.platform,
+        )}
+        variant="secondary"
+      />
+    ))
+  }
+  {
+    includeInquiry && (
+      <CTAButton
+        href={inquiryHref}
+        label="Ask About Custom Print"
+        tracking={contactClick({
+          location: 'product_routes',
+          imageSlug,
+          productSlug,
+          intent: 'custom_print',
+        })}
+        variant="ghost"
+      />
+    )
+  }
+</div>

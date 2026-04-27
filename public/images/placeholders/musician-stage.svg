@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" role="img" aria-labelledby="title desc">
+  <title id="title">Musician placeholder</title>
+  <desc id="desc">Horizontal placeholder artwork for musician and artist portraits.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#13131a" />
+      <stop offset="54%" stop-color="#24313a" />
+      <stop offset="100%" stop-color="#6a5a46" />
+    </linearGradient>
+    <radialGradient id="spotlight" cx="58%" cy="24%" r="34%">
+      <stop offset="0%" stop-color="#f7f2e8" stop-opacity=".34" />
+      <stop offset="100%" stop-color="#f7f2e8" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#bg)" />
+  <rect width="1600" height="1000" fill="url(#spotlight)" />
+  <path d="M0 884c162-44 262-94 360-156 140-88 262-188 476-188 192 0 262 96 382 166 96 58 204 102 382 126v168H0Z" fill="#0c0d12" opacity=".92" />
+  <rect x="672" y="252" width="162" height="458" rx="82" fill="#171821" opacity=".9" />
+  <rect x="734" y="126" width="38" height="196" rx="18" fill="#171821" opacity=".9" />
+  <circle cx="753" cy="372" r="28" fill="#f7f2e8" opacity=".16" />
+  <circle cx="753" cy="454" r="28" fill="#f7f2e8" opacity=".16" />
+  <text x="140" y="848" fill="#f7f2e8" font-family="Georgia, serif" font-size="58">
+    Musician placeholder
+  </text>
+  <text x="140" y="904" fill="#ddd4c2" font-family="Arial, sans-serif" font-size="24" letter-spacing="4">
+    replace with artist or performance image
+  </text>
+</svg>

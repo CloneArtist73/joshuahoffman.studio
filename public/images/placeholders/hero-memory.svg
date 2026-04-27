@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" role="img" aria-labelledby="title desc">
+  <title id="title">Homepage hero placeholder</title>
+  <desc id="desc">Muted placeholder artwork for emotional photography hero imagery.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#181820" />
+      <stop offset="40%" stop-color="#3a3a46" />
+      <stop offset="100%" stop-color="#7f654f" />
+    </linearGradient>
+    <radialGradient id="glow" cx="30%" cy="22%" r="60%">
+      <stop offset="0%" stop-color="#f4d9b6" stop-opacity=".56" />
+      <stop offset="100%" stop-color="#f4d9b6" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#bg)" />
+  <rect width="1600" height="1000" fill="url(#glow)" />
+  <path d="M0 760C170 700 280 636 434 626c202-12 260 116 470 116 176 0 276-92 418-128 116-30 196-20 278 4v254H0Z" fill="#0f1016" opacity=".92" />
+  <circle cx="1120" cy="332" r="172" fill="#f7f2e8" opacity=".14" />
+  <rect x="160" y="152" width="260" height="12" rx="6" fill="#f7f2e8" opacity=".54" />
+  <rect x="160" y="184" width="164" height="12" rx="6" fill="#f7f2e8" opacity=".3" />
+  <text x="160" y="840" fill="#f7f2e8" font-family="Georgia, serif" font-size="62" letter-spacing="1.4">
+    Replace with one strong hero image
+  </text>
+  <text x="160" y="896" fill="#ddd4c2" font-family="Arial, sans-serif" font-size="24" letter-spacing="4">
+    /public/images/hero-homepage.jpg
+  </text>
+</svg>

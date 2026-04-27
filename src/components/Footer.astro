@@ -1,0 +1,74 @@
+---
+import CTAButton from './CTAButton.astro';
+import { primaryNavLinks, secondaryNavLinks, siteConfig, socialLinks } from '../data/site';
+import { contactClick } from '../utils/analytics';
+
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="border-t border-white/10">
+  <div class="shell section-block grid gap-10 lg:grid-cols-[1.3fr_0.8fr_0.8fr]">
+    <div class="space-y-4">
+      <span class="eyebrow">Quiet, direct, and easy to reach</span>
+      <h2 class="max-w-xl text-3xl sm:text-4xl">{siteConfig.brandName}</h2>
+      <p class="max-w-copy text-steel">
+        Portrait work, legacy photography, musician images, and selected fine-art prints.
+        Built as a fast static site so the strongest photographs can do the work.
+      </p>
+      <div class="flex flex-wrap gap-3">
+        <CTAButton
+          href="/contact/"
+          label="Contact Joshua"
+          variant="secondary"
+          tracking={contactClick({ location: 'footer_primary_cta' })}
+        />
+        <CTAButton href="/prints/" label="View Prints" variant="ghost" />
+      </div>
+    </div>
+
+    <div class="space-y-3">
+      <h3 class="text-lg">Browse</h3>
+      <div class="flex flex-col gap-2">
+        {
+          [...primaryNavLinks, ...secondaryNavLinks].map((item) => (
+            <a class="panel-link text-sm text-steel hover:text-paper" href={item.href}>
+              {item.label}
+            </a>
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="space-y-3">
+      <h3 class="text-lg">Contact</h3>
+      <a
+        class="panel-link block text-sm text-steel hover:text-paper"
+        href={`mailto:${siteConfig.email}`}
+        {...contactClick({ location: 'footer_email' })}
+      >
+        {siteConfig.email}
+      </a>
+      <p class="text-sm text-steel">{siteConfig.serviceArea}</p>
+      {
+        socialLinks.map((item) => (
+          <a
+            class="panel-link block text-sm text-steel hover:text-paper"
+            href={item.href}
+            rel="noreferrer noopener"
+            target="_blank"
+            {...contactClick({ location: 'footer_social', network: item.label.toLowerCase() })}
+          >
+            {item.label}
+          </a>
+        ))
+      }
+    </div>
+  </div>
+
+  <div class="border-t border-white/10 py-6">
+    <div class="shell flex flex-col gap-2 text-xs uppercase tracking-hush text-steel sm:flex-row sm:items-center sm:justify-between">
+      <span>{siteConfig.ownerName}</span>
+      <span>© {currentYear} {siteConfig.brandName}</span>
+    </div>
+  </div>
+</footer>

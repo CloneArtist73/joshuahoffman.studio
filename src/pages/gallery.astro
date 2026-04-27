@@ -1,0 +1,44 @@
+---
+import CTAButton from '../components/CTAButton.astro';
+import GalleryGrid from '../components/GalleryGrid.astro';
+import Layout from '../components/Layout.astro';
+import { getGalleryImages } from '../data/images';
+import { contactClick } from '../utils/analytics';
+
+const galleryImages = getGalleryImages();
+---
+
+<Layout
+  description="Curated portrait, legacy, musician, print, and personal work with simple filtering and direct paths into each image."
+  path="/gallery/"
+  title="Gallery"
+>
+  <section class="section-block pb-8">
+    <div class="shell grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
+      <div class="space-y-4">
+        <span class="eyebrow">Curated gallery</span>
+        <h1 class="headline max-w-4xl">A tighter edit of the strongest work, not a portfolio dump.</h1>
+        <p class="max-w-copy text-base text-steel sm:text-lg">
+          Browse portraits, legacy work, musician images, prints, and personal photographs. Each image has its own page so visitors can read context and choose what to do next.
+        </p>
+      </div>
+      <div class="flex flex-col gap-3 sm:flex-row lg:justify-end">
+        <CTAButton href="/prints/" label="View Prints" variant="secondary" />
+        <CTAButton
+          href="/contact/"
+          label="Start an Inquiry"
+          tracking={contactClick({ location: 'gallery_intro' })}
+        />
+      </div>
+    </div>
+  </section>
+
+  <GalleryGrid
+    context="gallery_page"
+    enableFilter
+    heading="Browse by category"
+    id="main-gallery-grid"
+    images={galleryImages}
+    intro="The filter is intentionally simple and client-side only, so the site stays static and fast."
+  />
+</Layout>

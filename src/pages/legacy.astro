@@ -1,0 +1,94 @@
+---
+import CTAButton from '../components/CTAButton.astro';
+import GalleryGrid from '../components/GalleryGrid.astro';
+import Hero from '../components/Hero.astro';
+import Layout from '../components/Layout.astro';
+import { getImageBySlug } from '../data/images';
+import { getServiceBySlug } from '../data/services';
+import { bookSessionClick } from '../utils/analytics';
+
+const service = getServiceBySlug('legacy');
+if (!service) {
+  throw new Error('Legacy service data is missing.');
+}
+
+const galleryImages = service.gallerySlugs
+  .map((slug) => getImageBySlug(slug))
+  .filter((image): image is NonNullable<ReturnType<typeof getImageBySlug>> => Boolean(image));
+---
+
+<Layout
+  description={service.longDescription}
+  path="/legacy/"
+  title="Legacy and Memorial Photography"
+>
+  <Hero
+    eyebrow="Legacy / memorial work"
+    imageAlt="Placeholder legacy photography artwork."
+    imageSrc={service.imageSrc ?? '/images/placeholders/legacy-light.svg'}
+    primaryCta={{
+      label: service.ctaLabel,
+      href: '/contact/?type=Legacy%20%2F%20memorial%20work',
+      eventName: 'book_session_click',
+      eventProps: {
+        service: service.slug,
+        location: 'legacy_hero',
+      },
+    }}
+    secondaryCta={{
+      label: 'Contact Joshua',
+      href: '/contact/',
+      eventName: 'contact_click',
+      eventProps: {
+        location: 'legacy_hero',
+      },
+    }}
+    text={service.heroBody}
+    title={service.heroTitle}
+  />
+
+  <section class="section-block pt-0">
+    <div class="shell grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+      <article class="surface p-6 sm:p-8">
+        <span class="eyebrow">Approach</span>
+        <div class="rich-copy mt-5 max-w-copy">
+          <p>{service.longDescription}</p>
+          <p>
+            The goal is to make space for memory, family, grief, and care without turning people into symbols. Sessions are paced around what the people involved can actually hold.
+          </p>
+        </div>
+      </article>
+      <article class="surface p-6 sm:p-8">
+        <span class="eyebrow">Good fit for</span>
+        <div class="mt-5 space-y-3">
+          {service.idealFor.map((item) => <p class="text-steel">{item}</p>)}
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <GalleryGrid
+    context="legacy_supporting_gallery"
+    heading="Legacy work examples"
+    images={galleryImages}
+    intro="A respectful supporting edit showing how memory-based work can live across portraits, domestic details, and family photographs."
+  />
+
+  <section class="section-block pt-0">
+    <div class="shell">
+      <div class="surface flex flex-col gap-4 p-8 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h2 class="text-3xl">If you need to ask quietly, that is enough.</h2>
+          <p class="mt-3 max-w-copy text-steel">
+            A short message is enough to start. Joshua can answer questions about timing, privacy, location, and how these sessions are handled.
+          </p>
+        </div>
+        <CTAButton
+          href="/contact/?type=Legacy%20%2F%20memorial%20work"
+          label={service.ctaLabel}
+          tracking={bookSessionClick({ service: service.slug, location: 'legacy_footer_cta' })}
+        />
+      </div>
+    </div>
+  </section>
+</Layout>

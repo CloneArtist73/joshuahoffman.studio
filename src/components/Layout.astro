@@ -1,0 +1,119 @@
+---
+import '@fontsource-variable/manrope';
+import '@fontsource-variable/newsreader';
+import '../styles/global.css';
+import Footer from './Footer.astro';
+import Header from './Header.astro';
+import { siteConfig } from '../data/site';
+import { buildSeo } from '../utils/seo';
+import type { AnalyticsEventName } from '../utils/analytics';
+import type { AnalyticsProps } from '../data/types';
+
+interface Props {
+  title?: string;
+  description?: string;
+  path?: string;
+  ogImage?: string;
+  ogType?: 'website' | 'article';
+  noindex?: boolean;
+  pageViewEventName?: AnalyticsEventName;
+  pageViewProps?: AnalyticsProps;
+}
+
+const {
+  title,
+  description,
+  path = Astro.url.pathname,
+  ogImage,
+  ogType = 'website',
+  noindex = false,
+  pageViewEventName,
+  pageViewProps = {},
+} = Astro.props;
+
+const seo = buildSeo({
+  title,
+  description,
+  path,
+  image: ogImage,
+  type: ogType,
+  noindex,
+});
+
+const usePlausible =
+  siteConfig.analytics.provider === 'plausible' && Boolean(siteConfig.analytics.plausibleDomain);
+const useGa4 =
+  siteConfig.analytics.provider === 'ga4' && Boolean(siteConfig.analytics.gaMeasurementId);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content={seo.description} name="description" />
+    <meta content={seo.title} property="og:title" />
+    <meta content={seo.description} property="og:description" />
+    <meta content={seo.image} property="og:image" />
+    <meta content={seo.type} property="og:type" />
+    <meta content={seo.canonical} property="og:url" />
+    <meta content="summary_large_image" name="twitter:card" />
+    <meta content="#0c0c0c" name="theme-color" />
+    <meta content={Astro.generator} name="generator" />
+    <title>{seo.title}</title>
+    <link href={seo.canonical} rel="canonical" />
+    <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
+    {seo.noindex && <meta content="noindex, nofollow" name="robots" />}
+
+    {
+      usePlausible && (
+        <script
+          data-domain={siteConfig.analytics.plausibleDomain}
+          defer
+          src="https://plausible.io/js/script.file-downloads.hash.outbound-links.tagged-events.js"
+        ></script>
+      )
+    }
+
+    {
+      useGa4 && (
+        <>
+          <script
+            async
+            src={`https://www.googletagmanager.com/gtag/js?id=${siteConfig.analytics.gaMeasurementId}`}
+          ></script>
+          <script
+            define:vars={{ gaMeasurementId: siteConfig.analytics.gaMeasurementId }}
+            is:inline
+          >
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+              window.dataLayer.push(arguments);
+            }
+            window.gtag = gtag;
+            gtag('js', new Date());
+            gtag('config', gaMeasurementId);
+          </script>
+        </>
+      )
+    }
+  </head>
+  <body
+    data-page-view-event={pageViewEventName}
+    data-page-view-props={pageViewEventName ? JSON.stringify(pageViewProps) : undefined}
+  >
+    <a class="panel-link sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:rounded-full focus:bg-paper focus:px-4 focus:py-2 focus:text-obsidian" href="#main-content">
+      Skip to content
+    </a>
+    <Header />
+    <main id="main-content">
+      <slot />
+    </main>
+    <Footer />
+    <script>
+      import { initAnalytics } from '../scripts/analytics';
+
+      initAnalytics();
+    </script>
+  </body>
+</html>

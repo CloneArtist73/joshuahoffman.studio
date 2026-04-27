@@ -1,0 +1,42 @@
+---
+import type { ServiceItem } from '../data/types';
+import CTAButton from './CTAButton.astro';
+import { bookSessionClick, printBuyClick } from '../utils/analytics';
+
+interface Props {
+  service: ServiceItem;
+  context?: string;
+}
+
+const { service, context = 'service_card' } = Astro.props;
+const isPrintService = service.slug === 'prints';
+---
+
+<article class="surface overflow-hidden">
+  {service.imageSrc && (
+    <img
+      alt={`${service.title} placeholder artwork`}
+      class="aspect-[5/4] w-full object-cover"
+      height="960"
+      loading="lazy"
+      src={service.imageSrc}
+      width="1200"
+    />
+  )}
+  <div class="space-y-4 p-6">
+    <span class="tag-pill">{service.title}</span>
+    <h3 class="text-2xl">{service.shortDescription}</h3>
+    <p class="text-sm text-steel">{service.longDescription}</p>
+    {service.startingPrice && <p class="text-sm font-semibold text-paper">{service.startingPrice}</p>}
+    <CTAButton
+      href={service.pageHref}
+      label={service.slug === 'prints' ? 'View Print Options' : service.ctaLabel}
+      tracking={
+        isPrintService
+          ? printBuyClick({ location: context, service: service.slug })
+          : bookSessionClick({ location: context, service: service.slug })
+      }
+      variant="secondary"
+    />
+  </div>
+</article>

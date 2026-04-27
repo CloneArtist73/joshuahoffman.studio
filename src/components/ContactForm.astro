@@ -1,0 +1,103 @@
+---
+import { siteConfig } from '../data/site';
+import { contactClick, inquirySubmit } from '../utils/analytics';
+
+const isNetlify = siteConfig.contactForm.provider === 'netlify';
+---
+
+<div class="surface p-6 sm:p-8">
+  <!--
+    TODO: If you deploy anywhere other than Netlify, replace the form action and
+    provider-specific attributes below with your real Formspree, Basin, Getform,
+    or other static form endpoint.
+  -->
+  <form
+    action={siteConfig.contactForm.action}
+    method="POST"
+    name="contact"
+    netlify-honeypot={isNetlify ? 'bot-field' : undefined}
+    data-netlify={isNetlify ? 'true' : undefined}
+    {...inquirySubmit({ form: 'contact_page' })}
+  >
+    <input name="form-name" type="hidden" value="contact" />
+    {isNetlify && <input name="bot-field" type="hidden" />}
+
+    <div class="grid gap-5 sm:grid-cols-2">
+      <label class="space-y-2 text-sm text-paper" for="name">
+        <span>Name</span>
+        <input autocomplete="name" id="name" name="name" placeholder="Your name" required type="text" />
+      </label>
+
+      <label class="space-y-2 text-sm text-paper" for="email">
+        <span>Email</span>
+        <input
+          autocomplete="email"
+          id="email"
+          name="email"
+          placeholder="email@example.com"
+          required
+          type="email"
+        />
+      </label>
+    </div>
+
+    <label class="mt-5 block space-y-2 text-sm text-paper" for="inquiry-type">
+      <span>Inquiry type</span>
+      <select id="inquiry-type" name="inquiryType" required>
+        <option value="">Select one</option>
+        <option value="Portrait session">Portrait session</option>
+        <option value="Legacy / memorial work">Legacy / memorial work</option>
+        <option value="Musician / artist portraits">Musician / artist portraits</option>
+        <option value="Print or product question">Print or product question</option>
+        <option value="Licensing">Licensing</option>
+        <option value="Other">Other</option>
+      </select>
+    </label>
+
+    <label class="mt-5 block space-y-2 text-sm text-paper" for="message">
+      <span>Message</span>
+      <textarea
+        id="message"
+        name="message"
+        placeholder="Tell Joshua what you need, what you are drawn to, and any timing that matters."
+        required
+      ></textarea>
+    </label>
+
+    <div class="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <p class="max-w-xl text-sm text-steel">
+        Prefer direct email? Reach out at
+        <a
+          class="panel-link text-paper underline decoration-white/30 underline-offset-4 hover:decoration-sage"
+          href={`mailto:${siteConfig.email}`}
+          {...contactClick({ location: 'contact_page_email' })}
+        >
+          {siteConfig.email}
+        </a>
+        and Joshua will reply directly.
+      </p>
+      <button
+        class="panel-link inline-flex items-center justify-center rounded-full border border-ember/70 bg-ember px-5 py-3 text-sm font-semibold text-obsidian shadow-soft hover:bg-[#d48b63]"
+        type="submit"
+      >
+        Start an Inquiry
+      </button>
+    </div>
+  </form>
+</div>
+
+<script is:inline>
+  const params = new URLSearchParams(window.location.search);
+  const inquiryType = params.get('type');
+  const imageSlug = params.get('image');
+  const messageField = document.getElementById('message');
+  const inquirySelect = document.getElementById('inquiry-type');
+
+  if (inquiryType && inquirySelect instanceof HTMLSelectElement) {
+    inquirySelect.value = inquiryType;
+  }
+
+  if (imageSlug && messageField instanceof HTMLTextAreaElement && !messageField.value) {
+    messageField.value = `I am reaching out about ${imageSlug.replaceAll('-', ' ')}.`;
+  }
+</script>

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 1400" role="img" aria-labelledby="title desc">
+  <title id="title">Fine-art print placeholder</title>
+  <desc id="desc">Square placeholder artwork for print-forward photography.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#16161d" />
+      <stop offset="55%" stop-color="#374456" />
+      <stop offset="100%" stop-color="#786d63" />
+    </linearGradient>
+    <radialGradient id="center" cx="50%" cy="46%" r="38%">
+      <stop offset="0%" stop-color="#f7f2e8" stop-opacity=".24" />
+      <stop offset="100%" stop-color="#f7f2e8" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <rect width="1400" height="1400" fill="url(#bg)" />
+  <rect width="1400" height="1400" fill="url(#center)" />
+  <rect x="290" y="270" width="820" height="820" rx="52" fill="#12131a" opacity=".8" />
+  <circle cx="700" cy="700" r="184" fill="none" opacity=".18" stroke="#f7f2e8" stroke-width="42" />
+  <path d="M560 700h280" opacity=".16" stroke="#f7f2e8" stroke-linecap="round" stroke-width="34" />
+  <text x="150" y="1220" fill="#f7f2e8" font-family="Georgia, serif" font-size="58">
+    Print placeholder
+  </text>
+  <text x="150" y="1280" fill="#ddd4c2" font-family="Arial, sans-serif" font-size="24" letter-spacing="4">
+    replace with print-ready square or still life image
+  </text>
+</svg>
