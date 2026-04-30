@@ -12,6 +12,7 @@ interface Props {
 }
 
 const { seedData = '{}' } = Astro.props as Props;
+const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c');
 ---
 
 <section class="section-block pt-10">
@@ -62,89 +63,91 @@ const { seedData = '{}' } = Astro.props as Props;
 
           <section class="space-y-5" aria-labelledby="file-import" data-entry-panel="file-import" id="file-import-panel">
             <div class="space-y-2">
-              <h2 class="text-2xl">File import</h2>
+              <h2 class="text-2xl" id="file-import">File import</h2>
               <p class="copy-muted">
                 Choose a local image file and your repo root. Submit copies the file into
                 <code>public/images</code> and writes the gallery data locally.
               </p>
             </div>
 
-            <div
-              class="rounded-2xl border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-sm text-sand"
-              id="file-import-support"
-            ></div>
+            <div class="space-y-5" id="local-file-controls">
+              <div
+                class="rounded-2xl border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-sm text-sand"
+                id="file-import-support"
+              ></div>
 
-            <div class="grid gap-5 sm:grid-cols-2">
-              <label class="space-y-2 text-sm text-paper" for="image-file">
-                <span id="image-file-label">Choose image file</span>
-                <input
-                  accept="image/*,.jpg,.jpeg,.png,.webp,.avif,.gif,.tif,.tiff"
-                  class="cursor-pointer file:mr-4 file:rounded-full file:border-0 file:bg-white/10 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-paper hover:file:bg-white/15"
-                  id="image-file"
-                  name="imageFile"
-                  type="file"
-                />
-                <span class="copy-muted block" id="image-file-meta">
-                  No image file selected yet.
-                </span>
-              </label>
+              <div class="grid gap-5 sm:grid-cols-2">
+                <label class="space-y-2 text-sm text-paper" for="image-file">
+                  <span id="image-file-label">Choose image file</span>
+                  <input
+                    accept="image/*,.jpg,.jpeg,.png,.webp,.avif,.gif,.tif,.tiff"
+                    class="cursor-pointer file:mr-4 file:rounded-full file:border-0 file:bg-white/10 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-paper hover:file:bg-white/15"
+                    id="image-file"
+                    name="imageFile"
+                    type="file"
+                  />
+                  <span class="copy-muted block" id="image-file-meta">
+                    No image file selected yet.
+                  </span>
+                </label>
 
-              <div class="space-y-2 text-sm text-paper">
-                <span class="block">Choose project root</span>
-                <button
-                  class="panel-link inline-flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-paper hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-50"
-                  data-choose-images-folder
-                  type="button"
-                >
-                  Choose repo folder
-                </button>
-                <span class="copy-muted block" id="images-folder-meta">
-                  No project folder selected yet.
-                </span>
-              </div>
-            </div>
-
-            <div class="grid gap-5 sm:grid-cols-[0.75fr_1.25fr]">
-              <label class="space-y-2 text-sm text-paper" for="image-subfolder">
-                <span>Optional subfolder</span>
-                <input
-                  id="image-subfolder"
-                  name="imageSubfolder"
-                  placeholder="portraits/live"
-                  type="text"
-                />
-                <span class="copy-muted block">
-                  Use nested paths like <code>portraits</code> or <code>musicians/live</code>. Each part
-                  will be sanitized to kebab-case.
-                </span>
-              </label>
-
-              <div class="space-y-2 text-sm text-paper">
-                <span class="block">Final project path</span>
-                <div class="rounded-2xl border border-white/10 bg-obsidian/60 px-4 py-3">
-                  <code class="text-xs text-paper" id="import-path-preview">
-                    Choose a file and enter a title or slug to preview the imported path.
-                  </code>
+                <div class="space-y-2 text-sm text-paper">
+                  <span class="block">Choose project root</span>
+                  <button
+                    class="panel-link inline-flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-paper hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-50"
+                    data-choose-images-folder
+                    type="button"
+                  >
+                    Choose repo folder
+                  </button>
+                  <span class="copy-muted block" id="images-folder-meta">
+                    No project folder selected yet.
+                  </span>
                 </div>
-                <span class="copy-muted block">
-                  Imported files are renamed to the image slug and keep the original extension.
-                </span>
               </div>
-            </div>
 
-            <div class="hidden overflow-hidden rounded-2xl border border-white/10 bg-white/5" id="image-preview-wrap">
-              <img
-                alt="Preview of the selected local image file."
-                class="max-h-96 w-full object-contain"
-                id="image-preview"
-                src=""
-              />
+              <div class="grid gap-5 sm:grid-cols-[0.75fr_1.25fr]">
+                <label class="space-y-2 text-sm text-paper" for="image-subfolder">
+                  <span>Optional subfolder</span>
+                  <input
+                    id="image-subfolder"
+                    name="imageSubfolder"
+                    placeholder="portraits/live"
+                    type="text"
+                  />
+                  <span class="copy-muted block">
+                    Use nested paths like <code>portraits</code> or <code>musicians/live</code>. Each part
+                    will be sanitized to kebab-case.
+                  </span>
+                </label>
+
+                <div class="space-y-2 text-sm text-paper">
+                  <span class="block">Final project path</span>
+                  <div class="rounded-2xl border border-white/10 bg-obsidian/60 px-4 py-3">
+                    <code class="text-xs text-paper" id="import-path-preview">
+                      Choose a file and enter a title or slug to preview the imported path.
+                    </code>
+                  </div>
+                  <span class="copy-muted block">
+                    Imported files are renamed to the image slug and keep the original extension.
+                  </span>
+                </div>
+              </div>
+
+              <div class="hidden overflow-hidden rounded-2xl border border-white/10 bg-white/5" id="image-preview-wrap">
+                <img
+                  alt="Preview of the selected local image file."
+                  class="max-h-96 w-full object-contain"
+                  id="image-preview"
+                  src=""
+                />
+              </div>
             </div>
           </section>
 
           <section class="hidden space-y-5" aria-labelledby="edit-gallery" data-entry-panel="edit-gallery" id="edit-gallery-panel">
             <div class="space-y-2">
-              <h2 class="text-2xl">Edit gallery</h2>
+              <h2 class="text-2xl" id="edit-gallery">Edit gallery</h2>
               <p class="copy-muted">
                 Select an existing image and edit its metadata, product links, and outbound links.
               </p>
@@ -761,7 +764,7 @@ const { seedData = '{}' } = Astro.props as Props;
   </div>
 </section>
 
-<script id="entry-ai-prompt-config" type="application/json" set:html={JSON.stringify(entryAiPrompt)}></script>
+<script id="entry-ai-prompt-config" type="application/json" set:html={entryAiPromptJson}></script>
 <script id="entry-seed-data" type="application/json" set:html={seedData}></script>
 
 <script is:inline>
@@ -782,6 +785,9 @@ const { seedData = '{}' } = Astro.props as Props;
   const modeFileLabel = document.getElementById('image-file-label');
   const tabButtons = Array.from(document.querySelectorAll('[data-entry-tab]'));
   const entryPanels = Array.from(document.querySelectorAll('[data-entry-panel]'));
+  const localFileControls = document.getElementById('local-file-controls');
+  const fileImportPanel = document.getElementById('file-import-panel');
+  const editGalleryPanel = document.getElementById('edit-gallery-panel');
   const fileMeta = document.getElementById('image-file-meta');
   const previewWrap = document.getElementById('image-preview-wrap');
   const previewImage = document.getElementById('image-preview');
@@ -854,7 +860,6 @@ const { seedData = '{}' } = Astro.props as Props;
       suffix: 'Pixieset',
     },
   ];
-  const routePlatformBySharedKey = new Map(routePlatformFields.map((entry) => [entry.sharedKey, entry]));
   const routePlatformBySuffix = new Map(routePlatformFields.map((entry) => [entry.suffix, entry]));
   const routeFieldIdBySharedKey = new Map([
     ['fineArtAmerica', 'fine-art-america-url'],
@@ -885,7 +890,6 @@ const { seedData = '{}' } = Astro.props as Props;
   let selectedOriginalProductSlug = '';
   let selectedImageRecord = null;
   let selectedProductRecord = null;
-  let selectedImageFileMode = 'file-import';
 
   const formatPresets = ['8 x 10', '11 x 14', '12 x 18', '16 x 20', '16 x 24', '20 x 30', '24 x 36'];
   const imageCategories = ['portrait', 'legacy', 'musician', 'print', 'personal'];
@@ -998,11 +1002,6 @@ const { seedData = '{}' } = Astro.props as Props;
 
   function getDirectKeySuffixes() {
     return [...knownDirectSuffixes];
-  }
-
-  function getDirectLinksForImage(imageSlug) {
-    const imageBase = getImageBaseFromSlug(imageSlug || '');
-    return getDirectKeySuffixes().map((suffix) => `${imageBase}${suffix}`);
   }
 
   function isImageDirectKeyForBase(key, imageSlug) {
@@ -1346,18 +1345,18 @@ const { seedData = '{}' } = Astro.props as Props;
     return null;
   }
 
-  function getSharedRouteKeys() {
-    return routePlatformFields.map((entry) => entry.sharedKey);
-  }
-
-  function refreshModeTabs(targetMode) {
+  function refreshModeTabs(targetMode, { announce = true } = {}) {
     currentMode = targetMode === 'edit-gallery' ? 'edit-gallery' : 'file-import';
-    selectedImageFileMode = currentMode;
 
     const isEditMode = currentMode === 'edit-gallery';
     const activeFileLabel = isEditMode ? 'Replace image file (optional)' : 'Choose image file';
     if (modeFileLabel) {
       modeFileLabel.textContent = activeFileLabel;
+    }
+
+    const fileControlsParent = isEditMode ? editGalleryPanel : fileImportPanel;
+    if (localFileControls && fileControlsParent && localFileControls.parentElement !== fileControlsParent) {
+      fileControlsParent.append(localFileControls);
     }
 
     for (const button of tabButtons) {
@@ -1373,13 +1372,14 @@ const { seedData = '{}' } = Astro.props as Props;
       panel.classList.toggle('hidden', !selected);
     }
 
-    setStatus(
-      isEditMode
-        ? 'Edit gallery mode active. Select an existing image to pre-fill editable fields.'
-        : 'File import mode active. Use this form to add a new image.',
-      isEditMode ? 'warning' : 'success',
-      { reveal: true },
-    );
+    if (announce) {
+      setStatus(
+        isEditMode
+          ? 'Edit gallery mode active. Select an existing image to pre-fill editable fields.'
+          : 'File import mode active. Use this form to add a new image.',
+        isEditMode ? 'warning' : 'success',
+      );
+    }
 
     if (submitButton) {
       submitButton.textContent = isEditMode ? 'Update Gallery Entry' : 'Add Locally';
@@ -1397,6 +1397,8 @@ const { seedData = '{}' } = Astro.props as Props;
     }
 
     updateSupportMessage();
+    updateFileMeta();
+    updatePreviewImage();
     updateOutputs();
   }
 
@@ -1437,7 +1439,6 @@ const { seedData = '{}' } = Astro.props as Props;
       selectedProductRecord = null;
       selectedOriginalProductSlug = '';
       selectedImageFile = null;
-      selectedImageFileMode = currentMode;
       if (editImageMeta) {
         editImageMeta.textContent = 'Select a current gallery image to pre-fill image and product fields.';
       }
@@ -1460,7 +1461,6 @@ const { seedData = '{}' } = Astro.props as Props;
     selectedImageRecord = imageRecord;
     selectedOriginalProductSlug = '';
     selectedImageFile = null;
-    selectedImageFileMode = currentMode;
     setFormFromImageRecord(imageRecord);
     setValue('image-title', String(imageRecord.title || '').trim());
     updateOutputs();
@@ -2225,7 +2225,6 @@ const { seedData = '{}' } = Astro.props as Props;
   }
 
   function buildDirectEntries(imageSlug, formData) {
-    const baseKey = getImageBaseFromSlug(imageSlug || 'image');
     const entries = [];
 
     for (const platformField of routePlatformFields) {
@@ -2262,9 +2261,7 @@ const { seedData = '{}' } = Astro.props as Props;
     }
 
     return entries
-      .map((entry) => {
-        return `${entry.key}: {\n  key: ${quoted(entry.key)},\n  label: ${quoted(entry.label)},\n  url: ${quoted(entry.url)},\n  platform: ${quoted(entry.platform)},\n},`;
-      })
+      .map((entry) => buildExternalLinkSnippet(entry))
       .join('\n\n');
   }
 
@@ -2947,11 +2944,7 @@ const { seedData = '{}' } = Astro.props as Props;
       .join('\n');
   }
 
-  function appendToExportedArray(source, exportName, entrySnippet, duplicateNeedle) {
-    if (source.includes(duplicateNeedle)) {
-      throw new Error(`A ${exportName} entry already exists for this slug or key.`);
-    }
-
+  function findExportedArrayRange(source, exportName) {
     const declarationIndex = source.indexOf(`export const ${exportName}`);
     if (declarationIndex === -1) {
       throw new Error(`Could not find export const ${exportName} in the data file.`);
@@ -2964,28 +2957,216 @@ const { seedData = '{}' } = Astro.props as Props;
       throw new Error(`Could not find the ${exportName} array closing bracket.`);
     }
 
+    return { arrayStart, arrayEnd };
+  }
+
+  function findMatchingBrace(source, openIndex) {
+    let depth = 0;
+    let quote = '';
+    let escaped = false;
+    let lineComment = false;
+    let blockComment = false;
+
+    for (let index = openIndex; index < source.length; index += 1) {
+      const char = source[index];
+      const nextChar = source[index + 1];
+
+      if (lineComment) {
+        if (char === '\n') {
+          lineComment = false;
+        }
+        continue;
+      }
+
+      if (blockComment) {
+        if (char === '*' && nextChar === '/') {
+          blockComment = false;
+          index += 1;
+        }
+        continue;
+      }
+
+      if (quote) {
+        if (escaped) {
+          escaped = false;
+        } else if (char === '\\') {
+          escaped = true;
+        } else if (char === quote) {
+          quote = '';
+        }
+        continue;
+      }
+
+      if (char === '/' && nextChar === '/') {
+        lineComment = true;
+        index += 1;
+        continue;
+      }
+
+      if (char === '/' && nextChar === '*') {
+        blockComment = true;
+        index += 1;
+        continue;
+      }
+
+      if (char === '\'' || char === '"' || char === '`') {
+        quote = char;
+        continue;
+      }
+
+      if (char === '{') {
+        depth += 1;
+      } else if (char === '}') {
+        depth -= 1;
+        if (depth === 0) {
+          return index;
+        }
+      }
+    }
+
+    return -1;
+  }
+
+  function getLineStart(source, index) {
+    return source.lastIndexOf('\n', index) + 1;
+  }
+
+  function includeTrailingComma(source, index) {
+    let endIndex = index + 1;
+    while (source[endIndex] === ' ' || source[endIndex] === '\t') {
+      endIndex += 1;
+    }
+    if (source[endIndex] === ',') {
+      endIndex += 1;
+    }
+    return endIndex;
+  }
+
+  function objectHasStringProperty(block, propertyName, propertyValue) {
+    const pattern = new RegExp(`\\b${propertyName}\\s*:\\s*['"]${escapeRegExp(propertyValue)}['"]`);
+    return pattern.test(block);
+  }
+
+  function findObjectRangeByStringProperty(source, exportName, propertyName, propertyValue) {
+    if (!propertyValue) {
+      return null;
+    }
+
+    const { arrayStart, arrayEnd } = findExportedArrayRange(source, exportName);
+    let searchIndex = arrayStart + 1;
+
+    while (searchIndex < arrayEnd) {
+      const objectStart = source.indexOf('{', searchIndex);
+      if (objectStart === -1 || objectStart >= arrayEnd) {
+        return null;
+      }
+
+      const objectEnd = findMatchingBrace(source, objectStart);
+      if (objectEnd === -1 || objectEnd > arrayEnd) {
+        throw new Error(`Could not parse an object inside ${exportName}.`);
+      }
+
+      const objectSource = source.slice(objectStart, objectEnd + 1);
+      if (objectHasStringProperty(objectSource, propertyName, propertyValue)) {
+        return {
+          start: getLineStart(source, objectStart),
+          end: includeTrailingComma(source, objectEnd),
+        };
+      }
+
+      searchIndex = objectEnd + 1;
+    }
+
+    return null;
+  }
+
+  function appendToExportedArray(source, exportName, entrySnippet, duplicateNeedle) {
+    if (duplicateNeedle && source.includes(duplicateNeedle)) {
+      throw new Error(`A ${exportName} entry already exists for this slug or key.`);
+    }
+
+    const { arrayEnd } = findExportedArrayRange(source, exportName);
     return `${source.slice(0, arrayEnd)}\n${indentSnippet(entrySnippet)}${source.slice(arrayEnd)}`;
   }
 
-  function appendToExternalLinksRecord(source, entrySnippet, entries) {
+  function replaceInExportedArray(source, exportName, originalProperty, originalValue, entrySnippet) {
+    const range = findObjectRangeByStringProperty(source, exportName, originalProperty, originalValue);
+    if (!range) {
+      throw new Error(`Could not find the existing ${exportName} entry for ${originalValue}.`);
+    }
+
+    return `${source.slice(0, range.start)}${indentSnippet(entrySnippet)}${source.slice(range.end)}`;
+  }
+
+  function assertNoConflictingArrayEntry(source, exportName, propertyName, nextValue, originalValue) {
+    if (!nextValue || nextValue === originalValue) {
+      return;
+    }
+
+    const existingRange = findObjectRangeByStringProperty(source, exportName, propertyName, nextValue);
+    if (existingRange) {
+      throw new Error(`A ${exportName} entry already exists for ${nextValue}. Choose a different slug.`);
+    }
+  }
+
+  function buildExternalLinkSnippet(entry) {
+    return `${entry.key}: {\n  key: ${quoted(entry.key)},\n  label: ${quoted(entry.label)},\n  url: ${quoted(entry.url)},\n  platform: ${quoted(entry.platform)},\n},`;
+  }
+
+  function findExternalLinksRecordRange(source) {
+    const declarationIndex = source.indexOf('export const externalLinks');
+    if (declarationIndex === -1) {
+      throw new Error('Could not find export const externalLinks in the data file.');
+    }
+
+    const recordStart = source.indexOf('{', declarationIndex);
+    const closeMatches = Array.from(source.matchAll(/\r?\n\};/g));
+    const lastCloseMatch = closeMatches.at(-1);
+    const recordEnd = lastCloseMatch ? lastCloseMatch.index : -1;
+    if (recordStart === -1 || recordEnd === -1 || recordEnd <= recordStart) {
+      throw new Error('Could not find the externalLinks record closing brace.');
+    }
+
+    return { recordStart, recordEnd };
+  }
+
+  function findExternalLinkEntryRange(source, key) {
+    const { recordStart, recordEnd } = findExternalLinksRecordRange(source);
+    const recordSource = source.slice(recordStart, recordEnd);
+    const pattern = new RegExp(`\\n\\s*${escapeRegExp(key)}\\s*:\\s*\\{`, 'g');
+    const match = pattern.exec(recordSource);
+    if (!match) {
+      return null;
+    }
+
+    const entryStart = recordStart + match.index + 1;
+    const objectStart = source.indexOf('{', entryStart);
+    const objectEnd = findMatchingBrace(source, objectStart);
+    if (objectStart === -1 || objectEnd === -1 || objectEnd > recordEnd) {
+      throw new Error(`Could not parse the externalLinks entry for ${key}.`);
+    }
+
+    return {
+      start: entryStart,
+      end: includeTrailingComma(source, objectEnd),
+    };
+  }
+
+  function upsertExternalLinksRecord(source, entries) {
     if (!entries.length) {
       return source;
     }
 
-    for (const entry of entries) {
-      if (source.includes(`${entry.key}: {`) || source.includes(`key: '${entry.key}'`)) {
-        throw new Error(`An external link entry already exists for ${entry.key}.`);
+    return entries.reduce((nextSource, entry) => {
+      const entrySnippet = buildExternalLinkSnippet(entry);
+      const existingRange = findExternalLinkEntryRange(nextSource, entry.key);
+      if (existingRange) {
+        return `${nextSource.slice(0, existingRange.start)}${indentSnippet(entrySnippet)}${nextSource.slice(existingRange.end)}`;
       }
-    }
 
-    const closeMatches = Array.from(source.matchAll(/\r?\n\};/g));
-    const lastCloseMatch = closeMatches.at(-1);
-    const recordEnd = lastCloseMatch ? lastCloseMatch.index : -1;
-    if (recordEnd === -1) {
-      throw new Error('Could not find the externalLinks record closing brace.');
-    }
-
-    return `${source.slice(0, recordEnd)}\n${indentSnippet(entrySnippet)}${source.slice(recordEnd)}`;
+      const { recordEnd } = findExternalLinksRecordRange(nextSource);
+      return `${nextSource.slice(0, recordEnd)}\n${indentSnippet(entrySnippet)}${nextSource.slice(recordEnd)}`;
+    }, source);
   }
 
   async function importSelectedFile(imageSlug) {
@@ -3026,36 +3207,72 @@ const { seedData = '{}' } = Astro.props as Props;
       throw new Error('Write permission was denied for the selected project folder.');
     }
 
+    const isEditMode = currentMode === 'edit-gallery';
     const imagesHandle = await getDataFileHandle('images.ts');
     const imagesSource = await readTextFile(imagesHandle);
-    const nextImagesSource = appendToExportedArray(
-      imagesSource,
-      'images',
-      imageOutput.value,
-      `slug: '${imageSlug}'`,
-    );
+
+    let nextImagesSource = '';
+    if (isEditMode) {
+      if (!selectedOriginalImageSlug) {
+        throw new Error('Choose an existing gallery image before updating.');
+      }
+      assertNoConflictingArrayEntry(imagesSource, 'images', 'slug', imageSlug, selectedOriginalImageSlug);
+      nextImagesSource = replaceInExportedArray(
+        imagesSource,
+        'images',
+        'slug',
+        selectedOriginalImageSlug,
+        imageOutput.value,
+      );
+    } else {
+      assertNoConflictingArrayEntry(imagesSource, 'images', 'slug', imageSlug, '');
+      nextImagesSource = appendToExportedArray(
+        imagesSource,
+        'images',
+        imageOutput.value,
+        `slug: '${imageSlug}'`,
+      );
+    }
+
     const writes = [{ handle: imagesHandle, content: nextImagesSource, path: 'src/data/images.ts' }];
 
     if (!productOutput.value.trim().startsWith('//')) {
       const productsHandle = await getDataFileHandle('products.ts');
       const productsSource = await readTextFile(productsHandle);
-      const nextProductsSource = appendToExportedArray(
-        productsSource,
-        'products',
-        productOutput.value,
-        `slug: '${productSlugValue}'`,
+      const originalProductSlug = selectedOriginalProductSlug || selectedImageRecord?.productSlug || '';
+      const hasOriginalProduct = Boolean(
+        isEditMode &&
+          originalProductSlug &&
+          findObjectRangeByStringProperty(productsSource, 'products', 'slug', originalProductSlug),
       );
+      let nextProductsSource = '';
+
+      if (hasOriginalProduct) {
+        assertNoConflictingArrayEntry(productsSource, 'products', 'slug', productSlugValue, originalProductSlug);
+        nextProductsSource = replaceInExportedArray(
+          productsSource,
+          'products',
+          'slug',
+          originalProductSlug,
+          productOutput.value,
+        );
+      } else {
+        assertNoConflictingArrayEntry(productsSource, 'products', 'slug', productSlugValue, '');
+        nextProductsSource = appendToExportedArray(
+          productsSource,
+          'products',
+          productOutput.value,
+          `slug: '${productSlugValue}'`,
+        );
+      }
+
       writes.push({ handle: productsHandle, content: nextProductsSource, path: 'src/data/products.ts' });
     }
 
     if (externalEntries.length) {
       const externalLinksHandle = await getDataFileHandle('externalLinks.ts');
       const externalLinksSource = await readTextFile(externalLinksHandle);
-      const nextExternalLinksSource = appendToExternalLinksRecord(
-        externalLinksSource,
-        externalLinksOutput.value,
-        externalEntries,
-      );
+      const nextExternalLinksSource = upsertExternalLinksRecord(externalLinksSource, externalEntries);
       writes.push({ handle: externalLinksHandle, content: nextExternalLinksSource, path: 'src/data/externalLinks.ts' });
     }
 
@@ -3090,7 +3307,12 @@ const { seedData = '{}' } = Astro.props as Props;
       } else {
         selectedProjectDirectory = directoryHandle;
         updateFolderMeta();
-        setStatus('Project root selected. Submit will add the image and update local gallery data.', 'success');
+        setStatus(
+          currentMode === 'edit-gallery'
+            ? 'Project root selected. Submit will update local gallery data.'
+            : 'Project root selected. Submit will add the image and update local gallery data.',
+          'success',
+        );
       }
     } catch (error) {
       if (error && error.name === 'AbortError') {
@@ -3107,8 +3329,15 @@ const { seedData = '{}' } = Astro.props as Props;
     syncDefaults();
     updateProductFieldsState();
 
+    const isEditMode = currentMode === 'edit-gallery';
     const imageTitle = titleInput.value.trim();
     const imageSlug = getResolvedImageSlug();
+
+    if (isEditMode && !selectedOriginalImageSlug) {
+      setStatus('Choose an existing gallery image before updating.', 'error', { reveal: true });
+      editImageSelect?.focus({ preventScroll: true });
+      return;
+    }
 
     if (!imageTitle && !imageSlug) {
       setStatus('Enter a title or slug before submitting.', 'error', { reveal: true });
@@ -3120,7 +3349,7 @@ const { seedData = '{}' } = Astro.props as Props;
       slugInput.value = imageSlug;
     }
 
-    const createProduct = createProductCheckbox.checked;
+    const createProduct = getEffectiveCreateProductState();
     if (createProduct && productSlugInput.value.trim() !== getResolvedProductSlug()) {
       productSlugInput.value = getResolvedProductSlug();
     }
@@ -3176,15 +3405,16 @@ const { seedData = '{}' } = Astro.props as Props;
       updateOutputs();
 
       const finalFormData = new FormData(form);
-      const finalExternalEntries = buildExternalEntries(imageSlug, finalFormData);
+      const finalExternalEntries = buildDirectEntries(imageSlug, finalFormData);
 
       if (fsApiSupported && selectedProjectDirectory) {
         const writtenFiles = await writeEntryDataFiles(imageSlug, productSlugValue, finalExternalEntries);
         const importMessage = importResult
           ? `Imported ${importResult.fileName} to ${importResult.publicPath}. `
           : '';
+        const actionMessage = isEditMode ? `Updated ${imageSlug}` : `Added ${imageSlug}`;
         setStatus(
-          `${importMessage}Added ${imageSlug} to local gallery data: ${writtenFiles.join(', ')}. Refresh /gallery/ to see it.`,
+          `${importMessage}${actionMessage} in local gallery data: ${writtenFiles.join(', ')}. Refresh /gallery/ to see it.`,
           'success',
           { reveal: true },
         );
@@ -3223,6 +3453,16 @@ const { seedData = '{}' } = Astro.props as Props;
     updateOutputs();
   });
 
+  tabButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      refreshModeTabs(button.getAttribute('data-entry-tab'));
+    });
+  });
+
+  if (editImageSelect) {
+    editImageSelect.addEventListener('change', applyEditImageSelection);
+  }
+
   folderButton.addEventListener('click', handleChooseFolder);
   aiProviderSelect.addEventListener('change', () => {
     applyAiProviderDefaults({ resetEndpoint: true, resetModel: true });
@@ -3260,6 +3500,8 @@ const { seedData = '{}' } = Astro.props as Props;
   }
 
   folderButton.disabled = !fsApiSupported;
+  populateEditGallerySelect();
+  refreshModeTabs('file-import', { announce: false });
   updateSupportMessage();
   updateAiAvailability();
   applyAiProviderDefaults();
