@@ -1,5 +1,17 @@
 ---
 import { entryAiPrompt } from '../data/entryAiPrompt';
+
+interface SeedData {
+  images?: unknown[];
+  products?: unknown[];
+  externalLinks?: Record<string, unknown>;
+}
+
+interface Props {
+  seedData?: string;
+}
+
+const { seedData = '{}' } = Astro.props as Props;
 ---
 
 <section class="section-block pt-10">
@@ -15,6 +27,31 @@ import { entryAiPrompt } from '../data/entryAiPrompt';
       </div>
 
       <div class="surface p-6 sm:p-8">
+        <div
+          aria-label="Entry workflow"
+          class="mb-8 flex flex-wrap gap-3 rounded-2xl border border-white/10 bg-white/5 p-2"
+          role="tablist"
+        >
+          <button
+            class="panel-link inline-flex items-center justify-center rounded-full border border-white/10 bg-obsidian/70 px-5 py-3 text-sm font-semibold text-paper"
+            data-entry-tab="file-import"
+            role="tab"
+            aria-controls="file-import-panel"
+            type="button"
+          >
+            File import
+          </button>
+          <button
+            class="panel-link inline-flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-paper"
+            data-entry-tab="edit-gallery"
+            role="tab"
+            aria-controls="edit-gallery-panel"
+            type="button"
+          >
+            Edit gallery
+          </button>
+        </div>
+
         <form class="space-y-8" id="content-entry-form" novalidate>
           <div
             aria-live="polite"
@@ -23,7 +60,7 @@ import { entryAiPrompt } from '../data/entryAiPrompt';
             role="status"
           ></div>
 
-          <section class="space-y-5">
+          <section class="space-y-5" aria-labelledby="file-import" data-entry-panel="file-import" id="file-import-panel">
             <div class="space-y-2">
               <h2 class="text-2xl">File import</h2>
               <p class="copy-muted">
@@ -39,7 +76,7 @@ import { entryAiPrompt } from '../data/entryAiPrompt';
 
             <div class="grid gap-5 sm:grid-cols-2">
               <label class="space-y-2 text-sm text-paper" for="image-file">
-                <span>Choose image file</span>
+                <span id="image-file-label">Choose image file</span>
                 <input
                   accept="image/*,.jpg,.jpeg,.png,.webp,.avif,.gif,.tif,.tiff"
                   class="cursor-pointer file:mr-4 file:rounded-full file:border-0 file:bg-white/10 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-paper hover:file:bg-white/15"
@@ -103,6 +140,25 @@ import { entryAiPrompt } from '../data/entryAiPrompt';
                 src=""
               />
             </div>
+          </section>
+
+          <section class="hidden space-y-5" aria-labelledby="edit-gallery" data-entry-panel="edit-gallery" id="edit-gallery-panel">
+            <div class="space-y-2">
+              <h2 class="text-2xl">Edit gallery</h2>
+              <p class="copy-muted">
+                Select an existing image and edit its metadata, product links, and outbound links.
+              </p>
+            </div>
+
+            <label class="space-y-2 text-sm text-paper" for="edit-image-select">
+              <span>Existing image</span>
+              <select id="edit-image-select" name="editImageSelect">
+                <option value="">Choose an image to edit</option>
+              </select>
+              <span class="copy-muted block" id="edit-image-meta">
+                Select a current gallery image to pre-fill image and product fields.
+              </span>
+            </label>
           </section>
 
           <section class="space-y-5 border-t border-white/10 pt-8" id="ai-review-panel">
@@ -531,9 +587,37 @@ import { entryAiPrompt } from '../data/entryAiPrompt';
               </p>
             </div>
 
+            <fieldset class="space-y-3" id="shared-route-keys-fieldset">
+              <legend class="text-sm font-semibold text-paper">Shared route keys</legend>
+              <p class="copy-muted">
+                Include selected route keys when this product should use shared storefront placeholders.
+              </p>
+              <div class="grid gap-3 sm:grid-cols-2">
+                <label class="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-paper">
+                  <input class="h-4 w-4" name="routeKey" type="checkbox" value="fineArtAmerica" />
+                  Fine Art America
+                </label>
+
+                <label class="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-paper">
+                  <input class="h-4 w-4" name="routeKey" type="checkbox" value="etsy" />
+                  Etsy
+                </label>
+
+                <label class="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-paper">
+                  <input class="h-4 w-4" name="routeKey" type="checkbox" value="shopify" />
+                  Shopify
+                </label>
+
+                <label class="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-paper">
+                  <input class="h-4 w-4" name="routeKey" type="checkbox" value="pixieset" />
+                  Pixieset
+                </label>
+              </div>
+            </fieldset>
+
             <div class="grid gap-5">
               <label class="space-y-2 text-sm text-paper" for="fine-art-america-url">
-                <span>Fine Art America URL</span>
+                <span>Fine Art America direct URL</span>
                 <input
                   id="fine-art-america-url"
                   name="fineArtAmericaUrl"
@@ -543,31 +627,31 @@ import { entryAiPrompt } from '../data/entryAiPrompt';
               </label>
 
               <label class="space-y-2 text-sm text-paper" for="etsy-url">
-                <span>Etsy URL</span>
+                <span>Etsy direct URL</span>
                 <input id="etsy-url" name="etsyUrl" placeholder="https://etsy.com/..." type="url" />
               </label>
 
               <label class="space-y-2 text-sm text-paper" for="shopify-url">
-                <span>Shopify URL</span>
+                <span>Shopify direct URL</span>
                 <input id="shopify-url" name="shopifyUrl" placeholder="https://yourstore.com/..." type="url" />
               </label>
 
               <label class="space-y-2 text-sm text-paper" for="pixieset-url">
-                <span>Pixieset URL</span>
+                <span>Pixieset direct URL</span>
                 <input id="pixieset-url" name="pixiesetUrl" placeholder="https://gallery.pixieset.com/..." type="url" />
               </label>
+            </div>
 
-              <div class="grid gap-5 sm:grid-cols-[0.45fr_0.55fr]">
-                <label class="space-y-2 text-sm text-paper" for="other-label">
-                  <span>Other platform label</span>
-                  <input id="other-label" name="otherLabel" placeholder="Other platform" type="text" />
-                </label>
+            <div class="grid gap-5 sm:grid-cols-[0.45fr_0.55fr]">
+              <label class="space-y-2 text-sm text-paper" for="other-label">
+                <span>Other platform label</span>
+                <input id="other-label" name="otherLabel" placeholder="Other platform" type="text" />
+              </label>
 
-                <label class="space-y-2 text-sm text-paper" for="other-url">
-                  <span>Other platform URL</span>
-                  <input id="other-url" name="otherUrl" placeholder="https://your-platform-url.invalid/..." type="url" />
-                </label>
-              </div>
+              <label class="space-y-2 text-sm text-paper" for="other-url">
+                <span>Other platform URL</span>
+                <input id="other-url" name="otherUrl" placeholder="https://your-platform-url.invalid/..." type="url" />
+              </label>
             </div>
           </section>
 
@@ -678,9 +762,11 @@ import { entryAiPrompt } from '../data/entryAiPrompt';
 </section>
 
 <script id="entry-ai-prompt-config" type="application/json" set:html={JSON.stringify(entryAiPrompt)}></script>
+<script id="entry-seed-data" type="application/json" set:html={seedData}></script>
 
 <script is:inline>
   const form = document.getElementById('content-entry-form');
+  const submitButton = form.querySelector('button[type="submit"]');
   const statusElement = document.getElementById('entry-status');
   const submitStatusElement = document.getElementById('entry-submit-status');
   const imageOutput = document.getElementById('image-output');
@@ -688,8 +774,14 @@ import { entryAiPrompt } from '../data/entryAiPrompt';
   const externalLinksOutput = document.getElementById('external-links-output');
   const copyButtons = Array.from(document.querySelectorAll('[data-copy-target]'));
   const downloadButton = document.querySelector('[data-download-all]');
+  const seedDataElement = document.getElementById('entry-seed-data');
 
   const fileInput = document.getElementById('image-file');
+  const editImageSelect = document.getElementById('edit-image-select');
+  const editImageMeta = document.getElementById('edit-image-meta');
+  const modeFileLabel = document.getElementById('image-file-label');
+  const tabButtons = Array.from(document.querySelectorAll('[data-entry-tab]'));
+  const entryPanels = Array.from(document.querySelectorAll('[data-entry-panel]'));
   const fileMeta = document.getElementById('image-file-meta');
   const previewWrap = document.getElementById('image-preview-wrap');
   const previewImage = document.getElementById('image-preview');
@@ -730,33 +822,70 @@ import { entryAiPrompt } from '../data/entryAiPrompt';
   const printAvailableCheckbox = document.getElementById('image-print-available');
   const productFieldset = document.getElementById('product-fields');
   const imageEntrySection = document.getElementById('image-entry-section');
+  const sharedRouteCheckboxes = Array.from(document.querySelectorAll('input[name=\"routeKey\"]'));
 
-  const platformFields = [
+  const routePlatformFields = [
     {
       field: 'fineArtAmericaUrl',
       label: 'Fine Art America',
       platform: 'fine-art-america',
+      sharedKey: 'fineArtAmerica',
       suffix: 'FineArtAmerica',
     },
     {
       field: 'etsyUrl',
       label: 'Etsy',
       platform: 'etsy',
+      sharedKey: 'etsy',
       suffix: 'Etsy',
     },
     {
       field: 'shopifyUrl',
       label: 'Shopify',
       platform: 'shopify',
+      sharedKey: 'shopify',
       suffix: 'Shopify',
     },
     {
       field: 'pixiesetUrl',
       label: 'Pixieset',
       platform: 'pixieset',
+      sharedKey: 'pixieset',
       suffix: 'Pixieset',
     },
   ];
+  const routePlatformBySharedKey = new Map(routePlatformFields.map((entry) => [entry.sharedKey, entry]));
+  const routePlatformBySuffix = new Map(routePlatformFields.map((entry) => [entry.suffix, entry]));
+  const routeFieldIdBySharedKey = new Map([
+    ['fineArtAmerica', 'fine-art-america-url'],
+    ['etsy', 'etsy-url'],
+    ['shopify', 'shopify-url'],
+    ['pixieset', 'pixieset-url'],
+  ]);
+
+  const seedData = (() => {
+    try {
+      return JSON.parse(seedDataElement?.textContent || '{}');
+    } catch (error) {
+      return {};
+    }
+  })();
+
+  const seedImages = Array.isArray(seedData.images) ? seedData.images : [];
+  const seedProducts = Array.isArray(seedData.products) ? seedData.products : [];
+  const seedExternalLinks = seedData.externalLinks && typeof seedData.externalLinks === 'object' ? seedData.externalLinks : {};
+  const seedImageBySlug = new Map(seedImages.map((image) => [image?.slug, image || {}]));
+  const seedProductBySlug = new Map(seedProducts.map((product) => [product?.slug, product || {}]));
+  const seedProductByImageSlug = new Map(seedProducts.map((product) => [product?.imageSlug, product || {}]));
+  const sharedPlatformKeys = new Set(routePlatformFields.map((entry) => entry.sharedKey));
+  const knownDirectSuffixes = routePlatformFields.map((entry) => entry.suffix).concat(['Other']);
+
+  let currentMode = 'file-import';
+  let selectedOriginalImageSlug = '';
+  let selectedOriginalProductSlug = '';
+  let selectedImageRecord = null;
+  let selectedProductRecord = null;
+  let selectedImageFileMode = 'file-import';
 
   const formatPresets = ['8 x 10', '11 x 14', '12 x 18', '16 x 20', '16 x 24', '20 x 30', '24 x 36'];
   const imageCategories = ['portrait', 'legacy', 'musician', 'print', 'personal'];
@@ -866,6 +995,515 @@ import { entryAiPrompt } from '../data/entryAiPrompt';
   let activeModelPresets = [];
   let discoveredOllamaModels = [];
   let latestAiReviewInputContext = '';
+
+  function getDirectKeySuffixes() {
+    return [...knownDirectSuffixes];
+  }
+
+  function getDirectLinksForImage(imageSlug) {
+    const imageBase = getImageBaseFromSlug(imageSlug || '');
+    return getDirectKeySuffixes().map((suffix) => `${imageBase}${suffix}`);
+  }
+
+  function isImageDirectKeyForBase(key, imageSlug) {
+    return getDirectKeySuffixes().some((suffix) => key === `${getImageBaseFromSlug(imageSlug || '')}${suffix}`);
+  }
+
+  function getImageBaseFromSlug(imageSlug) {
+    return slugToCamel(imageSlug || 'image');
+  }
+
+  function buildDirectKey(imageSlug, suffix) {
+    return `${getImageBaseFromSlug(imageSlug)}${suffix}`;
+  }
+
+  function asMapKey(value) {
+    return String(value || '').trim();
+  }
+
+  function escapeRegExp(value) {
+    return asMapKey(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
+  function getDirectPlatformForRouteKey(key, imageSlug) {
+    const imageBase = getImageBaseFromSlug(imageSlug || '');
+    if (!imageBase || !key.startsWith(imageBase)) {
+      return 'other';
+    }
+
+    const suffix = key.slice(imageBase.length);
+    if (!suffix) {
+      return 'other';
+    }
+
+    const directField = routePlatformBySuffix.get(suffix);
+    return directField?.sharedKey || 'other';
+  }
+
+  function getActiveMode() {
+    return currentMode === 'edit-gallery' ? 'edit-gallery' : 'file-import';
+  }
+
+  function normalizeRecordValue(value) {
+    return value && typeof value === 'object' ? value : null;
+  }
+
+  function clearInputValue(targetId) {
+    const target = document.getElementById(targetId);
+    if (!target) {
+      return;
+    }
+
+    if (target.type === 'checkbox') {
+      target.checked = false;
+      return;
+    }
+
+    target.value = '';
+  }
+
+  function clearImageModeState(resetMode = false) {
+    if (resetMode) {
+      selectedOriginalImageSlug = '';
+      selectedOriginalProductSlug = '';
+      selectedImageRecord = null;
+      selectedProductRecord = null;
+      if (editImageSelect) {
+        editImageSelect.value = '';
+      }
+      if (editImageMeta) {
+        editImageMeta.textContent = 'Select a current gallery image to pre-fill image and product fields.';
+      }
+    }
+
+    selectedImageFile = null;
+    fileInput.value = '';
+    updateFileMeta();
+    updatePreviewImage();
+  }
+
+  function getEffectiveCreateProductState() {
+    return (
+      Boolean(form?.querySelector('input[name=\"createProduct\"]')?.checked) ||
+      (currentMode === 'edit-gallery' &&
+        Boolean(
+          selectedProductRecord ||
+            selectedOriginalProductSlug ||
+            (selectedImageRecord?.productSlug && selectedOriginalImageSlug),
+        ))
+    );
+  }
+
+  function getEditModeProductRecord() {
+    if (currentMode !== 'edit-gallery') {
+      return null;
+    }
+
+    if (selectedImageRecord) {
+      return getSeedProductRecord(selectedImageRecord.slug, selectedImageRecord.productSlug) || selectedProductRecord;
+    }
+
+    return selectedProductRecord;
+  }
+
+  function getCurrentImageRecord() {
+    if (selectedOriginalImageSlug) {
+      return seedImageBySlug.get(selectedOriginalImageSlug) || selectedImageRecord || null;
+    }
+
+    return selectedImageRecord;
+  }
+
+  function getEditSelectionProductRecord() {
+    if (selectedOriginalProductSlug && seedProductBySlug.has(selectedOriginalProductSlug)) {
+      return seedProductBySlug.get(selectedOriginalProductSlug) || null;
+    }
+
+    if (!selectedOriginalImageSlug) {
+      return null;
+    }
+
+    return seedProductByImageSlug.get(selectedOriginalImageSlug) || null;
+  }
+
+  function clearEditFormFields() {
+    setValue('image-title', '');
+    setValue('image-slug', '');
+    setValue('image-src', '');
+    setValue('image-category', 'portrait');
+    setValue('image-tags', '');
+    setValue('image-alt', '');
+    setValue('image-hook', '');
+    setValue('image-story', '');
+    setValue('image-year', '');
+    setValue('image-location', '');
+    setValue('image-medium', '');
+    setValue('image-best-format', '');
+    setValue('image-service-cta', '');
+
+    const notSetOrientation = form.querySelector('input[name=\"imageOrientation\"][value=\"\"]');
+    if (notSetOrientation) {
+      notSetOrientation.checked = true;
+    }
+
+    const featuredInput = document.getElementById('image-featured');
+    if (featuredInput) {
+      featuredInput.checked = false;
+    }
+
+    printAvailableCheckbox.checked = false;
+    setValue('image-print-available', false);
+    updateProductSectionFromRecord(null);
+    clearSharedRouteKeysInForm();
+    clearInputValue('fine-art-america-url');
+    clearInputValue('etsy-url');
+    clearInputValue('shopify-url');
+    clearInputValue('pixieset-url');
+    clearInputValue('other-label');
+    clearInputValue('other-url');
+  }
+
+  function setFormFromImageRecord(record) {
+    const sourceRecord = normalizeRecordValue(record);
+    if (!sourceRecord) {
+      return;
+    }
+
+    slugInput.dataset.dirty = '';
+    productSlugInput.dataset.dirty = '';
+    productTitleInput.dataset.dirty = '';
+
+    setValue('image-title', String(sourceRecord.title || '').trim());
+    setValue('image-slug', String(sourceRecord.slug || '').trim());
+    setValue('image-src', String(sourceRecord.imageSrc || '').trim());
+    setValue('image-category', String(sourceRecord.category || 'portrait').trim());
+    setValue('image-tags', Array.isArray(sourceRecord.tags) ? sourceRecord.tags.join(', ') : '');
+    setValue('image-alt', String(sourceRecord.alt || '').trim());
+    setValue('image-hook', String(sourceRecord.hook || '').trim());
+    setValue('image-story', String(sourceRecord.story || '').trim());
+    setValue('image-year', String(sourceRecord.year || '').trim());
+    setValue('image-location', String(sourceRecord.location || '').trim());
+    setValue('image-medium', String(sourceRecord.medium || '').trim());
+    setValue('image-best-format', String(sourceRecord.bestFormat || '').trim());
+    setValue('image-service-cta', String(sourceRecord.serviceCTA || '').trim());
+
+    const orientation = String(sourceRecord.orientation || '');
+    const orientationInput = form.querySelector(`input[name=\"imageOrientation\"][value=\"${orientation}\"]`);
+    if (orientationInput) {
+      orientationInput.checked = true;
+    } else {
+      const notSet = form.querySelector('input[name=\"imageOrientation\"][value=\"\"]');
+      if (notSet) {
+        notSet.checked = true;
+      }
+    }
+
+    printAvailableCheckbox.checked = Boolean(sourceRecord.printAvailable);
+    const featuredInput = document.getElementById('image-featured');
+    if (featuredInput) {
+      featuredInput.checked = Boolean(sourceRecord.featured);
+    }
+
+    updateProductSectionFromRecord(currentMode === 'edit-gallery' ? getSeedProductRecord(sourceRecord.slug, sourceRecord.productSlug) : null);
+  }
+
+  function getFormattedProductFromRecord(productRecord) {
+    const sourceRecord = normalizeRecordValue(productRecord);
+    if (!sourceRecord) {
+      return null;
+    }
+
+    return {
+      slug: String(sourceRecord.slug || ''),
+      imageSlug: String(sourceRecord.imageSlug || ''),
+      title: String(sourceRecord.title || ''),
+      shortDescription: String(sourceRecord.shortDescription || ''),
+      availableFormats: Array.isArray(sourceRecord.availableFormats) ? sourceRecord.availableFormats : [],
+      routeKeys: Array.isArray(sourceRecord.routeKeys) ? sourceRecord.routeKeys : [],
+      inquiryAllowed: Boolean(sourceRecord.inquiryAllowed),
+    };
+  }
+
+  function updateProductSectionFromRecord(productRecord) {
+    const product = getFormattedProductFromRecord(productRecord);
+    selectedProductRecord = product || null;
+    selectedOriginalProductSlug = product?.slug || '';
+
+    const directUrlInputIds = [
+      'fine-art-america-url',
+      'etsy-url',
+      'shopify-url',
+      'pixieset-url',
+    ];
+    for (const directInputId of directUrlInputIds) {
+      clearInputValue(directInputId);
+    }
+    clearInputValue('other-label');
+    clearInputValue('other-url');
+
+    const currentImageSlug = selectedOriginalImageSlug || selectedImageRecord?.slug || product?.imageSlug || '';
+
+    const productFormatCheckboxes = Array.from(form.querySelectorAll('input[name=\"productFormatPreset\"]'));
+
+    if (!product) {
+      createProductCheckbox.checked = false;
+      productTitleInput.value = '';
+      productSlugInput.value = '';
+      clearInputValue('product-description');
+      clearInputValue('product-custom-sizes');
+      for (const checkbox of productFormatCheckboxes) {
+        checkbox.checked = false;
+      }
+      clearInputValue('product-inquiry-allowed');
+      return;
+    }
+
+    createProductCheckbox.checked = true;
+    setValue('product-title', product.title);
+    setValue('product-slug', product.slug);
+    setValue('product-description', product.shortDescription);
+    for (const checkbox of productFormatCheckboxes) {
+      checkbox.checked = false;
+    }
+    for (const preset of product.availableFormats) {
+      const presetBox = form.querySelector(`input[name=\"productFormatPreset\"][value=\"${preset}\"]`);
+      if (presetBox) {
+        presetBox.checked = true;
+      }
+    }
+    const knownPresetSizes = new Set(['8 x 10', '11 x 14', '12 x 18', '16 x 20', '16 x 24', '20 x 30', '24 x 36']);
+    const customSizes = product.availableFormats.filter((format) => !knownPresetSizes.has(format));
+    setValue('product-custom-sizes', customSizes.join(', '));
+    setValue('product-inquiry-allowed', product.inquiryAllowed);
+    setSharedRouteKeysInForm(product.routeKeys);
+
+    const directKeys = Array.isArray(product.routeKeys)
+      ? product.routeKeys.filter((routeKey) =>
+          isImageDirectKeyForBase(routeKey, currentImageSlug),
+        )
+      : [];
+    let otherLabel = '';
+    let otherUrl = '';
+
+    for (const routeKey of directKeys) {
+      const routeEntry = normalizeRecordValue(seedExternalLinks[routeKey]) || {};
+      const url = String(routeEntry.url || '').trim();
+      const platformKey = getDirectPlatformForRouteKey(routeKey, currentImageSlug);
+      if (platformKey !== 'other') {
+        const fieldId = routeFieldIdBySharedKey.get(platformKey);
+        if (fieldId && url) {
+          setValue(fieldId, url);
+        }
+        continue;
+      }
+
+      if (!url && !routeEntry.label) {
+        continue;
+      }
+
+      if (!otherLabel && routeEntry.label) {
+        otherLabel = String(routeEntry.label).trim();
+      }
+      if (!otherUrl && routeEntry.url) {
+        otherUrl = String(routeEntry.url).trim();
+      }
+    }
+
+    if (otherLabel) {
+      setValue('other-label', otherLabel);
+    }
+    if (otherUrl) {
+      setValue('other-url', otherUrl);
+    }
+
+    clearInputValue('product-slug');
+    if (product.slug) {
+      setValue('product-slug', product.slug);
+    }
+    setValue('product-title', product.title);
+  }
+
+  function getSeedProductRecord(imageSlug, productSlug) {
+    if (productSlug && seedProductBySlug.has(productSlug)) {
+      return seedProductBySlug.get(productSlug) || null;
+    }
+
+    if (imageSlug && selectedImageRecord?.slug === imageSlug) {
+      const productFromImage = seedProductByImageSlug.get(imageSlug);
+      if (productFromImage) {
+        return productFromImage;
+      }
+    }
+
+    if (selectedOriginalProductSlug) {
+      return seedProductBySlug.get(selectedOriginalProductSlug) || null;
+    }
+
+    if (imageSlug) {
+      return seedProductByImageSlug.get(imageSlug) || null;
+    }
+
+    return null;
+  }
+
+  function getSharedRouteKeys() {
+    return routePlatformFields.map((entry) => entry.sharedKey);
+  }
+
+  function refreshModeTabs(targetMode) {
+    currentMode = targetMode === 'edit-gallery' ? 'edit-gallery' : 'file-import';
+    selectedImageFileMode = currentMode;
+
+    const isEditMode = currentMode === 'edit-gallery';
+    const activeFileLabel = isEditMode ? 'Replace image file (optional)' : 'Choose image file';
+    if (modeFileLabel) {
+      modeFileLabel.textContent = activeFileLabel;
+    }
+
+    for (const button of tabButtons) {
+      const selected = button.getAttribute('data-entry-tab') === currentMode;
+      button.classList.toggle('bg-obsidian/70', selected);
+      button.classList.toggle('border-emerald-500/50', selected);
+      button.classList.toggle('bg-white/5', !selected);
+      button.setAttribute('aria-selected', selected ? 'true' : 'false');
+    }
+
+    for (const panel of entryPanels) {
+      const selected = panel.getAttribute('data-entry-panel') === currentMode;
+      panel.classList.toggle('hidden', !selected);
+    }
+
+    setStatus(
+      isEditMode
+        ? 'Edit gallery mode active. Select an existing image to pre-fill editable fields.'
+        : 'File import mode active. Use this form to add a new image.',
+      isEditMode ? 'warning' : 'success',
+      { reveal: true },
+    );
+
+    if (submitButton) {
+      submitButton.textContent = isEditMode ? 'Update Gallery Entry' : 'Add Locally';
+      submitButton.classList.toggle('bg-sage', isEditMode);
+      submitButton.classList.toggle('bg-ember', !isEditMode);
+      submitButton.classList.toggle('hover:bg-[#d48b63]', !isEditMode);
+      submitButton.classList.toggle('hover:bg-[#b5c7b7]', isEditMode);
+      if (!isEditMode) {
+        submitButton.classList.add('border-ember/70');
+        submitButton.classList.remove('border-sage/70');
+      } else {
+        submitButton.classList.add('border-sage/70');
+        submitButton.classList.remove('border-ember/70');
+      }
+    }
+
+    updateSupportMessage();
+    updateOutputs();
+  }
+
+  function populateEditGallerySelect() {
+    if (!editImageSelect) {
+      return;
+    }
+
+    const currentValue = editImageSelect.value;
+    editImageSelect.innerHTML = '<option value=\"\">Choose an image to edit</option>';
+
+    const sortedImages = [...seedImages]
+      .filter((image) => image?.slug && image?.title)
+      .sort((a, b) => String(a.title).localeCompare(String(b.title)));
+
+    for (const image of sortedImages) {
+      const option = document.createElement('option');
+      option.value = String(image.slug);
+      option.textContent = `${String(image.title)} (${String(image.slug)})`;
+      editImageSelect.append(option);
+    }
+
+    if (currentMode === 'edit-gallery' && seedImageBySlug.has(currentValue)) {
+      editImageSelect.value = currentValue;
+    }
+  }
+
+  function applyEditImageSelection() {
+    if (!editImageSelect) {
+      return;
+    }
+
+    const selectedImageSlug = String(editImageSelect.value || '').trim();
+    if (!selectedImageSlug) {
+      clearImageModeState();
+      selectedOriginalImageSlug = '';
+      selectedImageRecord = null;
+      selectedProductRecord = null;
+      selectedOriginalProductSlug = '';
+      selectedImageFile = null;
+      selectedImageFileMode = currentMode;
+      if (editImageMeta) {
+        editImageMeta.textContent = 'Select a current gallery image to pre-fill image and product fields.';
+      }
+      setValue('image-slug', '');
+      setValue('image-title', '');
+      setValue('image-src', '');
+      clearEditFormFields();
+      updateFileMeta();
+      updatePreviewImage();
+      return;
+    }
+
+    const imageRecord = normalizeRecordValue(seedImageBySlug.get(selectedImageSlug));
+    if (!imageRecord) {
+      setStatus('Could not load the selected image from seed data. Refresh the page and try again.', 'error', { reveal: true });
+      return;
+    }
+
+    selectedOriginalImageSlug = selectedImageSlug;
+    selectedImageRecord = imageRecord;
+    selectedOriginalProductSlug = '';
+    selectedImageFile = null;
+    selectedImageFileMode = currentMode;
+    setFormFromImageRecord(imageRecord);
+    setValue('image-title', String(imageRecord.title || '').trim());
+    updateOutputs();
+    updateFileMeta();
+    updatePreviewImage();
+    if (imageRecord.imageSrc) {
+      editImageMeta.textContent = `Editing ${selectedImageSlug}. Path: ${imageRecord.imageSrc}`;
+    }
+  }
+
+  function setValue(targetId, value) {
+    const target = document.getElementById(targetId);
+    if (!target) {
+      return;
+    }
+
+    if (target.type === 'checkbox') {
+      target.checked = Boolean(value);
+    } else {
+      target.value = value;
+    }
+    target.dispatchEvent(new Event('input', { bubbles: true }));
+    target.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+
+  function getSharedRouteKeysFromForm() {
+    return sharedRouteCheckboxes
+      .filter((checkbox) => checkbox.checked && sharedPlatformKeys.has(checkbox.value))
+      .map((checkbox) => checkbox.value);
+  }
+
+  function setSharedRouteKeysInForm(routeKeys) {
+    const sharedKeys = new Set(routeKeys.filter((key) => sharedPlatformKeys.has(key)));
+    for (const checkbox of sharedRouteCheckboxes) {
+      checkbox.checked = sharedKeys.has(checkbox.value);
+    }
+  }
+
+  function clearSharedRouteKeysInForm() {
+    for (const checkbox of sharedRouteCheckboxes) {
+      checkbox.checked = false;
+    }
+  }
 
   function slugify(value) {
     return value
@@ -1473,12 +2111,17 @@ import { entryAiPrompt } from '../data/entryAiPrompt';
   }
 
   function updateImportPathPreview() {
+    const workingMode = getActiveMode();
     const imageSlug = getResolvedImageSlug();
     const extension = getFileExtension(selectedImageFile);
     const segments = sanitizeSubfolder(subfolderInput.value.trim());
 
     if (!selectedImageFile) {
-      importPathPreview.textContent = 'Choose a local image file to preview the imported path.';
+      if (workingMode === 'edit-gallery' && selectedImageRecord?.imageSrc) {
+        importPathPreview.textContent = `Current image path: ${selectedImageRecord.imageSrc}`;
+      } else {
+        importPathPreview.textContent = 'Choose a local image file to preview the imported path.';
+      }
       return;
     }
 
@@ -1494,6 +2137,9 @@ import { entryAiPrompt } from '../data/entryAiPrompt';
     if (fsApiSupported) {
       supportMessage.innerHTML =
         'Local writes are available in this browser. Choose a local image and the repo root, then submit to update the gallery data.';
+      if (currentMode === 'edit-gallery') {
+        supportMessage.innerHTML = 'Replacement imports are optional. Pick a local file to replace the selected image file.';
+      }
       return;
     }
 
@@ -1511,8 +2157,12 @@ import { entryAiPrompt } from '../data/entryAiPrompt';
   }
 
   function updateFileMeta() {
+    const workingMode = getActiveMode();
     if (!selectedImageFile) {
-      fileMeta.textContent = 'No image file selected yet.';
+      fileMeta.textContent =
+        workingMode === 'edit-gallery'
+          ? 'No replacement file selected yet. AI can still review from selected image path.'
+          : 'No image file selected yet.';
       previewWrap.classList.add('hidden');
       previewImage.removeAttribute('src');
       return;
@@ -1530,6 +2180,12 @@ import { entryAiPrompt } from '../data/entryAiPrompt';
     }
 
     if (!selectedImageFile) {
+      if (currentMode === 'edit-gallery' && selectedImageRecord?.imageSrc) {
+        previewImage.src = selectedImageRecord.imageSrc;
+        previewWrap.classList.remove('hidden');
+        return;
+      }
+
       previewWrap.classList.add('hidden');
       previewImage.removeAttribute('src');
       return;
@@ -1556,7 +2212,10 @@ import { entryAiPrompt } from '../data/entryAiPrompt';
   }
 
   function updateProductFieldsState() {
-    const enabled = createProductCheckbox.checked;
+    const enabled = getEffectiveCreateProductState();
+    if (enabled && currentMode === 'edit-gallery' && (selectedProductRecord || selectedOriginalProductSlug)) {
+      createProductCheckbox.checked = true;
+    }
     productFieldset.disabled = !enabled;
     productFieldset.classList.toggle('opacity-60', !enabled);
 
@@ -1565,18 +2224,18 @@ import { entryAiPrompt } from '../data/entryAiPrompt';
     }
   }
 
-  function buildExternalEntries(imageSlug, formData) {
-    const baseKey = slugToCamel(imageSlug || 'image');
+  function buildDirectEntries(imageSlug, formData) {
+    const baseKey = getImageBaseFromSlug(imageSlug || 'image');
     const entries = [];
 
-    for (const platformField of platformFields) {
+    for (const platformField of routePlatformFields) {
       const url = String(formData.get(platformField.field) || '').trim();
       if (!url) {
         continue;
       }
 
       entries.push({
-        key: `${baseKey}${platformField.suffix}`,
+        key: buildDirectKey(imageSlug, platformField.suffix),
         label: platformField.label,
         platform: platformField.platform,
         url,
@@ -1587,7 +2246,7 @@ import { entryAiPrompt } from '../data/entryAiPrompt';
     const otherUrl = String(formData.get('otherUrl') || '').trim();
     if (otherLabel && otherUrl) {
       entries.push({
-        key: `${baseKey}Other`,
+        key: buildDirectKey(imageSlug, 'Other'),
         label: otherLabel,
         platform: 'other',
         url: otherUrl,
@@ -1618,7 +2277,7 @@ import { entryAiPrompt } from '../data/entryAiPrompt';
   }
 
   function buildProductSnippet(formData, imageSlug, routeKeys) {
-    const createProduct = Boolean(formData.get('createProduct'));
+    const createProduct = getEffectiveCreateProductState();
     if (!createProduct) {
       return '// Product entry not enabled.';
     }
@@ -1654,7 +2313,7 @@ import { entryAiPrompt } from '../data/entryAiPrompt';
     const location = String(formData.get('imageLocation') || '').trim();
     const medium = String(formData.get('imageMedium') || '').trim();
     const bestFormat = String(formData.get('imageBestFormat') || '').trim();
-    const createProduct = Boolean(formData.get('createProduct'));
+    const createProduct = getEffectiveCreateProductState();
     const featured = Boolean(formData.get('imageFeatured'));
     const printAvailable = Boolean(formData.get('imagePrintAvailable')) || createProduct;
     const serviceCta = String(formData.get('imageServiceCta') || '').trim();
@@ -1686,6 +2345,13 @@ import { entryAiPrompt } from '../data/entryAiPrompt';
     return lines.join('\n');
   }
 
+  function getCurrentModeRouteKeys(formData, imageSlug) {
+    const directEntries = buildDirectEntries(imageSlug, formData);
+    const directKeys = directEntries.map((entry) => entry.key);
+    const sharedKeys = getSharedRouteKeysFromForm();
+    return uniqueList([...sharedKeys, ...directKeys]);
+  }
+
   function updateOutputs() {
     syncDefaults();
     updateProductFieldsState();
@@ -1694,10 +2360,10 @@ import { entryAiPrompt } from '../data/entryAiPrompt';
     const formData = new FormData(form);
     const imageSlug = getResolvedImageSlug();
     const productSlugValue = getResolvedProductSlug();
-    const externalEntries = buildExternalEntries(imageSlug, formData);
-    const routeKeys = externalEntries.map((entry) => entry.key);
+    const directEntries = buildDirectEntries(imageSlug, formData);
+    const routeKeys = getCurrentModeRouteKeys(formData, imageSlug);
 
-    externalLinksOutput.value = buildExternalLinksSnippet(externalEntries);
+    externalLinksOutput.value = buildExternalLinksSnippet(directEntries);
     productOutput.value = buildProductSnippet(formData, imageSlug, routeKeys);
     imageOutput.value = buildImageSnippet(formData, imageSlug, productSlugValue, routeKeys);
   }
@@ -1829,6 +2495,39 @@ import { entryAiPrompt } from '../data/entryAiPrompt';
         bitmap.close();
       }
     }
+  }
+
+  async function fetchReviewImageFromUrl(imageUrl, fallbackName) {
+    const response = await fetch(imageUrl);
+    if (!response.ok) {
+      throw new Error(`Could not load ${imageUrl} for AI review.`);
+    }
+
+    const blob = await response.blob();
+    const normalizedName = (fallbackName || 'image').replace(/[^a-z0-9.-]+/gi, '-');
+    const extensionFromUrl = imageUrl.split('?')[0].split('#')[0].match(/\.([a-z0-9]+)$/i)?.[1];
+    const extension = extensionFromUrl || inferExtensionFromType(blob.type);
+    const fileName = extension ? `${normalizedName}.${extension}` : normalizedName;
+
+    return new File([blob], fileName, { type: blob.type || 'image/jpeg' });
+  }
+
+  async function resolveReviewFile() {
+    if (selectedImageFile) {
+      return selectedImageFile;
+    }
+
+    if (currentMode !== 'edit-gallery') {
+      return null;
+    }
+
+    const imageRecord = getCurrentImageRecord();
+    const imagePath = String(imageRecord?.imageSrc || imageSrcInput.value || '').trim();
+    if (!imagePath) {
+      return null;
+    }
+
+    return fetchReviewImageFromUrl(imagePath, imageRecord?.slug || getResolvedImageSlug() || 'image');
   }
 
   function parseAiReviewResponse(value) {
@@ -1993,8 +2692,14 @@ import { entryAiPrompt } from '../data/entryAiPrompt';
   async function runAiReview() {
     clearAiStatus();
 
-    if (!selectedImageFile) {
-      setAiStatus('Choose a local image file before running AI review.', 'error');
+    const reviewSourceFile = await resolveReviewFile();
+    if (!reviewSourceFile) {
+      setAiStatus(
+        currentMode === 'edit-gallery'
+          ? 'Choose a local image file to replace this entry, or ensure this image has a valid public path before running AI review.'
+          : 'Choose a local image file before running AI review.',
+        'error',
+      );
       return;
     }
 
@@ -2037,7 +2742,7 @@ import { entryAiPrompt } from '../data/entryAiPrompt';
 
     let requestTimeoutId = null;
     try {
-      const reviewImage = await readImageForAiReview(selectedImageFile);
+      const reviewImage = await readImageForAiReview(reviewSourceFile);
       latestAiReviewInputContext = reviewImage.context;
       const { controller, timeoutId } = timeoutSignal(requestTimeoutMs);
       requestTimeoutId = timeoutId;
