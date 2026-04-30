@@ -1,7 +1,7 @@
 # PROJECT_BRIEF.md
 
 ## Project Name
-Joshua Photography MVP
+Joshua Hoffman Studio MVP
 
 ## Purpose
 Build the first launchable MVP of a photography website: a one-domain visual gallery and sales router that helps visitors view emotionally strong photography, inquire about portrait/session work, and click through to trusted external checkout platforms for prints/products.
@@ -292,11 +292,9 @@ export type ServiceItem = {
 ## Placeholder Content Rules
 Use realistic placeholders, not generic lorem ipsum.
 
-Acceptable placeholders:
+Current launch placeholders:
 
-- `Joshua [Last Name]`
 - `[Service Area]`
-- `[email@example.com]`
 - `[Instagram URL]`
 - `[External print URL]`
 
@@ -667,4 +665,3 @@ This MVP is done when Joshua can send someone his domain and that person can:
 4. Inquire about a portrait/session.
 5. Click out to buy or explore a print on a trusted platform.
 6. Generate useful analytics data through clicks and form submissions.
-

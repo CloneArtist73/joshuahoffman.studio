@@ -1,0 +1,51 @@
+{
+  "name": "inmotion-ftp-upload",
+  "version": "0.1.0",
+  "description": "Uploads the built Astro site to InMotion hosting over FTP.",
+  "author": {
+    "name": "Joshuahoffman.studio team",
+    "email": "support@joshuahoffman.studio",
+    "url": "https://joshuahoffman.studio"
+  },
+  "homepage": "https://joshuahoffman.studio",
+  "repository": "https://github.com/joshuahoffmanstudio/joshuahoffman.studio",
+  "license": "MIT",
+  "keywords": [
+    "inmotion",
+    "ftp",
+    "astro",
+    "deployment"
+  ],
+  "skills": "./scripts/",
+  "hooks": "./hooks.json",
+  "mcpServers": "./.mcp.json",
+  "apps": "./.app.json",
+  "interface": {
+    "displayName": "InMotion FTP Upload",
+    "shortDescription": "Build and deploy the site to joshuahoffman.studio via FTP.",
+    "longDescription": "Runs a publish step and uploads your local dist folder to InMotion hosting using FTP.",
+    "developerName": "Joshuahoffman.studio",
+    "category": "Deployment",
+    "capabilities": [
+      "Write",
+      "Interactive",
+      "Automation"
+    ],
+    "websiteURL": "https://joshuahoffman.studio",
+    "privacyPolicyURL": "https://joshuahoffman.studio",
+    "termsOfServiceURL": "https://joshuahoffman.studio",
+    "defaultPrompt": [
+      "Deploy the latest build to FTP with the InMotion plugin.",
+      "Run the upload script and report any files that failed to transfer.",
+      "Prepare a dry-run upload summary for the current dist directory."
+    ],
+    "brandColor": "#0F766E",
+    "composerIcon": "./assets/icon.png",
+    "logo": "./assets/logo.png",
+    "screenshots": [
+      "./assets/screenshot1.png",
+      "./assets/screenshot2.png",
+      "./assets/screenshot3.png"
+    ]
+  }
+}

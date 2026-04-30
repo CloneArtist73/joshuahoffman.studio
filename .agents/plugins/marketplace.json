@@ -1,0 +1,20 @@
+{
+  "name": "joshuahoffman-studio-plugins",
+  "interface": {
+    "displayName": "Joshuahoffman Studio Plugins"
+  },
+  "plugins": [
+    {
+      "name": "inmotion-ftp-upload",
+      "source": {
+        "source": "local",
+        "path": "./plugins/inmotion-ftp-upload"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Deployment"
+    }
+  ]
+}

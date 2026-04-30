@@ -17,4 +17,4 @@ export const secondaryNavLinks = [
 
 export const socialLinks = [
   { href: siteConfig.instagramUrl, label: 'Instagram' },
-] as const;
+].filter((item) => Boolean(item.href));

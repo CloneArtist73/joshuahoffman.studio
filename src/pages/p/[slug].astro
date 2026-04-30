@@ -136,6 +136,11 @@ const fallbackCta =
               href={fallbackCta.href}
               label={fallbackCta.label}
               tracking={fallbackCta.tracking}
+              trackingMeta={{
+                'data-link-type': 'booking_inquiry',
+                'data-link-location': 'image_page_primary_cta',
+                'data-link-image': image.slug,
+              }}
             />
           )}
 
@@ -147,9 +152,23 @@ const fallbackCta =
               imageSlug: image.slug,
               intent: 'licensing',
             })}
+            trackingMeta={{
+              'data-link-type': 'booking_inquiry',
+              'data-link-location': 'image_page_license_cta',
+              'data-link-intent': 'licensing',
+              'data-link-image': image.slug,
+            }}
             variant="ghost"
           />
-          <CTAButton href="#related-work" label="View Related Work" variant="secondary" />
+          <CTAButton
+            href="#related-work"
+            label="View Related Work"
+            trackingMeta={{
+              'data-link-type': 'internal_navigation',
+              'data-link-location': 'image_page_primary_actions',
+            }}
+            variant="secondary"
+          />
         </div>
 
         {metadata.length > 0 && (
@@ -175,6 +194,13 @@ const fallbackCta =
       <div class="grid gap-6 lg:grid-cols-3">
         {relatedImages.map((relatedImage) => <ImageCard context="image_page_related" image={relatedImage} />)}
       </div>
+      {
+        relatedImages.length === 0 && (
+          <p class="max-w-copy text-sm text-steel">
+            Related imagery is being curated. Use this image as a starting point by exploring the full gallery.
+          </p>
+        )
+      }
     </div>
   </section>
 </Layout>

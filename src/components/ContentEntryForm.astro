@@ -1,0 +1,2565 @@
+---
+import { entryAiPrompt } from '../data/entryAiPrompt';
+---
+
+<section class="section-block pt-10">
+  <div class="shell grid gap-8 xl:grid-cols-[1.05fr_0.95fr]">
+    <div class="space-y-8">
+      <div class="space-y-4">
+        <span class="eyebrow">Local helper</span>
+        <h1 class="headline max-w-4xl">Entry form for new image, product, and outbound URL data.</h1>
+        <p class="max-w-copy text-base text-steel sm:text-lg">
+          This page stays local-only. Submit can copy a selected image into <code>public/images</code>
+          and add the local data entries used by the gallery before you push the site.
+        </p>
+      </div>
+
+      <div class="surface p-6 sm:p-8">
+        <form class="space-y-8" id="content-entry-form" novalidate>
+          <div
+            aria-live="polite"
+            class="hidden rounded-2xl border px-4 py-3 text-sm"
+            id="entry-status"
+            role="status"
+          ></div>
+
+          <section class="space-y-5">
+            <div class="space-y-2">
+              <h2 class="text-2xl">File import</h2>
+              <p class="copy-muted">
+                Choose a local image file and your repo root. Submit copies the file into
+                <code>public/images</code> and writes the gallery data locally.
+              </p>
+            </div>
+
+            <div
+              class="rounded-2xl border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-sm text-sand"
+              id="file-import-support"
+            ></div>
+
+            <div class="grid gap-5 sm:grid-cols-2">
+              <label class="space-y-2 text-sm text-paper" for="image-file">
+                <span>Choose image file</span>
+                <input
+                  accept="image/*,.jpg,.jpeg,.png,.webp,.avif,.gif,.tif,.tiff"
+                  class="cursor-pointer file:mr-4 file:rounded-full file:border-0 file:bg-white/10 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-paper hover:file:bg-white/15"
+                  id="image-file"
+                  name="imageFile"
+                  type="file"
+                />
+                <span class="copy-muted block" id="image-file-meta">
+                  No image file selected yet.
+                </span>
+              </label>
+
+              <div class="space-y-2 text-sm text-paper">
+                <span class="block">Choose project root</span>
+                <button
+                  class="panel-link inline-flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-paper hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-50"
+                  data-choose-images-folder
+                  type="button"
+                >
+                  Choose repo folder
+                </button>
+                <span class="copy-muted block" id="images-folder-meta">
+                  No project folder selected yet.
+                </span>
+              </div>
+            </div>
+
+            <div class="grid gap-5 sm:grid-cols-[0.75fr_1.25fr]">
+              <label class="space-y-2 text-sm text-paper" for="image-subfolder">
+                <span>Optional subfolder</span>
+                <input
+                  id="image-subfolder"
+                  name="imageSubfolder"
+                  placeholder="portraits/live"
+                  type="text"
+                />
+                <span class="copy-muted block">
+                  Use nested paths like <code>portraits</code> or <code>musicians/live</code>. Each part
+                  will be sanitized to kebab-case.
+                </span>
+              </label>
+
+              <div class="space-y-2 text-sm text-paper">
+                <span class="block">Final project path</span>
+                <div class="rounded-2xl border border-white/10 bg-obsidian/60 px-4 py-3">
+                  <code class="text-xs text-paper" id="import-path-preview">
+                    Choose a file and enter a title or slug to preview the imported path.
+                  </code>
+                </div>
+                <span class="copy-muted block">
+                  Imported files are renamed to the image slug and keep the original extension.
+                </span>
+              </div>
+            </div>
+
+            <div class="hidden overflow-hidden rounded-2xl border border-white/10 bg-white/5" id="image-preview-wrap">
+              <img
+                alt="Preview of the selected local image file."
+                class="max-h-96 w-full object-contain"
+                id="image-preview"
+                src=""
+              />
+            </div>
+          </section>
+
+          <section class="space-y-5 border-t border-white/10 pt-8" id="ai-review-panel">
+            <div class="space-y-2">
+              <span class="eyebrow">PromptForge local export</span>
+              <h2 class="text-2xl">AI image review</h2>
+              <p class="copy-muted">
+                Run a local vision model against the selected image, then review and apply suggested field
+                values yourself.
+              </p>
+            </div>
+
+            <div
+              aria-live="polite"
+              class="rounded-2xl border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-sm text-paper"
+              id="ai-review-local-warning"
+            >
+              AI review is intended for local use only. Controls appear on localhost, file URLs, or with
+              <code>?localAi=1</code>.
+            </div>
+
+            <div class="space-y-5" id="ai-review-controls">
+              <div class="grid gap-5 lg:grid-cols-[0.8fr_1fr_0.8fr]">
+                <label class="space-y-2 text-sm text-paper" for="ai-provider">
+                  <span>Local provider</span>
+                  <select id="ai-provider" name="aiProvider">
+                    <option value="ollama" selected={entryAiPrompt.providerDefault === 'ollama'}>Ollama image review</option>
+                    <option value="promptforge" selected={entryAiPrompt.providerDefault === 'promptforge'}>PromptForge launcher</option>
+                  </select>
+                  <span class="copy-muted block" id="ai-provider-help">
+                    Ollama is used for image scans when a vision model is installed and running.
+                  </span>
+                </label>
+
+                <label class="space-y-2 text-sm text-paper" for="ai-endpoint">
+                  <span>Endpoint</span>
+                  <input id="ai-endpoint" name="aiEndpoint" type="url" value={entryAiPrompt.endpointDefault} />
+                </label>
+
+                <label class="space-y-2 text-sm text-paper" for="ai-model">
+                  <span>Model name</span>
+                  <input id="ai-model" list="ai-model-options" name="aiModel" type="text" value={entryAiPrompt.modelDefault} />
+                  <select id="ai-model-preset" name="aiModelPreset">
+                    <option value="">Custom model name (typed)</option>
+                  </select>
+                  <datalist id="ai-model-options"></datalist>
+                  <span class="copy-muted block" id="ai-model-preset-hint">
+                    Choose a preset to fill the model name quickly, or type a custom value.
+                  </span>
+                  <span class="copy-muted block" id="ai-model-meta">
+                    Refresh models after the local provider is running.
+                  </span>
+                </label>
+              </div>
+
+              <div class="grid gap-5 lg:grid-cols-[0.85fr_1.15fr]">
+                <div class="space-y-3">
+                  <div class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-steel">
+                    <p class="text-paper">
+                      Prompt: {entryAiPrompt.source} · {entryAiPrompt.channel} · {entryAiPrompt.version}
+                    </p>
+                    <p class="mt-2">
+                      The model can suggest descriptive content, category, orientation, service routing, and
+                      print notes. Product fields stay opt-in. It should not guess year, location, storefront
+                      URLs, or identities.
+                    </p>
+                  </div>
+
+                  <div class="grid gap-3 sm:grid-cols-2">
+                    <button
+                      class="panel-link inline-flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-paper hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-50"
+                      data-start-ai
+                      type="button"
+                    >
+                      Start Provider
+                    </button>
+
+                    <button
+                      class="panel-link inline-flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-paper hover:bg-white/10"
+                      data-refresh-ai-models
+                      type="button"
+                    >
+                      Refresh Models
+                    </button>
+                  </div>
+
+                  <button
+                    class="panel-link inline-flex w-full items-center justify-center rounded-full border border-sage/70 bg-sage px-5 py-3 text-sm font-semibold text-obsidian hover:bg-[#b5c7b7] disabled:cursor-not-allowed disabled:opacity-50"
+                    data-run-ai-review
+                    type="button"
+                  >
+                    Review Selected Image
+                  </button>
+
+                  <div
+                    aria-live="polite"
+                    class="hidden rounded-2xl border px-4 py-3 text-sm"
+                    id="ai-review-status"
+                    role="status"
+                  ></div>
+                </div>
+
+                <details class="rounded-2xl border border-white/10 bg-white/5 p-4">
+                  <summary class="cursor-pointer text-sm font-semibold text-paper">
+                    Paste review JSON fallback
+                  </summary>
+                  <div class="mt-4 space-y-3">
+                    <textarea
+                      class="min-h-48"
+                      id="ai-review-json"
+                      placeholder='{"title":"...","category":"portrait","tags":["portrait"],"alt":"..."}'
+                    ></textarea>
+                    <button
+                      class="panel-link inline-flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-paper hover:bg-white/10"
+                      data-parse-ai-json
+                      type="button"
+                    >
+                      Load Pasted Suggestions
+                    </button>
+                  </div>
+                </details>
+              </div>
+
+              <div class="hidden space-y-4 rounded-2xl border border-white/10 bg-obsidian/60 p-4" id="ai-suggestions-wrap">
+                <div class="flex flex-wrap items-center justify-between gap-3">
+                  <div>
+                    <h3 class="text-xl">Review suggestions</h3>
+                    <p class="copy-muted">
+                      Checked values will be copied into the Image section. Product fields stay unchecked until
+                      you opt in.
+                    </p>
+                  </div>
+                  <button
+                    class="panel-link inline-flex items-center justify-center rounded-full border border-ember/70 bg-ember px-5 py-3 text-sm font-semibold text-obsidian hover:bg-[#d48b63]"
+                    data-apply-ai-suggestions
+                    type="button"
+                  >
+                    Apply Checked Fields
+                  </button>
+                </div>
+
+                <div class="grid gap-3" id="ai-suggestions-list"></div>
+                <div class="hidden rounded-2xl border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-sm text-paper" id="ai-cautions"></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="space-y-5 border-t border-white/10 pt-8" id="image-entry-section">
+            <div class="space-y-2">
+              <h2 class="text-2xl">Image</h2>
+              <p class="copy-muted">
+                These fields generate the object for <code>src/data/images.ts</code>.
+              </p>
+            </div>
+
+            <div class="grid gap-5 sm:grid-cols-2">
+              <label class="space-y-2 text-sm text-paper" for="image-title">
+                <span>Title</span>
+                <input id="image-title" name="imageTitle" placeholder="After the Show" type="text" />
+              </label>
+
+              <label class="space-y-2 text-sm text-paper" for="image-slug">
+                <span>Slug</span>
+                <input id="image-slug" name="imageSlug" placeholder="after-the-show" type="text" />
+                <span class="copy-muted block">
+                  Leave this blank and it will derive from the title.
+                </span>
+              </label>
+            </div>
+
+            <div class="grid gap-5 sm:grid-cols-2">
+              <label class="space-y-2 text-sm text-paper" for="image-category">
+                <span>Category</span>
+                <select id="image-category" name="imageCategory">
+                  <option value="portrait">Portrait</option>
+                  <option value="legacy">Legacy</option>
+                  <option value="musician">Musician</option>
+                  <option value="print">Print</option>
+                  <option value="personal">Personal</option>
+                </select>
+                <span class="copy-muted block">
+                  Choose the category used for gallery grouping and service routing.
+                </span>
+              </label>
+
+              <label class="space-y-2 text-sm text-paper" for="image-src">
+                <span>Public image path</span>
+                <input
+                  id="image-src"
+                  name="imageSrc"
+                  placeholder="/images/portraits/after-the-show.jpg"
+                  type="text"
+                />
+                <span class="copy-muted block">
+                  Submit fills this automatically after import. In fallback mode, enter it manually.
+                </span>
+              </label>
+            </div>
+
+            <label class="space-y-2 text-sm text-paper" for="image-tags">
+              <span>Tags</span>
+              <input
+                id="image-tags"
+                name="imageTags"
+                placeholder="musicians, performance, portrait"
+                type="text"
+              />
+              <span class="copy-muted block">
+                Use comma-separated tags for related work and future filtering.
+              </span>
+            </label>
+
+            <label class="space-y-2 text-sm text-paper" for="image-alt">
+              <span>Alt text</span>
+              <textarea
+                id="image-alt"
+                name="imageAlt"
+                placeholder="Low-lit portrait of a musician standing after a performance."
+              ></textarea>
+              <span class="copy-muted block">
+                Write the image description a screen reader should announce.
+              </span>
+            </label>
+
+            <label class="space-y-2 text-sm text-paper" for="image-hook">
+              <span>Hook</span>
+              <textarea
+                id="image-hook"
+                name="imageHook"
+                placeholder="A musician portrait made after the room emptied out."
+              ></textarea>
+              <span class="copy-muted block">
+                Keep this short. It shows up in cards and previews.
+              </span>
+            </label>
+
+            <label class="space-y-2 text-sm text-paper" for="image-story">
+              <span>Story</span>
+              <textarea
+                id="image-story"
+                name="imageStory"
+                placeholder="Two to four sentences of context for the image page."
+              ></textarea>
+              <span class="copy-muted block">
+                Use direct context for the individual image page.
+              </span>
+            </label>
+
+            <fieldset class="space-y-3">
+              <legend class="text-sm font-semibold text-paper">Orientation</legend>
+              <p class="copy-muted">
+                These labels map to the current schema values. Leave it unset for panorama or unusual custom crops.
+              </p>
+              <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                <label class="flex h-full cursor-pointer flex-col gap-2 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-paper">
+                  <input checked class="h-4 w-4" name="imageOrientation" type="radio" value="" />
+                  <span class="font-semibold">Not set</span>
+                  <span class="copy-muted text-xs">
+                    Use when the crop is unusual and you do not want to force a schema value.
+                  </span>
+                </label>
+
+                <label class="flex h-full cursor-pointer flex-col gap-2 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-paper">
+                  <input class="h-4 w-4" name="imageOrientation" type="radio" value="vertical" />
+                  <span class="font-semibold">Portrait</span>
+                  <span class="copy-muted text-xs">
+                    Stores <code>vertical</code> for tall, portrait-oriented images.
+                  </span>
+                </label>
+
+                <label class="flex h-full cursor-pointer flex-col gap-2 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-paper">
+                  <input class="h-4 w-4" name="imageOrientation" type="radio" value="horizontal" />
+                  <span class="font-semibold">Landscape</span>
+                  <span class="copy-muted text-xs">
+                    Stores <code>horizontal</code> for wide, landscape-oriented images.
+                  </span>
+                </label>
+
+                <label class="flex h-full cursor-pointer flex-col gap-2 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-paper">
+                  <input class="h-4 w-4" name="imageOrientation" type="radio" value="square" />
+                  <span class="font-semibold">Square</span>
+                  <span class="copy-muted text-xs">
+                    Stores <code>square</code> for 1:1 images and crops.
+                  </span>
+                </label>
+              </div>
+            </fieldset>
+
+            <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+              <label class="space-y-2 text-sm text-paper" for="image-year">
+                <span>Year</span>
+                <input id="image-year" name="imageYear" placeholder="2026" type="text" />
+              </label>
+
+              <label class="space-y-2 text-sm text-paper" for="image-location">
+                <span>Location</span>
+                <input id="image-location" name="imageLocation" placeholder="Nashville, Tennessee" type="text" />
+              </label>
+
+              <label class="space-y-2 text-sm text-paper" for="image-medium">
+                <span>Medium</span>
+                <input id="image-medium" name="imageMedium" placeholder="Digital photograph" type="text" />
+              </label>
+
+              <label class="space-y-2 text-sm text-paper" for="image-best-format">
+                <span>Best format note</span>
+                <input
+                  id="image-best-format"
+                  name="imageBestFormat"
+                  placeholder="Large horizontal print"
+                  type="text"
+                />
+              </label>
+            </div>
+
+            <div class="grid gap-5 sm:grid-cols-2">
+              <label class="space-y-2 text-sm text-paper" for="image-service-cta">
+                <span>Service CTA</span>
+                <select id="image-service-cta" name="imageServiceCta">
+                  <option value="">None</option>
+                  <option value="portrait">Portrait</option>
+                  <option value="legacy">Legacy</option>
+                  <option value="musician">Musician</option>
+                  <option value="custom">Custom</option>
+                </select>
+                <span class="copy-muted block">
+                  Choose the inquiry path that best matches this image.
+                </span>
+              </label>
+            </div>
+
+            <div class="grid gap-4 sm:grid-cols-3">
+              <label class="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-paper">
+                <input class="h-4 w-4" id="image-featured" name="imageFeatured" type="checkbox" />
+                Featured image
+              </label>
+
+              <label class="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-paper">
+                <input class="h-4 w-4" id="image-print-available" name="imagePrintAvailable" type="checkbox" />
+                Print available
+              </label>
+
+              <label class="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-paper">
+                <input class="h-4 w-4" id="create-product" name="createProduct" type="checkbox" />
+                Create product entry
+              </label>
+            </div>
+          </section>
+
+          <section class="space-y-5 border-t border-white/10 pt-8">
+            <div class="space-y-2">
+              <h2 class="text-2xl">Product</h2>
+              <p class="copy-muted">
+                Enable this only when the image should also appear in <code>src/data/products.ts</code>.
+              </p>
+            </div>
+
+            <fieldset class="space-y-5 opacity-60" disabled id="product-fields">
+              <div class="grid gap-5 sm:grid-cols-2">
+                <label class="space-y-2 text-sm text-paper" for="product-title">
+                  <span>Product title</span>
+                  <input id="product-title" name="productTitle" placeholder="After the Show" type="text" />
+                </label>
+
+                <label class="space-y-2 text-sm text-paper" for="product-slug">
+                  <span>Product slug</span>
+                  <input id="product-slug" name="productSlug" placeholder="after-the-show-print" type="text" />
+                </label>
+              </div>
+
+              <label class="space-y-2 text-sm text-paper" for="product-description">
+                <span>Short description</span>
+                <textarea
+                  id="product-description"
+                  name="productDescription"
+                  placeholder="A post-performance portrait built for buyers who want a print with residue and atmosphere."
+                ></textarea>
+              </label>
+
+              <fieldset class="space-y-3">
+                <legend class="text-sm font-semibold text-paper">Selectable print sizes</legend>
+                <p class="copy-muted">
+                  These choices populate the <code>availableFormats</code> array in <code>products.ts</code>.
+                </p>
+                <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                  {
+                    ['8 x 10', '11 x 14', '12 x 18', '16 x 20', '16 x 24', '20 x 30', '24 x 36'].map(
+                      (size) => (
+                        <label class="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-paper">
+                          <input class="h-4 w-4" name="productFormatPreset" type="checkbox" value={size} />
+                          {size}
+                        </label>
+                      ),
+                    )
+                  }
+                </div>
+              </fieldset>
+
+              <div class="grid gap-5 sm:grid-cols-2">
+                <label class="space-y-2 text-sm text-paper" for="product-custom-sizes">
+                  <span>Custom sizes</span>
+                  <input
+                    id="product-custom-sizes"
+                    name="productCustomSizes"
+                    placeholder="30 x 40, 40 x 60"
+                    type="text"
+                  />
+                  <span class="copy-muted block">
+                    Add any extra sizes as comma-separated values.
+                  </span>
+                </label>
+
+                <label class="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-paper sm:self-end">
+                  <input class="h-4 w-4" id="product-inquiry-allowed" name="productInquiryAllowed" type="checkbox" />
+                  Allow custom print inquiry
+                </label>
+              </div>
+            </fieldset>
+          </section>
+
+          <section class="space-y-5 border-t border-white/10 pt-8">
+            <div class="space-y-2">
+              <h2 class="text-2xl">Outbound links</h2>
+              <p class="copy-muted">
+                Add only the storefronts you want to use for this image or product.
+              </p>
+            </div>
+
+            <div class="grid gap-5">
+              <label class="space-y-2 text-sm text-paper" for="fine-art-america-url">
+                <span>Fine Art America URL</span>
+                <input
+                  id="fine-art-america-url"
+                  name="fineArtAmericaUrl"
+                  placeholder="https://fineartamerica.com/..."
+                  type="url"
+                />
+              </label>
+
+              <label class="space-y-2 text-sm text-paper" for="etsy-url">
+                <span>Etsy URL</span>
+                <input id="etsy-url" name="etsyUrl" placeholder="https://etsy.com/..." type="url" />
+              </label>
+
+              <label class="space-y-2 text-sm text-paper" for="shopify-url">
+                <span>Shopify URL</span>
+                <input id="shopify-url" name="shopifyUrl" placeholder="https://yourstore.com/..." type="url" />
+              </label>
+
+              <label class="space-y-2 text-sm text-paper" for="pixieset-url">
+                <span>Pixieset URL</span>
+                <input id="pixieset-url" name="pixiesetUrl" placeholder="https://gallery.pixieset.com/..." type="url" />
+              </label>
+
+              <div class="grid gap-5 sm:grid-cols-[0.45fr_0.55fr]">
+                <label class="space-y-2 text-sm text-paper" for="other-label">
+                  <span>Other platform label</span>
+                  <input id="other-label" name="otherLabel" placeholder="Other platform" type="text" />
+                </label>
+
+                <label class="space-y-2 text-sm text-paper" for="other-url">
+                  <span>Other platform URL</span>
+                  <input id="other-url" name="otherUrl" placeholder="https://your-platform-url.invalid/..." type="url" />
+                </label>
+              </div>
+            </div>
+          </section>
+
+          <div
+            aria-live="polite"
+            class="hidden rounded-2xl border px-4 py-3 text-sm"
+            id="entry-submit-status"
+            role="status"
+          ></div>
+
+          <div class="flex flex-col gap-4 border-t border-white/10 pt-8 sm:flex-row sm:items-center sm:justify-between">
+            <p class="max-w-copy text-sm text-steel">
+              Submit writes local files when the browser supports folder access. Snippets stay visible for
+              review and fallback.
+            </p>
+            <button
+              class="panel-link inline-flex items-center justify-center rounded-full border border-ember/70 bg-ember px-6 py-3 text-sm font-semibold text-obsidian shadow-soft hover:bg-[#d48b63]"
+              type="submit"
+            >
+              Add Locally
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="space-y-6 xl:sticky xl:top-24 xl:self-start">
+      <div class="surface p-6 sm:p-8">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <span class="eyebrow">Generated output</span>
+            <h2 class="mt-2 text-2xl">Generated local data.</h2>
+          </div>
+          <button
+            class="panel-link inline-flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-paper hover:bg-white/10"
+            data-download-all
+            type="button"
+          >
+            Download All
+          </button>
+        </div>
+
+        <div class="mt-6 rounded-2xl border border-white/10 bg-obsidian/60 p-4 text-sm text-steel">
+          <p>Submit writes these files when a repo root is selected. Use snippets as fallback:</p>
+          <ol class="mt-3 list-decimal space-y-2 pl-5">
+            <li><code>src/data/externalLinks.ts</code></li>
+            <li><code>src/data/products.ts</code></li>
+            <li><code>src/data/images.ts</code></li>
+          </ol>
+        </div>
+      </div>
+
+      <section class="surface p-6 sm:p-8">
+        <div class="flex items-center justify-between gap-3">
+          <h3 class="text-xl">External links snippet</h3>
+          <button
+            class="panel-link inline-flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold uppercase tracking-hush text-paper hover:bg-white/10"
+            data-copy-target="external-links-output"
+            type="button"
+          >
+            Copy
+          </button>
+        </div>
+        <textarea
+          class="mt-4 min-h-52 font-mono text-xs"
+          id="external-links-output"
+          readonly
+        ></textarea>
+      </section>
+
+      <section class="surface p-6 sm:p-8">
+        <div class="flex items-center justify-between gap-3">
+          <h3 class="text-xl">Product snippet</h3>
+          <button
+            class="panel-link inline-flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold uppercase tracking-hush text-paper hover:bg-white/10"
+            data-copy-target="product-output"
+            type="button"
+          >
+            Copy
+          </button>
+        </div>
+        <textarea
+          class="mt-4 min-h-52 font-mono text-xs"
+          id="product-output"
+          readonly
+        ></textarea>
+      </section>
+
+      <section class="surface p-6 sm:p-8">
+        <div class="flex items-center justify-between gap-3">
+          <h3 class="text-xl">Image snippet</h3>
+          <button
+            class="panel-link inline-flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold uppercase tracking-hush text-paper hover:bg-white/10"
+            data-copy-target="image-output"
+            type="button"
+          >
+            Copy
+          </button>
+        </div>
+        <textarea
+          class="mt-4 min-h-80 font-mono text-xs"
+          id="image-output"
+          readonly
+        ></textarea>
+      </section>
+    </div>
+  </div>
+</section>
+
+<script id="entry-ai-prompt-config" type="application/json" set:html={JSON.stringify(entryAiPrompt)}></script>
+
+<script is:inline>
+  const form = document.getElementById('content-entry-form');
+  const statusElement = document.getElementById('entry-status');
+  const submitStatusElement = document.getElementById('entry-submit-status');
+  const imageOutput = document.getElementById('image-output');
+  const productOutput = document.getElementById('product-output');
+  const externalLinksOutput = document.getElementById('external-links-output');
+  const copyButtons = Array.from(document.querySelectorAll('[data-copy-target]'));
+  const downloadButton = document.querySelector('[data-download-all]');
+
+  const fileInput = document.getElementById('image-file');
+  const fileMeta = document.getElementById('image-file-meta');
+  const previewWrap = document.getElementById('image-preview-wrap');
+  const previewImage = document.getElementById('image-preview');
+  const folderButton = document.querySelector('[data-choose-images-folder]');
+  const folderMeta = document.getElementById('images-folder-meta');
+  const supportMessage = document.getElementById('file-import-support');
+  const importPathPreview = document.getElementById('import-path-preview');
+  const aiPromptConfigElement = document.getElementById('entry-ai-prompt-config');
+  const aiReviewPanel = document.getElementById('ai-review-panel');
+  const aiReviewControls = document.getElementById('ai-review-controls');
+  const aiReviewLocalWarning = document.getElementById('ai-review-local-warning');
+  const aiProviderSelect = document.getElementById('ai-provider');
+  const aiProviderHelp = document.getElementById('ai-provider-help');
+  const aiEndpointInput = document.getElementById('ai-endpoint');
+  const aiModelInput = document.getElementById('ai-model');
+  const aiModelPresetSelect = document.getElementById('ai-model-preset');
+  const aiModelPresetHint = document.getElementById('ai-model-preset-hint');
+  const aiModelOptions = document.getElementById('ai-model-options');
+  const aiModelMeta = document.getElementById('ai-model-meta');
+  const aiStartButton = document.querySelector('[data-start-ai]');
+  const aiRefreshModelsButton = document.querySelector('[data-refresh-ai-models]');
+  const aiReviewButton = document.querySelector('[data-run-ai-review]');
+  const aiReviewStatus = document.getElementById('ai-review-status');
+  const aiJsonInput = document.getElementById('ai-review-json');
+  const aiParseJsonButton = document.querySelector('[data-parse-ai-json]');
+  const aiSuggestionsWrap = document.getElementById('ai-suggestions-wrap');
+  const aiSuggestionsList = document.getElementById('ai-suggestions-list');
+  const aiApplyButton = document.querySelector('[data-apply-ai-suggestions]');
+  const aiCautions = document.getElementById('ai-cautions');
+
+  const titleInput = document.getElementById('image-title');
+  const slugInput = document.getElementById('image-slug');
+  const imageSrcInput = document.getElementById('image-src');
+  const subfolderInput = document.getElementById('image-subfolder');
+  const productTitleInput = document.getElementById('product-title');
+  const productSlugInput = document.getElementById('product-slug');
+  const createProductCheckbox = document.getElementById('create-product');
+  const printAvailableCheckbox = document.getElementById('image-print-available');
+  const productFieldset = document.getElementById('product-fields');
+  const imageEntrySection = document.getElementById('image-entry-section');
+
+  const platformFields = [
+    {
+      field: 'fineArtAmericaUrl',
+      label: 'Fine Art America',
+      platform: 'fine-art-america',
+      suffix: 'FineArtAmerica',
+    },
+    {
+      field: 'etsyUrl',
+      label: 'Etsy',
+      platform: 'etsy',
+      suffix: 'Etsy',
+    },
+    {
+      field: 'shopifyUrl',
+      label: 'Shopify',
+      platform: 'shopify',
+      suffix: 'Shopify',
+    },
+    {
+      field: 'pixiesetUrl',
+      label: 'Pixieset',
+      platform: 'pixieset',
+      suffix: 'Pixieset',
+    },
+  ];
+
+  const formatPresets = ['8 x 10', '11 x 14', '12 x 18', '16 x 20', '16 x 24', '20 x 30', '24 x 36'];
+  const imageCategories = ['portrait', 'legacy', 'musician', 'print', 'personal'];
+  const orientations = ['vertical', 'horizontal', 'square'];
+  const serviceCtas = ['portrait', 'legacy', 'musician', 'custom'];
+  const aiReviewSchema = {
+    type: 'object',
+    properties: {
+      title: { type: 'string' },
+      category: { type: 'string', enum: imageCategories },
+      tags: { type: 'array', items: { type: 'string' } },
+      alt: { type: 'string' },
+      hook: { type: 'string' },
+      story: { type: 'string' },
+      orientation: { type: 'string', enum: orientations },
+      medium: { type: 'string' },
+      bestFormat: { type: 'string' },
+      serviceCTA: { type: 'string', enum: serviceCtas },
+      productShortDescription: { type: 'string' },
+      productFormats: { type: 'array', items: { type: 'string' } },
+      cautions: { type: 'array', items: { type: 'string' } },
+    },
+    required: ['title', 'category', 'tags', 'alt', 'hook', 'story', 'orientation', 'medium', 'bestFormat', 'serviceCTA', 'productShortDescription', 'productFormats', 'cautions'],
+  };
+  const aiPromptConfig = JSON.parse(aiPromptConfigElement?.textContent || '{}');
+  const aiRequestTimeoutMs = 90000;
+  const aiVisionRequestTimeoutMs = 240000;
+  const aiHealthTimeoutMs = 6000;
+  const aiReviewMaxDimension = 1600;
+  const aiReviewJpegQuality = 0.86;
+  const aiProviderConfig = {
+    ollama: {
+      endpoint: aiPromptConfig.ollamaEndpointDefault || aiPromptConfig.endpointDefault || 'http://localhost:11434',
+      help: 'Ollama is used for image scans when a vision model is installed and running.',
+      modelMeta: 'Refresh models after Ollama is running. Choose a vision-capable model.',
+      startLabel: 'Start Ollama (terminal)',
+      canStartFromBrowser: false,
+    },
+    promptforge: {
+      endpoint: aiPromptConfig.promptForgeEndpointDefault || 'http://127.0.0.1:5000',
+      help: 'PromptForge can launch its local text LLM. Image scanning needs a PromptForge image-review endpoint before this form can use it.',
+      modelMeta: 'Choose the PromptForge local LLM launch target. These are not image-review models.',
+      startLabel: 'Launch PromptForge LLM',
+      canStartFromBrowser: true,
+    },
+  };
+  const promptForgeLaunchModels = Array.isArray(aiPromptConfig.promptForgeLaunchModels)
+    ? aiPromptConfig.promptForgeLaunchModels
+    : [];
+  const ollamaModelPresets = Array.isArray(aiPromptConfig.ollamaModelPresets)
+    ? aiPromptConfig.ollamaModelPresets
+    : [
+        { label: 'Gemma 4 e4b (recommended)', value: 'gemma4:e4b', note: 'Balanced quality and speed. About 10 GB.' },
+        { label: 'Gemma 4 e2b (lighter)', value: 'gemma4:e2b', note: 'Lower resource option. About 7-8 GB.' },
+        { label: 'Gemma 4 26b (higher quality)', value: 'gemma4:26b', note: 'Higher quality, heavier runtime. About 18 GB.' },
+        { label: 'Gemma 4 31b (max quality)', value: 'gemma4:31b', note: 'Best quality, largest runtime. About 20 GB.' },
+        { label: 'Qwen 2.5 VL 7B (alternate)', value: 'qwen2.5vl:7b', note: 'Strong visual parsing, about 6 GB.' },
+      ];
+  const visionModelHints = [
+    'vision',
+    'vl',
+    'llava',
+    'bakllava',
+    'moondream',
+    'minicpm',
+    'qwen2vl',
+    'qwen2.5vl',
+    'gemma3',
+    'gemma4',
+    'llama3.2-vision',
+  ];
+  const aiSuggestionFields = [
+    { key: 'title', label: 'Title', targetId: 'image-title', type: 'text' },
+    { key: 'category', label: 'Category', targetId: 'image-category', type: 'select' },
+    { key: 'tags', label: 'Tags', targetId: 'image-tags', type: 'list' },
+    { key: 'alt', label: 'Alt text', targetId: 'image-alt', type: 'text' },
+    { key: 'hook', label: 'Hook', targetId: 'image-hook', type: 'text' },
+    { key: 'story', label: 'Story', targetId: 'image-story', type: 'text' },
+    { key: 'orientation', label: 'Orientation', targetName: 'imageOrientation', type: 'radio' },
+    { key: 'medium', label: 'Medium', targetId: 'image-medium', type: 'text' },
+    { key: 'bestFormat', label: 'Best format note', targetId: 'image-best-format', type: 'text' },
+    { key: 'serviceCTA', label: 'Service CTA', targetId: 'image-service-cta', type: 'select' },
+    {
+      key: 'productShortDescription',
+      label: 'Product description',
+      targetId: 'product-description',
+      type: 'productText',
+      defaultChecked: false,
+    },
+    {
+      key: 'productFormats',
+      label: 'Product formats',
+      targetId: 'product-custom-sizes',
+      type: 'productList',
+      defaultChecked: false,
+    },
+  ];
+
+  const fsApiSupported =
+    window.isSecureContext &&
+    'showDirectoryPicker' in window &&
+    'FileSystemDirectoryHandle' in window;
+
+  let selectedImageFile = null;
+  let selectedProjectDirectory = null;
+  let selectedPreviewUrl = '';
+  let activeModelPresets = [];
+  let discoveredOllamaModels = [];
+  let latestAiReviewInputContext = '';
+
+  function slugify(value) {
+    return value
+      .toLowerCase()
+      .trim()
+      .replace(/['"]/g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+  }
+
+  function slugToCamel(value) {
+    return value
+      .split('-')
+      .filter(Boolean)
+      .map((segment, index) =>
+        index === 0 ? segment : `${segment.charAt(0).toUpperCase()}${segment.slice(1)}`,
+      )
+      .join('');
+  }
+
+  function splitList(value) {
+    return value
+      .split(',')
+      .map((item) => item.trim())
+      .filter(Boolean);
+  }
+
+  function uniqueList(items) {
+    return [...new Set(items.filter(Boolean))];
+  }
+
+  function escapeString(value) {
+    return String(value)
+      .replace(/\\/g, '\\\\')
+      .replace(/'/g, "\\'")
+      .replace(/\r?\n/g, '\\n');
+  }
+
+  function quoted(value) {
+    return `'${escapeString(value)}'`;
+  }
+
+  function arrayLine(key, items, indent = '  ') {
+    if (!items.length) {
+      return `${indent}${key}: [],`;
+    }
+
+    return `${indent}${key}: [${items.map((item) => quoted(item)).join(', ')}],`;
+  }
+
+  function pushString(lines, key, value) {
+    if (value) {
+      lines.push(`  ${key}: ${quoted(value)},`);
+    }
+  }
+
+  function pushBoolean(lines, key, value) {
+    if (value) {
+      lines.push(`  ${key}: true,`);
+    }
+  }
+
+  function applyStatusStyle(target, variant) {
+    target.classList.remove(
+      'hidden',
+      'border-emerald-400/30',
+      'bg-emerald-400/10',
+      'text-paper',
+      'border-amber-400/30',
+      'bg-amber-400/10',
+      'border-rose-400/30',
+      'bg-rose-400/10',
+    );
+
+    if (variant === 'success') {
+      target.classList.add('border-emerald-400/30', 'bg-emerald-400/10', 'text-paper');
+    } else if (variant === 'warning') {
+      target.classList.add('border-amber-400/30', 'bg-amber-400/10', 'text-paper');
+    } else {
+      target.classList.add('border-rose-400/30', 'bg-rose-400/10', 'text-paper');
+    }
+  }
+
+  function revealStatus(target) {
+    target.setAttribute('tabindex', '-1');
+    target.focus({ preventScroll: true });
+    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  function setStatus(message, variant, { reveal = false } = {}) {
+    statusElement.textContent = message;
+    applyStatusStyle(statusElement, variant);
+
+    if (reveal) {
+      submitStatusElement.textContent = message;
+      applyStatusStyle(submitStatusElement, variant);
+      revealStatus(submitStatusElement);
+    } else {
+      submitStatusElement.textContent = '';
+      submitStatusElement.classList.add('hidden');
+    }
+  }
+
+  function clearStatus() {
+    statusElement.textContent = '';
+    statusElement.classList.add('hidden');
+    submitStatusElement.textContent = '';
+    submitStatusElement.classList.add('hidden');
+  }
+
+  function setAiStatus(message, variant) {
+    aiReviewStatus.textContent = message;
+    aiReviewStatus.classList.remove(
+      'hidden',
+      'border-emerald-400/30',
+      'bg-emerald-400/10',
+      'text-paper',
+      'border-amber-400/30',
+      'bg-amber-400/10',
+      'border-rose-400/30',
+      'bg-rose-400/10',
+    );
+
+    if (variant === 'success') {
+      aiReviewStatus.classList.add('border-emerald-400/30', 'bg-emerald-400/10', 'text-paper');
+      return;
+    }
+
+    if (variant === 'warning') {
+      aiReviewStatus.classList.add('border-amber-400/30', 'bg-amber-400/10', 'text-paper');
+      return;
+    }
+
+    aiReviewStatus.classList.add('border-rose-400/30', 'bg-rose-400/10', 'text-paper');
+  }
+
+  function clearAiStatus() {
+    aiReviewStatus.textContent = '';
+    aiReviewStatus.classList.add('hidden');
+  }
+
+  function getAiProvider() {
+    return aiProviderSelect.value === 'promptforge' ? 'promptforge' : 'ollama';
+  }
+
+  function getAiEndpoint() {
+    return aiEndpointInput.value.trim().replace(/\/+$/, '');
+  }
+
+  function timeoutSignal(timeoutMs) {
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => controller.abort(), timeoutMs);
+    return { controller, timeoutId };
+  }
+
+  function normalizeModelEntries(models) {
+    if (!Array.isArray(models)) {
+      return [];
+    }
+
+    return models
+      .map((model) => {
+        if (!model) {
+          return null;
+        }
+
+        if (typeof model === 'string') {
+          const value = model.trim();
+          return value ? { label: value, value, note: '' } : null;
+        }
+
+        const value = String(model.value || model.model || model.name || '').trim();
+        if (!value) {
+          return null;
+        }
+
+        return {
+          label: String(model.label || value).trim() || value,
+          value,
+          note: String(model.note || '').trim(),
+        };
+      })
+      .filter(Boolean);
+  }
+
+  function populateAiModelOptions(models) {
+    aiModelOptions.innerHTML = '';
+
+    for (const model of normalizeModelEntries(models)) {
+      const option = document.createElement('option');
+      option.value = model.value;
+      option.label = model.label || model.value;
+      aiModelOptions.append(option);
+    }
+  }
+
+  function mergeUniqueModelEntries(...lists) {
+    const merged = [];
+    const seenValues = new Set();
+
+    for (const list of lists) {
+      for (const entry of normalizeModelEntries(list)) {
+        if (seenValues.has(entry.value)) {
+          continue;
+        }
+        seenValues.add(entry.value);
+        merged.push(entry);
+      }
+    }
+
+    return merged;
+  }
+
+  function normalizeModelName(value) {
+    return String(value || '').trim().toLowerCase();
+  }
+
+  function canonicalModelName(value) {
+    const normalized = normalizeModelName(value);
+    if (!normalized) {
+      return '';
+    }
+
+    return normalized.endsWith(':latest') ? normalized.slice(0, -':latest'.length) : normalized;
+  }
+
+  function isLikelyVisionModelName(value) {
+    const normalized = canonicalModelName(value);
+    if (!normalized) {
+      return false;
+    }
+
+    if (visionModelHints.some((hint) => normalized.includes(hint))) {
+      return true;
+    }
+
+    return /(^|[:/_-])(vision|vl)([:/_-]|$)/.test(normalized);
+  }
+
+  function isInstalledModelName(selectedModel, installedModels) {
+    const selectedCanonical = canonicalModelName(selectedModel);
+    if (!selectedCanonical) {
+      return false;
+    }
+
+    return installedModels.some((installedModel) => canonicalModelName(installedModel) === selectedCanonical);
+  }
+
+  function summarizeModelNames(modelNames, maxCount = 3) {
+    const cleaned = modelNames.map((name) => String(name || '').trim()).filter(Boolean);
+    if (!cleaned.length) {
+      return '';
+    }
+
+    const preview = cleaned.slice(0, maxCount).join(', ');
+    return cleaned.length > maxCount ? `${preview}, +${cleaned.length - maxCount} more` : preview;
+  }
+
+  function populateModelPresetOptions(presets) {
+    activeModelPresets = normalizeModelEntries(presets);
+    aiModelPresetSelect.innerHTML = '';
+
+    const customOption = document.createElement('option');
+    customOption.value = '';
+    customOption.textContent = 'Custom model name (typed)';
+    aiModelPresetSelect.append(customOption);
+
+    for (const preset of activeModelPresets) {
+      const option = document.createElement('option');
+      option.value = preset.value;
+      option.textContent = preset.label;
+      if (preset.note) {
+        option.dataset.note = preset.note;
+      }
+      aiModelPresetSelect.append(option);
+    }
+  }
+
+  function syncModelPresetToInput() {
+    const selectedValue = aiModelPresetSelect.value;
+    if (!selectedValue) {
+      aiModelPresetHint.textContent = 'Choose a preset to fill the model name quickly, or type a custom value.';
+      return;
+    }
+
+    aiModelInput.value = selectedValue;
+    const selectedOption = aiModelPresetSelect.selectedOptions[0];
+    aiModelPresetHint.textContent = selectedOption?.dataset.note || 'Preset selected.';
+  }
+
+  function syncInputToModelPreset() {
+    const typedValue = aiModelInput.value.trim();
+    if (!typedValue) {
+      aiModelPresetSelect.value = '';
+      aiModelPresetHint.textContent = 'Choose a preset to fill the model name quickly, or type a custom value.';
+      return;
+    }
+
+    const matchedPreset = activeModelPresets.find((preset) => preset.value === typedValue);
+    if (!matchedPreset) {
+      aiModelPresetSelect.value = '';
+      aiModelPresetHint.textContent = 'Using a custom model name.';
+      return;
+    }
+
+    aiModelPresetSelect.value = matchedPreset.value;
+    aiModelPresetHint.textContent = matchedPreset.note || 'Preset selected.';
+  }
+
+  function applyAiProviderDefaults({ resetEndpoint = false, resetModel = false } = {}) {
+    const provider = getAiProvider();
+    const config = aiProviderConfig[provider];
+
+    if (resetEndpoint || !aiEndpointInput.value.trim()) {
+      aiEndpointInput.value = config.endpoint;
+    }
+
+    aiProviderHelp.textContent = config.help;
+    aiModelMeta.textContent = config.modelMeta;
+    aiStartButton.textContent = config.startLabel;
+    aiStartButton.disabled = !config.canStartFromBrowser;
+    aiStartButton.title = config.canStartFromBrowser
+      ? ''
+      : 'Run `ollama serve` in your terminal, then return here and click Refresh Models.';
+
+    if (provider === 'promptforge') {
+      populateModelPresetOptions(promptForgeLaunchModels);
+      populateAiModelOptions(promptForgeLaunchModels);
+      if (resetModel || !aiModelInput.value.trim()) {
+        aiModelInput.value = promptForgeLaunchModels[0]?.value || 'qwen';
+      }
+      syncInputToModelPreset();
+      return;
+    }
+
+    populateModelPresetOptions(ollamaModelPresets);
+    populateAiModelOptions(ollamaModelPresets);
+    if (resetModel) {
+      aiModelInput.value = '';
+    }
+    syncInputToModelPreset();
+  }
+
+  async function fetchJsonWithTimeout(url, options = {}, timeoutMs = aiHealthTimeoutMs) {
+    const { controller, timeoutId } = timeoutSignal(timeoutMs);
+
+    try {
+      const response = await fetch(url, {
+        ...options,
+        signal: controller.signal,
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      if (error && error.name === 'AbortError') {
+        throw new Error(`Timed out connecting to ${url}.`);
+      }
+
+      if (error instanceof TypeError) {
+        throw new Error(`Could not connect to ${url}.`);
+      }
+
+      throw error;
+    } finally {
+      window.clearTimeout(timeoutId);
+    }
+  }
+
+  async function refreshAiModels(showStatus = true) {
+    const provider = getAiProvider();
+    const endpoint = getAiEndpoint();
+
+    if (!endpoint) {
+      setAiStatus('Enter a provider endpoint before refreshing models.', 'error');
+      return;
+    }
+
+    if (showStatus) {
+      setAiStatus('Checking local provider for available models...', 'warning');
+    }
+
+    try {
+      if (provider === 'promptforge') {
+        await fetchJsonWithTimeout(`${endpoint}/api/status`);
+        populateModelPresetOptions(promptForgeLaunchModels);
+        populateAiModelOptions(promptForgeLaunchModels);
+        aiModelMeta.textContent = 'PromptForge is reachable. Launch targets are listed; image review is not supported by its current API.';
+        if (!aiModelInput.value.trim()) {
+          aiModelInput.value = promptForgeLaunchModels[0]?.value || 'qwen';
+        }
+        syncInputToModelPreset();
+        if (showStatus) {
+          setAiStatus('PromptForge is reachable. It can launch its local text LLM, but image review still needs a dedicated endpoint.', 'warning');
+        }
+        return;
+      }
+
+      const payload = await fetchJsonWithTimeout(`${endpoint}/api/tags`);
+      const discoveredModels = Array.isArray(payload.models)
+        ? payload.models
+            .map((model) => ({
+              label: model.name || model.model || '',
+              value: model.name || model.model || '',
+            }))
+            .filter((model) => model.value)
+        : [];
+      discoveredOllamaModels = discoveredModels.map((model) => model.value);
+      const visionCapableModels = discoveredOllamaModels.filter((name) => isLikelyVisionModelName(name));
+      const discoveredSummary = summarizeModelNames(discoveredOllamaModels);
+
+      const mergedModels = mergeUniqueModelEntries(ollamaModelPresets, discoveredModels);
+      populateModelPresetOptions(mergedModels);
+      populateAiModelOptions(mergedModels);
+      if (!discoveredOllamaModels.length) {
+        aiModelMeta.textContent = 'Ollama responded, but did not report installed models.';
+      } else if (!visionCapableModels.length) {
+        aiModelMeta.textContent =
+          `${discoveredOllamaModels.length} Ollama model${discoveredOllamaModels.length === 1 ? '' : 's'} found` +
+          ` (${discoveredSummary}). None look vision-capable. Install one like gemma4:e4b or qwen2.5vl:7b.`;
+      } else {
+        aiModelMeta.textContent =
+          `${discoveredOllamaModels.length} Ollama model${discoveredOllamaModels.length === 1 ? '' : 's'} found` +
+          ` (${discoveredSummary}). ${visionCapableModels.length} look vision-capable.`;
+      }
+
+      if (!aiModelInput.value.trim()) {
+        aiModelInput.value = mergedModels[0]?.value || '';
+      }
+      syncInputToModelPreset();
+
+      if (showStatus) {
+        if (!discoveredOllamaModels.length) {
+          setAiStatus('Ollama is reachable, but no models were returned by /api/tags.', 'warning');
+        } else {
+          const selectedModel = aiModelInput.value.trim();
+          const selectedInstalled = selectedModel
+            ? isInstalledModelName(selectedModel, discoveredOllamaModels)
+            : false;
+          const selectedVision = selectedModel ? isLikelyVisionModelName(selectedModel) : false;
+          const installedSummary = summarizeModelNames(discoveredOllamaModels);
+
+          if (selectedModel && !selectedInstalled) {
+            setAiStatus(
+              `Ollama is reachable. Installed: ${installedSummary}. Selected model "${selectedModel}" is not installed. Run \`ollama pull ${selectedModel}\`, then click Refresh Models.`,
+              'warning',
+            );
+          } else if (selectedModel && !selectedVision) {
+            setAiStatus(
+              `Ollama is reachable. "${selectedModel}" is installed but does not look vision-capable for image scan. Choose a vision model like gemma4:e4b or qwen2.5vl:7b.`,
+              'warning',
+            );
+          } else {
+            setAiStatus(
+              `Ollama is reachable. Installed: ${installedSummary}. Select an image, then run review.`,
+              'success',
+            );
+          }
+        }
+      }
+    } catch (error) {
+      discoveredOllamaModels = [];
+      aiModelMeta.textContent =
+        provider === 'ollama'
+          ? 'No Ollama server responded. Start Ollama locally, then refresh models.'
+          : 'PromptForge did not respond at this endpoint.';
+      if (showStatus) {
+        if (provider === 'ollama') {
+          setAiStatus(
+            `Could not reach Ollama at ${endpoint}. Run \`ollama serve\` in your terminal, then click Refresh Models.`,
+            'error',
+          );
+        } else {
+          setAiStatus(
+            error instanceof Error
+              ? `${error.message} Check the endpoint and start the local provider.`
+              : 'Could not reach the local provider.',
+            'error',
+          );
+        }
+      }
+    }
+  }
+
+  async function startAiProvider() {
+    const provider = getAiProvider();
+    const endpoint = getAiEndpoint();
+
+    if (provider === 'ollama') {
+      setAiStatus('This browser page cannot start Ollama. Start Ollama locally, then use Refresh Models here.', 'warning');
+      return;
+    }
+
+    if (!endpoint) {
+      setAiStatus('Enter the PromptForge endpoint before launching its local LLM.', 'error');
+      return;
+    }
+
+    const modelType = aiModelInput.value.trim() || promptForgeLaunchModels[0]?.value || 'qwen';
+    aiStartButton.disabled = true;
+    setAiStatus('Asking PromptForge to launch its local LLM...', 'warning');
+
+    try {
+      await fetchJsonWithTimeout(
+        `${endpoint}/api/launch-ai`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ model_type: modelType }),
+        },
+        aiHealthTimeoutMs,
+      );
+      setAiStatus('PromptForge launch requested. This starts its text LLM; image review still requires an image-review provider.', 'warning');
+    } catch (error) {
+      setAiStatus(
+        error instanceof Error
+          ? `${error.message} PromptForge must be running before this page can ask it to launch a model.`
+          : 'PromptForge launch failed.',
+        'error',
+      );
+    } finally {
+      aiStartButton.disabled = false;
+    }
+  }
+
+  function isLocalAiAllowed() {
+    const host = window.location.hostname;
+    const params = new URLSearchParams(window.location.search);
+    return (
+      window.location.protocol === 'file:' ||
+      host === 'localhost' ||
+      host === '127.0.0.1' ||
+      host === '::1' ||
+      params.get('localAi') === '1' ||
+      window.localStorage.getItem('entryLocalAi') === '1'
+    );
+  }
+
+  function updateAiAvailability() {
+    const allowed = isLocalAiAllowed();
+    aiReviewPanel.classList.toggle('opacity-70', !allowed);
+    aiReviewControls.classList.toggle('hidden', !allowed);
+    aiReviewLocalWarning.classList.toggle('hidden', allowed);
+  }
+
+  function sanitizeSubfolder(value) {
+    return value
+      .split(/[\\/]+/)
+      .map((segment) => slugify(segment))
+      .filter(Boolean);
+  }
+
+  function inferExtensionFromType(type) {
+    const fallbackMap = {
+      'image/jpeg': 'jpg',
+      'image/png': 'png',
+      'image/webp': 'webp',
+      'image/avif': 'avif',
+      'image/gif': 'gif',
+      'image/tiff': 'tif',
+      'image/svg+xml': 'svg',
+    };
+
+    return fallbackMap[type] || '';
+  }
+
+  function getFileExtension(file) {
+    if (!file) {
+      return '';
+    }
+
+    const pieces = file.name.split('.');
+    if (pieces.length > 1) {
+      return pieces.at(-1).toLowerCase();
+    }
+
+    return inferExtensionFromType(file.type);
+  }
+
+  function getResolvedImageSlug() {
+    const typedSlug = slugInput.value.trim();
+    if (typedSlug) {
+      return slugify(typedSlug);
+    }
+
+    return slugify(titleInput.value.trim());
+  }
+
+  function getResolvedProductSlug() {
+    const typedSlug = productSlugInput.value.trim();
+    if (typedSlug) {
+      return slugify(typedSlug);
+    }
+
+    const imageSlug = getResolvedImageSlug();
+    return imageSlug ? `${imageSlug}-print` : '';
+  }
+
+  function buildImportedImageSrc(slug, subfolderSegments, extension) {
+    const prefix = subfolderSegments.length ? `${subfolderSegments.join('/')}/` : '';
+    return `/images/${prefix}${extension ? `${slug}.${extension}` : slug}`;
+  }
+
+  function updateImportPathPreview() {
+    const imageSlug = getResolvedImageSlug();
+    const extension = getFileExtension(selectedImageFile);
+    const segments = sanitizeSubfolder(subfolderInput.value.trim());
+
+    if (!selectedImageFile) {
+      importPathPreview.textContent = 'Choose a local image file to preview the imported path.';
+      return;
+    }
+
+    if (!imageSlug) {
+      importPathPreview.textContent = 'Enter a title or slug to generate the imported filename.';
+      return;
+    }
+
+    importPathPreview.textContent = buildImportedImageSrc(imageSlug, segments, extension);
+  }
+
+  function updateSupportMessage() {
+    if (fsApiSupported) {
+      supportMessage.innerHTML =
+        'Local writes are available in this browser. Choose a local image and the repo root, then submit to update the gallery data.';
+      return;
+    }
+
+    supportMessage.innerHTML =
+      'Local writes are not available in this browser. You can still fill the form and generate snippets, but you must move the file into <code>public/images</code> and update data files manually.';
+  }
+
+  function updateFolderMeta() {
+    if (!selectedProjectDirectory) {
+      folderMeta.textContent = 'No project folder selected yet.';
+      return;
+    }
+
+    folderMeta.textContent = `Selected project: ${selectedProjectDirectory.name}.`;
+  }
+
+  function updateFileMeta() {
+    if (!selectedImageFile) {
+      fileMeta.textContent = 'No image file selected yet.';
+      previewWrap.classList.add('hidden');
+      previewImage.removeAttribute('src');
+      return;
+    }
+
+    const sizeInMb = (selectedImageFile.size / (1024 * 1024)).toFixed(2);
+    fileMeta.textContent = `${selectedImageFile.name} · ${sizeInMb} MB`;
+    previewWrap.classList.remove('hidden');
+  }
+
+  function updatePreviewImage() {
+    if (selectedPreviewUrl) {
+      URL.revokeObjectURL(selectedPreviewUrl);
+      selectedPreviewUrl = '';
+    }
+
+    if (!selectedImageFile) {
+      previewWrap.classList.add('hidden');
+      previewImage.removeAttribute('src');
+      return;
+    }
+
+    selectedPreviewUrl = URL.createObjectURL(selectedImageFile);
+    previewImage.src = selectedPreviewUrl;
+  }
+
+  function syncDefaults() {
+    const generatedSlug = slugify(titleInput.value.trim());
+
+    if (!slugInput.dataset.dirty && generatedSlug) {
+      slugInput.value = generatedSlug;
+    }
+
+    if (!productTitleInput.dataset.dirty && titleInput.value.trim()) {
+      productTitleInput.value = titleInput.value.trim();
+    }
+
+    if (!productSlugInput.dataset.dirty && generatedSlug) {
+      productSlugInput.value = `${generatedSlug}-print`;
+    }
+  }
+
+  function updateProductFieldsState() {
+    const enabled = createProductCheckbox.checked;
+    productFieldset.disabled = !enabled;
+    productFieldset.classList.toggle('opacity-60', !enabled);
+
+    if (enabled) {
+      printAvailableCheckbox.checked = true;
+    }
+  }
+
+  function buildExternalEntries(imageSlug, formData) {
+    const baseKey = slugToCamel(imageSlug || 'image');
+    const entries = [];
+
+    for (const platformField of platformFields) {
+      const url = String(formData.get(platformField.field) || '').trim();
+      if (!url) {
+        continue;
+      }
+
+      entries.push({
+        key: `${baseKey}${platformField.suffix}`,
+        label: platformField.label,
+        platform: platformField.platform,
+        url,
+      });
+    }
+
+    const otherLabel = String(formData.get('otherLabel') || '').trim();
+    const otherUrl = String(formData.get('otherUrl') || '').trim();
+    if (otherLabel && otherUrl) {
+      entries.push({
+        key: `${baseKey}Other`,
+        label: otherLabel,
+        platform: 'other',
+        url: otherUrl,
+      });
+    }
+
+    return entries;
+  }
+
+  function buildExternalLinksSnippet(entries) {
+    if (!entries.length) {
+      return '// No outbound links entered yet.';
+    }
+
+    return entries
+      .map((entry) => {
+        return `${entry.key}: {\n  key: ${quoted(entry.key)},\n  label: ${quoted(entry.label)},\n  url: ${quoted(entry.url)},\n  platform: ${quoted(entry.platform)},\n},`;
+      })
+      .join('\n\n');
+  }
+
+  function collectProductFormats(formData) {
+    const presetFormats = Array.from(formData.getAll('productFormatPreset')).map((value) =>
+      String(value).trim(),
+    );
+    const customFormats = splitList(String(formData.get('productCustomSizes') || ''));
+    return uniqueList([...presetFormats, ...customFormats]);
+  }
+
+  function buildProductSnippet(formData, imageSlug, routeKeys) {
+    const createProduct = Boolean(formData.get('createProduct'));
+    if (!createProduct) {
+      return '// Product entry not enabled.';
+    }
+
+    const productTitle = String(formData.get('productTitle') || '').trim();
+    const productSlug = getResolvedProductSlug();
+    const productDescription = String(formData.get('productDescription') || '').trim();
+    const productFormats = collectProductFormats(formData);
+    const inquiryAllowed = Boolean(formData.get('productInquiryAllowed'));
+
+    const lines = ['{'];
+    pushString(lines, 'slug', productSlug);
+    pushString(lines, 'imageSlug', imageSlug);
+    pushString(lines, 'title', productTitle || String(formData.get('imageTitle') || '').trim());
+    pushString(lines, 'shortDescription', productDescription);
+    lines.push(arrayLine('availableFormats', productFormats));
+    lines.push(arrayLine('routeKeys', routeKeys));
+    pushBoolean(lines, 'inquiryAllowed', inquiryAllowed);
+    lines.push('},');
+    return lines.join('\n');
+  }
+
+  function buildImageSnippet(formData, imageSlug, productSlugValue, routeKeys) {
+    const title = String(formData.get('imageTitle') || '').trim();
+    const category = String(formData.get('imageCategory') || 'portrait').trim();
+    const imageSrc = String(formData.get('imageSrc') || '').trim();
+    const tags = splitList(String(formData.get('imageTags') || ''));
+    const alt = String(formData.get('imageAlt') || '').trim();
+    const hook = String(formData.get('imageHook') || '').trim();
+    const story = String(formData.get('imageStory') || '').trim();
+    const orientation = String(formData.get('imageOrientation') || '').trim();
+    const year = String(formData.get('imageYear') || '').trim();
+    const location = String(formData.get('imageLocation') || '').trim();
+    const medium = String(formData.get('imageMedium') || '').trim();
+    const bestFormat = String(formData.get('imageBestFormat') || '').trim();
+    const createProduct = Boolean(formData.get('createProduct'));
+    const featured = Boolean(formData.get('imageFeatured'));
+    const printAvailable = Boolean(formData.get('imagePrintAvailable')) || createProduct;
+    const serviceCta = String(formData.get('imageServiceCta') || '').trim();
+
+    const lines = ['{'];
+    pushString(lines, 'slug', imageSlug);
+    pushString(lines, 'title', title);
+    pushString(lines, 'category', category);
+    lines.push(arrayLine('tags', tags));
+    pushString(lines, 'imageSrc', imageSrc);
+    pushString(lines, 'alt', alt);
+    pushString(lines, 'hook', hook);
+    pushString(lines, 'story', story);
+    pushString(lines, 'orientation', orientation);
+    pushString(lines, 'year', year);
+    pushString(lines, 'location', location);
+    pushString(lines, 'medium', medium);
+    pushString(lines, 'bestFormat', bestFormat);
+    pushBoolean(lines, 'featured', featured);
+    pushBoolean(lines, 'printAvailable', printAvailable);
+    pushString(lines, 'serviceCTA', serviceCta);
+    if (createProduct) {
+      pushString(lines, 'productSlug', productSlugValue);
+    }
+    if (!routeKeys.length) {
+      lines.push("  // Add productSlug and outbound links when this image is ready to sell.");
+    }
+    lines.push('},');
+    return lines.join('\n');
+  }
+
+  function updateOutputs() {
+    syncDefaults();
+    updateProductFieldsState();
+    updateImportPathPreview();
+
+    const formData = new FormData(form);
+    const imageSlug = getResolvedImageSlug();
+    const productSlugValue = getResolvedProductSlug();
+    const externalEntries = buildExternalEntries(imageSlug, formData);
+    const routeKeys = externalEntries.map((entry) => entry.key);
+
+    externalLinksOutput.value = buildExternalLinksSnippet(externalEntries);
+    productOutput.value = buildProductSnippet(formData, imageSlug, routeKeys);
+    imageOutput.value = buildImageSnippet(formData, imageSlug, productSlugValue, routeKeys);
+  }
+
+  function getCurrentFieldValues() {
+    const formData = new FormData(form);
+    return {
+      title: String(formData.get('imageTitle') || '').trim(),
+      category: String(formData.get('imageCategory') || '').trim(),
+      tags: splitList(String(formData.get('imageTags') || '')),
+      alt: String(formData.get('imageAlt') || '').trim(),
+      hook: String(formData.get('imageHook') || '').trim(),
+      story: String(formData.get('imageStory') || '').trim(),
+      orientation: String(formData.get('imageOrientation') || '').trim(),
+      medium: String(formData.get('imageMedium') || '').trim(),
+      bestFormat: String(formData.get('imageBestFormat') || '').trim(),
+      serviceCTA: String(formData.get('imageServiceCta') || '').trim(),
+      productShortDescription: String(formData.get('productDescription') || '').trim(),
+      productFormats: collectProductFormats(formData),
+    };
+  }
+
+  function replacePromptVariables(template, variables) {
+    return Object.entries(variables).reduce((result, [key, value]) => {
+      return result.replaceAll(`{{${key}}}`, value);
+    }, template);
+  }
+
+  function getSelectedImageDimensions() {
+    if (previewImage.naturalWidth && previewImage.naturalHeight) {
+      return `${previewImage.naturalWidth} x ${previewImage.naturalHeight}`;
+    }
+
+    return 'Unknown';
+  }
+
+  function buildAiPrompt() {
+    const fileContext = {
+      fileName: selectedImageFile?.name || '',
+      fileType: selectedImageFile?.type || '',
+      fileSizeMb: selectedImageFile ? (selectedImageFile.size / (1024 * 1024)).toFixed(2) : '',
+      visibleDimensions: getSelectedImageDimensions(),
+      publicPath: imageSrcInput.value.trim(),
+      reviewInput: latestAiReviewInputContext,
+    };
+
+    return replacePromptVariables(aiPromptConfig.template || '', {
+      imageCategories: imageCategories.join(', '),
+      orientations: orientations.join(', '),
+      serviceCtas: serviceCtas.join(', '),
+      currentValues: JSON.stringify(getCurrentFieldValues(), null, 2),
+      fileContext: JSON.stringify(fileContext, null, 2),
+    });
+  }
+
+  function readFileAsBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.addEventListener('load', () => {
+        const value = String(reader.result || '');
+        resolve(value.includes(',') ? value.split(',').at(-1) : value);
+      });
+      reader.addEventListener('error', () => reject(new Error('The selected image could not be read.')));
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function canvasToBlob(canvas, type, quality) {
+    return new Promise((resolve, reject) => {
+      canvas.toBlob(
+        (blob) => {
+          if (blob) {
+            resolve(blob);
+          } else {
+            reject(new Error('The review image could not be prepared.'));
+          }
+        },
+        type,
+        quality,
+      );
+    });
+  }
+
+  async function readImageForAiReview(file) {
+    if (!file.type.startsWith('image/') || file.type === 'image/svg+xml' || !('createImageBitmap' in window)) {
+      return {
+        base64: await readFileAsBase64(file),
+        context: 'Original selected file.',
+      };
+    }
+
+    let bitmap = null;
+    try {
+      bitmap = await createImageBitmap(file);
+      const longestSide = Math.max(bitmap.width, bitmap.height);
+      const scale = Math.min(1, aiReviewMaxDimension / longestSide);
+      const shouldResize = scale < 1 || file.size > 4 * 1024 * 1024;
+
+      if (!shouldResize) {
+        return {
+          base64: await readFileAsBase64(file),
+          context: `Original selected file (${bitmap.width} x ${bitmap.height}).`,
+        };
+      }
+
+      const width = Math.max(1, Math.round(bitmap.width * scale));
+      const height = Math.max(1, Math.round(bitmap.height * scale));
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const context = canvas.getContext('2d');
+      if (!context) {
+        throw new Error('The review image could not be prepared.');
+      }
+
+      context.drawImage(bitmap, 0, 0, width, height);
+      const reviewBlob = await canvasToBlob(canvas, 'image/jpeg', aiReviewJpegQuality);
+      return {
+        base64: await readFileAsBase64(reviewBlob),
+        context: `Downscaled review copy (${width} x ${height}, JPEG quality ${aiReviewJpegQuality}). Original file is kept for import.`,
+      };
+    } catch (error) {
+      return {
+        base64: await readFileAsBase64(file),
+        context: 'Original selected file. Downscaling was not available.',
+      };
+    } finally {
+      if (bitmap && typeof bitmap.close === 'function') {
+        bitmap.close();
+      }
+    }
+  }
+
+  function parseAiReviewResponse(value) {
+    if (!value) {
+      throw new Error('The AI review did not return any content.');
+    }
+
+    if (typeof value === 'object') {
+      return value;
+    }
+
+    const text = String(value).trim();
+    try {
+      return JSON.parse(text);
+    } catch (error) {
+      const match = text.match(/\{[\s\S]*\}/);
+      if (match) {
+        return JSON.parse(match[0]);
+      }
+
+      throw new Error('The AI review returned text that was not valid JSON.');
+    }
+  }
+
+  function normalizeAiReview(review) {
+    const normalized = {
+      title: String(review.title || '').trim(),
+      category: imageCategories.includes(review.category) ? review.category : '',
+      tags: uniqueList(Array.isArray(review.tags) ? review.tags.map((tag) => slugify(String(tag))) : []),
+      alt: String(review.alt || '').trim(),
+      hook: String(review.hook || '').trim(),
+      story: String(review.story || '').trim(),
+      orientation: orientations.includes(review.orientation) ? review.orientation : '',
+      medium: String(review.medium || '').trim(),
+      bestFormat: String(review.bestFormat || '').trim(),
+      serviceCTA: serviceCtas.includes(review.serviceCTA) ? review.serviceCTA : '',
+      productShortDescription: String(review.productShortDescription || '').trim(),
+      productFormats: uniqueList(Array.isArray(review.productFormats) ? review.productFormats.map((item) => String(item).trim()) : []),
+      cautions: Array.isArray(review.cautions)
+        ? review.cautions.map((item) => String(item).trim()).filter(Boolean)
+        : [],
+    };
+
+    if (review.category && !normalized.category) {
+      normalized.cautions.push(`Ignored unsupported category: ${review.category}`);
+    }
+
+    if (review.orientation && !normalized.orientation) {
+      normalized.cautions.push(`Ignored unsupported orientation: ${review.orientation}`);
+    }
+
+    if (review.serviceCTA && !normalized.serviceCTA) {
+      normalized.cautions.push(`Ignored unsupported service CTA: ${review.serviceCTA}`);
+    }
+
+    return normalized;
+  }
+
+  function getAiSuggestionDisplayValue(field, value) {
+    if (Array.isArray(value)) {
+      return value.join(', ');
+    }
+
+    return String(value || '').trim();
+  }
+
+  function renderAiSuggestions(review) {
+    aiSuggestionsList.innerHTML = '';
+    const entries = aiSuggestionFields
+      .map((field) => ({
+        ...field,
+        value: getAiSuggestionDisplayValue(field, review[field.key]),
+      }))
+      .filter((entry) => entry.value);
+
+    for (const entry of entries) {
+      const label = document.createElement('label');
+      label.className = 'grid cursor-pointer gap-3 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-paper sm:grid-cols-[auto_0.28fr_1fr]';
+
+      const checkbox = document.createElement('input');
+      checkbox.className = 'mt-1 h-4 w-4';
+      checkbox.type = 'checkbox';
+      checkbox.checked = entry.defaultChecked !== false;
+      checkbox.dataset.aiField = entry.key;
+
+      const name = document.createElement('span');
+      name.className = 'font-semibold';
+      name.textContent = entry.label;
+
+      const value = document.createElement('span');
+      value.className = 'text-steel';
+      value.textContent = entry.value;
+
+      label.append(checkbox, name, value);
+      aiSuggestionsList.append(label);
+    }
+
+    if (!entries.length) {
+      const empty = document.createElement('p');
+      empty.className = 'copy-muted';
+      empty.textContent = 'No usable suggestions were found in the review JSON.';
+      aiSuggestionsList.append(empty);
+    }
+
+    aiCautions.classList.toggle('hidden', !review.cautions.length);
+    aiCautions.textContent = review.cautions.length ? `Verify: ${review.cautions.join(' ')}` : '';
+    aiSuggestionsWrap.classList.remove('hidden');
+    aiSuggestionsWrap.dataset.review = JSON.stringify(review);
+  }
+
+  function setInputValue(targetId, value) {
+    const target = document.getElementById(targetId);
+    if (!target) {
+      return;
+    }
+
+    target.value = value;
+    target.dispatchEvent(new Event('input', { bubbles: true }));
+    target.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+
+  function setRadioValue(name, value) {
+    const target = form.querySelector(`input[name="${name}"][value="${value}"]`);
+    if (target) {
+      target.checked = true;
+      target.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+  }
+
+  function applyAiSuggestions() {
+    const review = JSON.parse(aiSuggestionsWrap.dataset.review || '{}');
+    const checkedFields = Array.from(aiSuggestionsList.querySelectorAll('input[data-ai-field]:checked')).map(
+      (input) => input.dataset.aiField,
+    );
+
+    for (const field of aiSuggestionFields) {
+      if (!checkedFields.includes(field.key)) {
+        continue;
+      }
+
+      const value = getAiSuggestionDisplayValue(field, review[field.key]);
+      if (!value) {
+        continue;
+      }
+
+      if (field.type === 'radio') {
+        setRadioValue(field.targetName, value);
+      } else if (field.type === 'productText' || field.type === 'productList') {
+        createProductCheckbox.checked = true;
+        updateProductFieldsState();
+        setInputValue(field.targetId, value);
+      } else {
+        setInputValue(field.targetId, value);
+      }
+    }
+
+    updateOutputs();
+    imageEntrySection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setAiStatus('Checked AI suggestions were applied to the Image section. Review before submitting or copying snippets.', 'success');
+  }
+
+  async function runAiReview() {
+    clearAiStatus();
+
+    if (!selectedImageFile) {
+      setAiStatus('Choose a local image file before running AI review.', 'error');
+      return;
+    }
+
+    const provider = getAiProvider();
+    if (provider === 'promptforge') {
+      setAiStatus(
+        'PromptForge is wired here as a launcher only. Its current API does not accept image review requests. Choose Ollama with an installed vision model, or paste JSON manually.',
+        'error',
+      );
+      return;
+    }
+
+    const endpoint = getAiEndpoint();
+    const model = aiModelInput.value.trim();
+    if (!endpoint || !model) {
+      setAiStatus('Enter an Ollama endpoint and choose an installed vision-capable model before running review.', 'error');
+      return;
+    }
+    if (discoveredOllamaModels.length && !isInstalledModelName(model, discoveredOllamaModels)) {
+      const installedSummary = summarizeModelNames(discoveredOllamaModels);
+      setAiStatus(
+        `Selected model "${model}" is not installed. Installed: ${installedSummary}. Run \`ollama pull ${model}\`, then click Refresh Models.`,
+        'error',
+      );
+      return;
+    }
+    if (!isLikelyVisionModelName(model)) {
+      setAiStatus(
+        `"${model}" does not look vision-capable for image scanning. Choose a vision model like gemma4:e4b or qwen2.5vl:7b.`,
+        'error',
+      );
+      return;
+    }
+
+    const requestTimeoutMs = isLikelyVisionModelName(model) ? aiVisionRequestTimeoutMs : aiRequestTimeoutMs;
+    const timeoutSeconds = Math.round(requestTimeoutMs / 1000);
+
+    aiReviewButton.disabled = true;
+    setAiStatus(`Reviewing image with ${model} (timeout ${timeoutSeconds}s)...`, 'warning');
+
+    let requestTimeoutId = null;
+    try {
+      const reviewImage = await readImageForAiReview(selectedImageFile);
+      latestAiReviewInputContext = reviewImage.context;
+      const { controller, timeoutId } = timeoutSignal(requestTimeoutMs);
+      requestTimeoutId = timeoutId;
+      const response = await fetch(`${endpoint}/api/generate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        signal: controller.signal,
+        body: JSON.stringify({
+          model,
+          prompt: buildAiPrompt(),
+          images: [reviewImage.base64],
+          stream: false,
+          keep_alive: '20m',
+          format: aiReviewSchema,
+          options: {
+            temperature: 0.2,
+          },
+        }),
+      });
+      window.clearTimeout(requestTimeoutId);
+      requestTimeoutId = null;
+
+      if (!response.ok) {
+        throw new Error(`Local model request failed with HTTP ${response.status}.`);
+      }
+
+      const payload = await response.json();
+      const review = normalizeAiReview(parseAiReviewResponse(payload.response || payload));
+      renderAiSuggestions(review);
+      aiJsonInput.value = JSON.stringify(review, null, 2);
+      setAiStatus('AI suggestions are ready. Check the fields you want to apply.', 'success');
+    } catch (error) {
+      setAiStatus(
+        error && error.name === 'AbortError'
+          ? `The local model did not respond within ${timeoutSeconds}s. Try a smaller image, use gemma4:e2b, or keep gemma4:e4b warm and retry. You can paste review JSON into the fallback box instead.`
+          : error instanceof Error
+          ? `${error.message} You can paste review JSON into the fallback box instead.`
+          : 'AI review failed. You can paste review JSON into the fallback box instead.',
+        'error',
+      );
+    } finally {
+      if (requestTimeoutId) {
+        window.clearTimeout(requestTimeoutId);
+      }
+      aiReviewButton.disabled = false;
+    }
+  }
+
+  function parsePastedAiJson() {
+    try {
+      const review = normalizeAiReview(parseAiReviewResponse(aiJsonInput.value));
+      renderAiSuggestions(review);
+      setAiStatus('Pasted AI suggestions are ready. Check the fields you want to apply.', 'success');
+    } catch (error) {
+      setAiStatus(error instanceof Error ? error.message : 'The pasted JSON could not be parsed.', 'error');
+    }
+  }
+
+  function copyOutput(targetId, button) {
+    const target = document.getElementById(targetId);
+    if (!(target instanceof HTMLTextAreaElement)) {
+      return;
+    }
+
+    navigator.clipboard.writeText(target.value).then(() => {
+      const previousText = button.textContent;
+      button.textContent = 'Copied';
+      window.setTimeout(() => {
+        button.textContent = previousText;
+      }, 1200);
+    });
+  }
+
+  function downloadAll() {
+    const content = [
+      '// externalLinks.ts',
+      externalLinksOutput.value,
+      '',
+      '// products.ts',
+      productOutput.value,
+      '',
+      '// images.ts',
+      imageOutput.value,
+      '',
+    ].join('\n');
+
+    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'content-entry-snippets.txt';
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  async function ensureDirectoryPermission(handle) {
+    const permissionOptions = { mode: 'readwrite' };
+
+    if (typeof handle.queryPermission === 'function') {
+      const currentPermission = await handle.queryPermission(permissionOptions);
+      if (currentPermission === 'granted') {
+        return true;
+      }
+    }
+
+    if (typeof handle.requestPermission === 'function') {
+      const requestedPermission = await handle.requestPermission(permissionOptions);
+      return requestedPermission === 'granted';
+    }
+
+    return true;
+  }
+
+  async function resolveTargetDirectory(rootHandle, segments) {
+    let currentHandle = rootHandle;
+
+    for (const segment of segments) {
+      currentHandle = await currentHandle.getDirectoryHandle(segment, { create: true });
+    }
+
+    return currentHandle;
+  }
+
+  async function fileAlreadyExists(directoryHandle, fileName) {
+    try {
+      await directoryHandle.getFileHandle(fileName);
+      return true;
+    } catch (error) {
+      if (error && error.name === 'NotFoundError') {
+        return false;
+      }
+
+      throw error;
+    }
+  }
+
+  async function looksLikeProjectRootDirectory(handle) {
+    if (!handle) {
+      return false;
+    }
+
+    try {
+      await handle.getFileHandle('package.json');
+      const publicHandle = await handle.getDirectoryHandle('public');
+      const imagesHandle = await publicHandle.getDirectoryHandle('images');
+      await imagesHandle.getDirectoryHandle('placeholders');
+      const srcHandle = await handle.getDirectoryHandle('src');
+      const dataHandle = await srcHandle.getDirectoryHandle('data');
+      await dataHandle.getFileHandle('images.ts');
+      await dataHandle.getFileHandle('products.ts');
+      await dataHandle.getFileHandle('externalLinks.ts');
+      return true;
+    } catch (error) {
+      if (error && error.name === 'NotFoundError') {
+        return false;
+      }
+
+      throw error;
+    }
+  }
+
+  async function getProjectImagesDirectory() {
+    if (!selectedProjectDirectory) {
+      throw new Error('Choose the repo root before submitting.');
+    }
+
+    const publicHandle = await selectedProjectDirectory.getDirectoryHandle('public');
+    return publicHandle.getDirectoryHandle('images');
+  }
+
+  async function getDataFileHandle(fileName) {
+    if (!selectedProjectDirectory) {
+      throw new Error('Choose the repo root before submitting.');
+    }
+
+    const srcHandle = await selectedProjectDirectory.getDirectoryHandle('src');
+    const dataHandle = await srcHandle.getDirectoryHandle('data');
+    return dataHandle.getFileHandle(fileName);
+  }
+
+  async function readTextFile(fileHandle) {
+    const file = await fileHandle.getFile();
+    return file.text();
+  }
+
+  async function writeTextFile(fileHandle, content) {
+    const writable = await fileHandle.createWritable();
+    await writable.write(content);
+    await writable.close();
+  }
+
+  function indentSnippet(snippet, spaces = 2) {
+    const indent = ' '.repeat(spaces);
+    return snippet
+      .trim()
+      .split('\n')
+      .map((line) => `${indent}${line}`)
+      .join('\n');
+  }
+
+  function appendToExportedArray(source, exportName, entrySnippet, duplicateNeedle) {
+    if (source.includes(duplicateNeedle)) {
+      throw new Error(`A ${exportName} entry already exists for this slug or key.`);
+    }
+
+    const declarationIndex = source.indexOf(`export const ${exportName}`);
+    if (declarationIndex === -1) {
+      throw new Error(`Could not find export const ${exportName} in the data file.`);
+    }
+
+    const arrayStart = source.indexOf('[', declarationIndex);
+    const closeMatch = source.slice(arrayStart).match(/\r?\n\];/);
+    const arrayEnd = closeMatch ? arrayStart + closeMatch.index : -1;
+    if (arrayStart === -1 || arrayEnd === -1) {
+      throw new Error(`Could not find the ${exportName} array closing bracket.`);
+    }
+
+    return `${source.slice(0, arrayEnd)}\n${indentSnippet(entrySnippet)}${source.slice(arrayEnd)}`;
+  }
+
+  function appendToExternalLinksRecord(source, entrySnippet, entries) {
+    if (!entries.length) {
+      return source;
+    }
+
+    for (const entry of entries) {
+      if (source.includes(`${entry.key}: {`) || source.includes(`key: '${entry.key}'`)) {
+        throw new Error(`An external link entry already exists for ${entry.key}.`);
+      }
+    }
+
+    const closeMatches = Array.from(source.matchAll(/\r?\n\};/g));
+    const lastCloseMatch = closeMatches.at(-1);
+    const recordEnd = lastCloseMatch ? lastCloseMatch.index : -1;
+    if (recordEnd === -1) {
+      throw new Error('Could not find the externalLinks record closing brace.');
+    }
+
+    return `${source.slice(0, recordEnd)}\n${indentSnippet(entrySnippet)}${source.slice(recordEnd)}`;
+  }
+
+  async function importSelectedFile(imageSlug) {
+    if (!selectedImageFile) {
+      throw new Error('Choose a local image file before submitting.');
+    }
+
+    const hasPermission = await ensureDirectoryPermission(selectedProjectDirectory);
+    if (!hasPermission) {
+      throw new Error('Write permission was denied for the selected project folder.');
+    }
+
+    const extension = getFileExtension(selectedImageFile);
+    const targetFileName = extension ? `${imageSlug}.${extension}` : imageSlug;
+    const subfolderSegments = sanitizeSubfolder(subfolderInput.value.trim());
+    const imagesDirectory = await getProjectImagesDirectory();
+    const destinationDirectory = await resolveTargetDirectory(imagesDirectory, subfolderSegments);
+
+    if (await fileAlreadyExists(destinationDirectory, targetFileName)) {
+      const relativeFolder = subfolderSegments.length ? `/${subfolderSegments.join('/')}` : '';
+      throw new Error(`A file named ${targetFileName} already exists in /images${relativeFolder}. Choose a different slug or subfolder.`);
+    }
+
+    const fileHandle = await destinationDirectory.getFileHandle(targetFileName, { create: true });
+    const writable = await fileHandle.createWritable();
+    await writable.write(await selectedImageFile.arrayBuffer());
+    await writable.close();
+
+    return {
+      fileName: targetFileName,
+      publicPath: buildImportedImageSrc(imageSlug, subfolderSegments, extension),
+    };
+  }
+
+  async function writeEntryDataFiles(imageSlug, productSlugValue, externalEntries) {
+    const hasPermission = await ensureDirectoryPermission(selectedProjectDirectory);
+    if (!hasPermission) {
+      throw new Error('Write permission was denied for the selected project folder.');
+    }
+
+    const imagesHandle = await getDataFileHandle('images.ts');
+    const imagesSource = await readTextFile(imagesHandle);
+    const nextImagesSource = appendToExportedArray(
+      imagesSource,
+      'images',
+      imageOutput.value,
+      `slug: '${imageSlug}'`,
+    );
+    const writes = [{ handle: imagesHandle, content: nextImagesSource, path: 'src/data/images.ts' }];
+
+    if (!productOutput.value.trim().startsWith('//')) {
+      const productsHandle = await getDataFileHandle('products.ts');
+      const productsSource = await readTextFile(productsHandle);
+      const nextProductsSource = appendToExportedArray(
+        productsSource,
+        'products',
+        productOutput.value,
+        `slug: '${productSlugValue}'`,
+      );
+      writes.push({ handle: productsHandle, content: nextProductsSource, path: 'src/data/products.ts' });
+    }
+
+    if (externalEntries.length) {
+      const externalLinksHandle = await getDataFileHandle('externalLinks.ts');
+      const externalLinksSource = await readTextFile(externalLinksHandle);
+      const nextExternalLinksSource = appendToExternalLinksRecord(
+        externalLinksSource,
+        externalLinksOutput.value,
+        externalEntries,
+      );
+      writes.push({ handle: externalLinksHandle, content: nextExternalLinksSource, path: 'src/data/externalLinks.ts' });
+    }
+
+    for (const write of writes) {
+      await writeTextFile(write.handle, write.content);
+    }
+
+    return writes.map((write) => write.path);
+  }
+
+  async function handleChooseFolder() {
+    clearStatus();
+
+    if (!fsApiSupported) {
+      setStatus(
+        'Local file writes are not available in this browser. Use snippets as a manual fallback.',
+        'warning',
+      );
+      return;
+    }
+
+    try {
+      const directoryHandle = await window.showDirectoryPicker({ mode: 'readwrite' });
+      const isProjectRootDirectory = await looksLikeProjectRootDirectory(directoryHandle);
+      if (!isProjectRootDirectory) {
+        selectedProjectDirectory = null;
+        updateFolderMeta();
+        setStatus(
+          'Choose the repo root folder. This helper expects package.json, public/images, and src/data.',
+          'warning',
+        );
+      } else {
+        selectedProjectDirectory = directoryHandle;
+        updateFolderMeta();
+        setStatus('Project root selected. Submit will add the image and update local gallery data.', 'success');
+      }
+    } catch (error) {
+      if (error && error.name === 'AbortError') {
+        return;
+      }
+
+      setStatus('The project folder could not be selected. Try again.', 'error');
+    }
+  }
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+    clearStatus();
+    syncDefaults();
+    updateProductFieldsState();
+
+    const imageTitle = titleInput.value.trim();
+    const imageSlug = getResolvedImageSlug();
+
+    if (!imageTitle && !imageSlug) {
+      setStatus('Enter a title or slug before submitting.', 'error', { reveal: true });
+      titleInput.focus({ preventScroll: true });
+      return;
+    }
+
+    if (imageSlug && slugInput.value.trim() !== imageSlug) {
+      slugInput.value = imageSlug;
+    }
+
+    const createProduct = createProductCheckbox.checked;
+    if (createProduct && productSlugInput.value.trim() !== getResolvedProductSlug()) {
+      productSlugInput.value = getResolvedProductSlug();
+    }
+    const productSlugValue = getResolvedProductSlug();
+
+    let finalPublicPath = imageSrcInput.value.trim();
+
+    try {
+      let importResult = null;
+      if (selectedImageFile) {
+        if (!fsApiSupported) {
+          setStatus(
+            'Local writes are not available here. Move the file into public/images manually and enter the public path before submitting.',
+            'error',
+            { reveal: true },
+          );
+          return;
+        }
+
+        if (!selectedProjectDirectory) {
+          setStatus(
+            'Choose the repo root folder so submit can copy the image into public/images and update gallery data.',
+            'error',
+            { reveal: true },
+          );
+          return;
+        }
+
+        importResult = await importSelectedFile(imageSlug);
+        finalPublicPath = importResult.publicPath;
+        imageSrcInput.value = finalPublicPath;
+      }
+
+      if (!finalPublicPath) {
+        if (fsApiSupported) {
+          setStatus(
+            'Choose an image file and the repo root, or enter the public image path manually before submitting.',
+            'error',
+            { reveal: true },
+          );
+          return;
+        }
+
+        setStatus(
+          'Local writes are not available here. Move the file into public/images manually and enter the public path before submitting.',
+          'error',
+          { reveal: true },
+        );
+        return;
+      }
+
+      imageSrcInput.value = finalPublicPath;
+      updateOutputs();
+
+      const finalFormData = new FormData(form);
+      const finalExternalEntries = buildExternalEntries(imageSlug, finalFormData);
+
+      if (fsApiSupported && selectedProjectDirectory) {
+        const writtenFiles = await writeEntryDataFiles(imageSlug, productSlugValue, finalExternalEntries);
+        const importMessage = importResult
+          ? `Imported ${importResult.fileName} to ${importResult.publicPath}. `
+          : '';
+        setStatus(
+          `${importMessage}Added ${imageSlug} to local gallery data: ${writtenFiles.join(', ')}. Refresh /gallery/ to see it.`,
+          'success',
+          { reveal: true },
+        );
+        return;
+      }
+
+      setStatus(
+        `Snippets refreshed using ${finalPublicPath}. Choose the repo root to write gallery data automatically.`,
+        fsApiSupported ? 'warning' : 'success',
+        { reveal: true },
+      );
+    } catch (error) {
+      setStatus(error instanceof Error ? error.message : 'The file import failed.', 'error', { reveal: true });
+    }
+  }
+
+  slugInput.addEventListener('input', () => {
+    slugInput.dataset.dirty = slugInput.value.trim() ? 'true' : '';
+    updateOutputs();
+  });
+
+  productTitleInput.addEventListener('input', () => {
+    productTitleInput.dataset.dirty = productTitleInput.value.trim() ? 'true' : '';
+    updateOutputs();
+  });
+
+  productSlugInput.addEventListener('input', () => {
+    productSlugInput.dataset.dirty = productSlugInput.value.trim() ? 'true' : '';
+    updateOutputs();
+  });
+
+  fileInput.addEventListener('change', () => {
+    selectedImageFile = fileInput.files && fileInput.files.length ? fileInput.files[0] : null;
+    updateFileMeta();
+    updatePreviewImage();
+    updateOutputs();
+  });
+
+  folderButton.addEventListener('click', handleChooseFolder);
+  aiProviderSelect.addEventListener('change', () => {
+    applyAiProviderDefaults({ resetEndpoint: true, resetModel: true });
+    clearAiStatus();
+  });
+  aiEndpointInput.addEventListener('change', () => {
+    applyAiProviderDefaults();
+  });
+  aiModelPresetSelect.addEventListener('change', () => {
+    syncModelPresetToInput();
+    clearAiStatus();
+  });
+  aiModelInput.addEventListener('input', () => {
+    syncInputToModelPreset();
+  });
+  aiStartButton.addEventListener('click', startAiProvider);
+  aiRefreshModelsButton.addEventListener('click', () => refreshAiModels(true));
+  aiReviewButton.addEventListener('click', runAiReview);
+  aiParseJsonButton.addEventListener('click', parsePastedAiJson);
+  aiApplyButton.addEventListener('click', applyAiSuggestions);
+  createProductCheckbox.addEventListener('change', updateOutputs);
+  titleInput.addEventListener('input', updateOutputs);
+  form.addEventListener('input', updateOutputs);
+  form.addEventListener('change', updateOutputs);
+  form.addEventListener('submit', handleSubmit);
+
+  copyButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      copyOutput(button.dataset.copyTarget, button);
+    });
+  });
+
+  if (downloadButton) {
+    downloadButton.addEventListener('click', downloadAll);
+  }
+
+  folderButton.disabled = !fsApiSupported;
+  updateSupportMessage();
+  updateAiAvailability();
+  applyAiProviderDefaults();
+  updateFolderMeta();
+  updateFileMeta();
+  updateProductFieldsState();
+  updateOutputs();
+</script>

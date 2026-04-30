@@ -21,17 +21,50 @@ import { contactClick } from '../utils/analytics';
         </p>
         <div class="surface space-y-4 p-6">
           <p class="text-sm text-steel">
-            Direct email: <a class="panel-link text-paper underline decoration-white/20 underline-offset-4 hover:decoration-sage" href={`mailto:${siteConfig.email}`} {...contactClick({ location: 'contact_page_intro_email' })}>{siteConfig.email}</a>
+            Direct email: <a
+              class="panel-link text-paper underline decoration-white/20 underline-offset-4 hover:decoration-sage"
+              href={`mailto:${siteConfig.email}`}
+              data-link-type="email_contact"
+              data-link-label={`Email contact: ${siteConfig.email}`}
+              data-link-location="contact_page_intro"
+              {...contactClick({ location: 'contact_page_intro_email' })}
+            >
+              {siteConfig.email}
+            </a>
           </p>
           <p class="text-sm text-steel">Service area: {siteConfig.serviceArea}</p>
-          <CTAButton href="/about/" label="About Joshua" variant="ghost" />
+          <CTAButton
+            href="/about/"
+            label="About Joshua"
+            trackingMeta={{
+              'data-link-type': 'internal_navigation',
+              'data-link-location': 'contact_page_sidebar',
+            }}
+            variant="ghost"
+          />
         </div>
       </div>
 
       <div class="space-y-5">
         <ContactForm />
+        <noscript>
+          <p class="text-sm text-steel">
+            JavaScript is disabled in this browser. You can still reach Joshua directly at
+            <a
+              class="panel-link ml-2 underline underline-offset-4"
+              href={`mailto:${siteConfig.email}`}
+              data-link-type="email_contact"
+              data-link-label={`Email contact: ${siteConfig.email}`}
+              data-link-location="contact_form_noscript"
+              {...contactClick({ location: 'contact_page_noscript_email' })}
+            >
+              {siteConfig.email}
+            </a>
+            .
+          </p>
+        </noscript>
         <p class="text-sm text-steel">
-          After submit, the thank-you page is ready. Before launch, connect the form to Netlify Forms or replace the action with your chosen static form provider.
+          After submit, the thank-you page is ready. Day 2 still needs a chosen static form provider and endpoint.
         </p>
       </div>
     </div>

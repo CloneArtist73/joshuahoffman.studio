@@ -44,6 +44,9 @@ const currentYear = new Date().getFullYear();
       <a
         class="panel-link block text-sm text-steel hover:text-paper"
         href={`mailto:${siteConfig.email}`}
+        data-link-type="email_contact"
+        data-link-label={`Email contact: ${siteConfig.email}`}
+        data-link-location="footer_email"
         {...contactClick({ location: 'footer_email' })}
       >
         {siteConfig.email}

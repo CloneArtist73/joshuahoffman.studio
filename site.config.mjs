@@ -1,27 +1,27 @@
 const siteConfig = {
-  // TODO: Replace this with the real production domain before launch.
-  siteUrl: 'https://example.com',
-  ownerName: 'Joshua [Last Name]',
-  brandName: 'Joshua Photography',
-  defaultTitle: 'Joshua Photography',
+  siteUrl: 'https://joshuahoffman.studio',
+  ownerName: 'Joshua Hoffman',
+  brandName: 'Joshua Hoffman Studio',
+  defaultTitle: 'Joshua Hoffman Studio',
   defaultDescription:
     'Photography for people, families, artists, and rooms that need something real.',
   heroHeadline:
     'Photography for people, families, artists, and rooms that need something real.',
   heroSupport:
     "A quiet visual home for Joshua's portrait work, legacy photography, musician images, and selected fine-art prints.",
-  email: 'email@example.com',
-  serviceArea: '[Service Area]',
-  instagramUrl: 'https://instagram.com/[Instagram URL]',
+  email: 'info@joshuahoffman.studio',
+  serviceArea: 'Upstate New York',
+  instagramUrl: 'https://www.instagram.com/joshuahoffmanphotography/',
   analytics: {
-    provider: 'none',
-    // TODO: Set provider to "plausible" or "ga4" and add the matching ID when analytics is ready.
+    provider: 'ga4',
+    // GA4 is configured. Keep Plausible empty unless switching providers later.
     plausibleDomain: '',
-    gaMeasurementId: '',
+    gaMeasurementId: 'G-F3LFGP6E25',
   },
   contactForm: {
-    provider: 'netlify',
-    // TODO: Replace with a real form endpoint if you choose Formspree, Basin, Getform, or another static handler.
+    provider: 'none',
+    // Day 2: replace with a static form endpoint (Formspree, Basin, Getform, etc.)
+    // while keeping this success route.
     action: '/contact/thank-you/',
   },
 };

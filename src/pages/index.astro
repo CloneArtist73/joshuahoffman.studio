@@ -19,6 +19,8 @@ const previewProducts = products.slice(0, 3)
     image: getImageBySlug(product.imageSlug),
   }))
   .filter((entry): entry is { product: (typeof products)[number]; image: NonNullable<ReturnType<typeof getImageBySlug>> } => Boolean(entry.image));
+
+const hasPrintProducts = previewProducts.length > 0;
 ---
 
 <Layout
@@ -71,7 +73,13 @@ const previewProducts = products.slice(0, 3)
       </div>
 
       <div class="grid gap-6 lg:grid-cols-3">
-        {previewProducts.map(({ product, image }) => <ProductCard image={image} product={product} />)}
+        {hasPrintProducts ? (
+          previewProducts.map(({ product, image }) => <ProductCard image={image} product={product} />)
+        ) : (
+          <article class="surface p-6 text-sm text-steel">
+            Print links are being connected to external storefronts. Use contact options below for custom print requests until checkout is fully configured.
+          </article>
+        )}
       </div>
     </div>
   </section>
@@ -91,8 +99,20 @@ const previewProducts = products.slice(0, 3)
             href="/contact/"
             label="Start an Inquiry"
             tracking={contactClick({ location: 'homepage_inquiry_block' })}
+            trackingMeta={{
+              'data-link-intent': 'contact',
+              'data-link-location': 'homepage_inquiry_block',
+            }}
           />
-          <CTAButton href="/gallery/" label="Explore Gallery" variant="secondary" />
+          <CTAButton
+            href="/gallery/"
+            label="Explore Gallery"
+            trackingMeta={{
+              'data-link-type': 'gallery_navigation',
+              'data-link-location': 'homepage_inquiry_block',
+            }}
+            variant="secondary"
+          />
         </div>
       </div>
     </div>

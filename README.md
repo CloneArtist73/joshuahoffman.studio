@@ -1,14 +1,16 @@
-# Joshua Photography MVP
+# Joshua Hoffman Studio MVP
 
 Static-first photography website MVP built with Astro and Tailwind CSS. It is designed to launch quickly, show emotional work clearly, route people toward inquiries or external checkout, and stay easy to edit through local data files.
+
+Production domain: `https://joshuahoffman.studio`
 
 ## Stack
 
 - Astro
 - Tailwind CSS
 - Local TypeScript data files
-- Static contact form wiring for Netlify Forms by default
-- Lightweight analytics helper that no-ops until a provider is configured
+- Static form wiring with no default backend on Day 1
+- Lightweight analytics helper configured for Google Analytics 4
 
 ## Setup
 
@@ -59,13 +61,13 @@ tailwind.config.mjs
 Most launch edits happen in `src/data/` and `site.config.mjs`.
 
 - `site.config.mjs`
-  Replace the site URL, name, service area, email, Instagram URL, analytics provider, analytics IDs, and form endpoint.
+  Source of truth for the production site URL, name, service area, email, Instagram URL, analytics provider, analytics IDs, and form endpoint. `astro.config.mjs` imports this file so canonical URLs, Open Graph URLs, robots.txt, and sitemap generation stay on `https://joshuahoffman.studio`.
 - `src/data/images.ts`
   Replace placeholder image paths, alt text, titles, hooks, stories, and metadata.
 - `src/data/products.ts`
   Update print titles, descriptions, available formats, and image associations.
 - `src/data/externalLinks.ts`
-  Replace every placeholder outbound URL with the real Fine Art America, Etsy, Shopify, Pixieset, or other checkout link.
+  Add real Fine Art America, Etsy, Shopify, Pixieset, or other checkout links, then reference their keys from `src/data/products.ts`. Placeholder outbound URLs are intentionally not shipped.
 - `src/data/services.ts`
   Update pricing placeholders, service copy, and supporting gallery slugs.
 - `src/data/ctas.ts`
@@ -81,22 +83,21 @@ Placeholder artwork lives in `public/images/placeholders/`.
 
 ## Forms
 
-The contact form is set up for a static workflow:
+The contact form is set up for a Day-1 static workflow:
 
-- Default: Netlify Forms-style markup with a thank-you page at `/contact/thank-you/`
-- Alternative: replace `site.config.mjs -> contactForm.action` and the provider-specific attributes in `src/components/ContactForm.astro`
+- Day 1: no active backend provider (`contactForm.provider = 'none'`) and a thank-you route at `/contact/thank-you/`.
+- Day 2: replace `site.config.mjs -> contactForm.action` with a real static form endpoint (Formspree, Basin, Getform, etc.), then tune provider attributes in `src/components/ContactForm.astro`.
 
-Before launch, choose one:
+Day 2 static provider shortlist:
 
-- Netlify Forms
 - Formspree
 - Basin
 - Getform
-- Another static form handler
+- Any other static form handler you already use
 
 ## Analytics
 
-Analytics is safe by default and will no-op until configured.
+Analytics is configured for Google Analytics 4.
 
 Supported event hooks already wired in the UI:
 
@@ -111,29 +112,31 @@ Supported event hooks already wired in the UI:
 - `gallery_image_click`
 - `image_page_view`
 
-To enable analytics:
+Current setup:
 
 1. Open `site.config.mjs`
-2. Set `analytics.provider` to `plausible` or `ga4`
-3. Add the correct `plausibleDomain` or `gaMeasurementId`
+2. Confirm `analytics.provider` is `ga4`
+3. Confirm `analytics.gaMeasurementId` is set to the active GA4 Measurement ID
 
 ## Deployment
 
-This project builds to static output and can be deployed to:
+The production origin is configured as `https://joshuahoffman.studio` in `site.config.mjs`. Astro reads that same value in `astro.config.mjs`, so `npm run build` emits sitemap and canonical metadata for the custom domain.
 
-- Netlify
+This project builds to static output and launches with this Day 1 workflow:
+
+- InMotion Hosting (`public_html`) via `npm run build` then upload only `dist/`
 - Vercel
 - Cloudflare Pages
 
-If you deploy outside Netlify, remember to replace the form setup first.
+If you deploy outside InMotion, remember to replace the form setup first.
 
 ## Before launch
 
 - Replace placeholder image files with real photography
-- Replace placeholder outbound product URLs
-- Replace placeholder email, service area, and Instagram values
+- Add real outbound product URLs and route keys
+- Confirm `info@joshuahoffman.studio` is the correct public email
+- Confirm service area wording stays `Upstate New York`
 - Replace pricing placeholders
-- Set the real production domain in both `site.config.mjs` and `astro.config.mjs`
-- Connect a real analytics provider
-- Connect a real static form provider
+- Analytics is configured for GA4; confirm data appears in Google Analytics after launch
+- Leave form provider set to `none` on Day 1; connect a real static form provider on Day 2
 - Rebuild and test every outbound route and inquiry path

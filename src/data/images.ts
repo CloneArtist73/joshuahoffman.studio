@@ -32,7 +32,7 @@ export const images: ImageItem[] = [
     alt: 'Placeholder artwork for a close family memory photograph centered on hands.',
     hook: 'A family image built around touch, not performance.',
     story:
-      'Some photographs matter because they hold onto ordinary gestures before they disappear. This placeholder stands in for legacy work that is quiet, respectful, and grounded in family presence. The finished image should feel close, steady, and careful.',
+      'Some photographs matter because they hold onto ordinary gestures before they disappear. This image is meant to point toward legacy work that is quiet, respectful, and grounded in family presence. The finished photograph should feel close, steady, and careful.',
     orientation: 'vertical',
     year: '2026',
     location: '[Service Area]',
@@ -160,7 +160,7 @@ export const images: ImageItem[] = [
     alt: 'Placeholder artwork for a quiet blue-toned hallway photograph.',
     hook: 'A quiet frame that leans into mood without turning decorative.',
     story:
-      'The personal and print work should sit close to Joshua’s client work without feeling interchangeable. This placeholder is for images that can carry a room on their own but still feel lived in. The eventual file can route to prints or licensing depending on interest.',
+      'The personal and print work should sit close to Joshua’s client work without feeling interchangeable. This image is meant for work that can carry a room on its own but still feel lived in. It can route to prints or licensing depending on interest.',
     orientation: 'square',
     year: '2026',
     location: '[Service Area]',
@@ -177,7 +177,7 @@ export const images: ImageItem[] = [
     alt: 'Placeholder artwork for a fine-art still life built around an amplifier.',
     hook: 'An object study that carries the weight of a room after sound has stopped.',
     story:
-      'Not every music-related frame needs a face in it. This image placeholder is meant for print buyers who respond to instruments, equipment, and the architecture of rehearsal spaces. It can route to external checkout or to a custom print question.',
+      'Not every music-related frame needs a face in it. This image is for print buyers who respond to instruments, equipment, and the architecture of rehearsal spaces. It can route to external checkout or to a custom print question.',
     orientation: 'square',
     year: '2026',
     location: '[Service Area]',
@@ -222,14 +222,54 @@ export const images: ImageItem[] = [
     bestFormat: 'Wide print above a desk or console',
     serviceCTA: 'legacy',
   },
+  {
+    slug: 'star-trails-over-trees',
+    title: 'Star Trails Over Trees',
+    category: 'personal',
+    tags: ['astrophotography', 'night-sky', 'star-trails', 'landscape'],
+    imageSrc: '/images/star-trails-over-trees.jpg',
+    alt: 'A long-exposure photograph showing circular star trails over silhouetted trees and a building.',
+    hook: 'The slow, silent rotation of the night sky.',
+    story: 'This long-exposure captures the apparent movement of stars across the sky, creating concentric circles of light. The foreground features silhouetted trees and the edge of a structure, grounding the celestial movement in a specific, quiet location. It is a study in time and celestial mechanics.',
+    orientation: 'horizontal',
+    medium: 'Digital photograph',
+    bestFormat: 'Large wall print or gallery display',
+    featured: true,
+    printAvailable: true,
+    serviceCTA: 'custom',
+    productSlug: 'star-trails-over-trees-print',
+    // Add productSlug and outbound links when this image is ready to sell.
+  },
+  {
+    slug: 'city-street-perspective',
+    title: 'City street perspective',
+    category: 'personal',
+    tags: ['urban', 'architecture', 'street-photography', 'manhattan', 'perspective'],
+    imageSrc: '/images/city-street-perspective.jpg',
+    alt: 'A view down a set of parallel train tracks in a city street, flanked by tall buildings.',
+    hook: 'The geometry of the city, viewed from the tracks.',
+    story: 'The tracks draw the eye deep into the frame, creating a strong sense of linear perspective. The surrounding architecture—a mix of modern and historical styles—frames the passage, suggesting movement and the passage of time. It is a quiet moment of urban geometry.',
+    orientation: 'vertical',
+    medium: 'Digital photograph',
+    bestFormat: 'Gallery display',
+    featured: true,
+    printAvailable: true,
+    serviceCTA: 'custom',
+    productSlug: 'city-street-perspective-print',
+    // Add productSlug and outbound links when this image is ready to sell.
+  },
 ];
 
 export function getFeaturedImages(limit = 6) {
   return images.filter((image) => image.featured).slice(0, limit);
 }
 
-export function getGalleryImages() {
-  return images.slice(0, 12);
+export function getGalleryImages(limit?: number) {
+  if (typeof limit === 'number') {
+    return images.slice(0, Math.max(0, limit));
+  }
+
+  return images;
 }
 
 export function getImagesByCategory(category: ImageItem['category'], limit?: number) {

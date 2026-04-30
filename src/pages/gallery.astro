@@ -28,17 +28,34 @@ const galleryImages = getGalleryImages();
           href="/contact/"
           label="Start an Inquiry"
           tracking={contactClick({ location: 'gallery_intro' })}
+          trackingMeta={{
+            'data-link-type': 'booking_inquiry',
+            'data-link-location': 'gallery_intro',
+            'data-link-intent': 'new_inquiry',
+          }}
         />
       </div>
     </div>
   </section>
 
-  <GalleryGrid
-    context="gallery_page"
-    enableFilter
-    heading="Browse by category"
-    id="main-gallery-grid"
-    images={galleryImages}
-    intro="The filter is intentionally simple and client-side only, so the site stays static and fast."
-  />
+  {
+    galleryImages.length > 0 ? (
+      <GalleryGrid
+        context="gallery_page"
+        enableFilter
+        heading="Browse by category"
+        id="main-gallery-grid"
+        images={galleryImages}
+        intro="The filter is intentionally simple and client-side only, so the site stays static and fast."
+      />
+    ) : (
+      <section class="section-block pt-0">
+        <div class="shell">
+          <p class="surface p-6 text-sm text-steel">
+            The gallery is currently being populated. Use the contact page for a custom curation preview while uploads are completed.
+          </p>
+        </div>
+      </section>
+    )
+  }
 </Layout>

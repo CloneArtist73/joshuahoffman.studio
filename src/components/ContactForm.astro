@@ -7,9 +7,8 @@ const isNetlify = siteConfig.contactForm.provider === 'netlify';
 
 <div class="surface p-6 sm:p-8">
   <!--
-    TODO: If you deploy anywhere other than Netlify, replace the form action and
-    provider-specific attributes below with your real Formspree, Basin, Getform,
-    or other static form endpoint.
+    TODO: Connect this to the selected Day 2 static form handler.
+    Keep provider-specific attributes disabled until the endpoint is chosen.
   -->
   <form
     action={siteConfig.contactForm.action}
@@ -34,7 +33,7 @@ const isNetlify = siteConfig.contactForm.provider === 'netlify';
           autocomplete="email"
           id="email"
           name="email"
-          placeholder="email@example.com"
+          placeholder="info@joshuahoffman.studio"
           required
           type="email"
         />
@@ -70,6 +69,9 @@ const isNetlify = siteConfig.contactForm.provider === 'netlify';
         <a
           class="panel-link text-paper underline decoration-white/30 underline-offset-4 hover:decoration-sage"
           href={`mailto:${siteConfig.email}`}
+          data-link-type="email_contact"
+          data-link-label={`Email contact: ${siteConfig.email}`}
+          data-link-location="contact_form"
           {...contactClick({ location: 'contact_page_email' })}
         >
           {siteConfig.email}

@@ -15,7 +15,7 @@ const isPrintService = service.slug === 'prints';
 <article class="surface overflow-hidden">
   {service.imageSrc && (
     <img
-      alt={`${service.title} placeholder artwork`}
+      alt={`${service.title} supporting image`}
       class="aspect-[5/4] w-full object-cover"
       height="960"
       loading="lazy"
@@ -36,6 +36,11 @@ const isPrintService = service.slug === 'prints';
           ? printBuyClick({ location: context, service: service.slug })
           : bookSessionClick({ location: context, service: service.slug })
       }
+      trackingMeta={{
+        'data-link-type': isPrintService ? 'print_browse' : 'booking_inquiry',
+        'data-link-location': context,
+        'data-link-service': service.slug,
+      }}
       variant="secondary"
     />
   </div>

@@ -7,6 +7,7 @@ interface Props {
   variant?: Variant;
   external?: boolean;
   tracking?: Record<string, string>;
+  trackingMeta?: Record<string, string>;
   class?: string;
 }
 
@@ -16,6 +17,7 @@ const {
   variant = 'primary',
   external = false,
   tracking = {},
+  trackingMeta = {},
   class: className = '',
 } = Astro.props;
 
@@ -26,6 +28,18 @@ const variantClasses: Record<Variant, string> = {
     'border border-white/10 bg-white/5 px-5 py-3 text-paper hover:border-sage/60 hover:bg-white/10',
   ghost:
     'border border-transparent px-4 py-3 text-sand hover:bg-white/10 hover:text-paper',
+};
+
+const inferredLinkType = external
+  ? 'print_purchase'
+  : href.includes('/contact')
+    ? 'booking_inquiry'
+    : 'cta_click';
+
+const baseTrackingMeta = {
+  'data-link-type': inferredLinkType,
+  'data-link-label': label,
+  'data-link-href': href,
 };
 ---
 
@@ -39,6 +53,8 @@ const variantClasses: Record<Variant, string> = {
   rel={external ? 'noreferrer noopener' : undefined}
   target={external ? '_blank' : undefined}
   {...tracking}
+  {...baseTrackingMeta}
+  {...trackingMeta}
 >
   {label}
 </a>

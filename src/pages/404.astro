@@ -1,0 +1,46 @@
+---
+import CTAButton from '../components/CTAButton.astro';
+import Layout from '../components/Layout.astro';
+import { contactClick } from '../utils/analytics';
+---
+
+<Layout
+  description="The page you are looking for could not be found."
+  noindex
+  path="/404.html"
+  title="Page Not Found"
+>
+  <section class="section-block">
+    <div class="shell">
+      <div class="mx-auto max-w-3xl space-y-6">
+        <div class="surface p-8 sm:p-10">
+          <p class="eyebrow">404</p>
+          <h1 class="headline">This page is not here right now.</h1>
+          <p class="mt-4 max-w-copy text-base text-steel sm:text-lg">
+            The URL may have been moved or mistyped. Use the links below to find the work and contact Joshuah Hoffman directly.
+          </p>
+
+          <div class="mt-8 flex flex-wrap gap-3">
+            <CTAButton href="/" label="Back to Home" trackingMeta={{ 'data-link-type': 'internal_navigation', 'data-link-location': '404_page' }} />
+            <CTAButton
+              href="/gallery/"
+              label="Browse Gallery"
+              trackingMeta={{ 'data-link-type': 'internal_navigation', 'data-link-location': '404_page' }}
+              variant="secondary"
+            />
+            <CTAButton
+              href="/contact/?type=Print%20or%20product%20question"
+              label="Contact Joshua"
+              tracking={contactClick({ location: '404_contact' })}
+              trackingMeta={{
+                'data-link-type': 'booking_inquiry',
+                'data-link-location': '404_page',
+                'data-link-intent': 'custom_print',
+              }}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

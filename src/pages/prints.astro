@@ -19,7 +19,7 @@ const printProducts = products
   path="/prints/"
   title="Fine-Art Prints"
 >
-  <section class="section-block">
+<section class="section-block">
     <div class="shell grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
       <div class="space-y-4">
         <span class="eyebrow">Fine-art prints</span>
@@ -34,6 +34,11 @@ const printProducts = products
           href="/contact/?type=Print%20or%20product%20question"
           label="Ask About Custom Print"
           tracking={contactClick({ location: 'prints_intro', intent: 'custom_print' })}
+          trackingMeta={{
+            'data-link-type': 'booking_inquiry',
+            'data-link-location': 'prints_intro',
+            'data-link-intent': 'custom_print',
+          }}
         />
       </div>
     </div>
@@ -41,7 +46,13 @@ const printProducts = products
 
   <section class="section-block pt-0">
     <div class="shell grid gap-6 lg:grid-cols-2">
-      {printProducts.map(({ product, image }) => <ProductCard image={image} product={product} />)}
+      {printProducts.length > 0 ? (
+        printProducts.map(({ product, image }) => <ProductCard image={image} product={product} />)
+      ) : (
+        <div class="surface p-6 text-sm text-steel">
+          Print products are being prepared. Use the contact page for custom order needs or to request platform checkout links.
+        </div>
+      )}
     </div>
   </section>
 </Layout>

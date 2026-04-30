@@ -24,6 +24,13 @@ const {
 const routes = routeKeys
   .map((routeKey) => externalLinks[routeKey])
   .filter(Boolean);
+const hasRoutes = routes.length > 0;
+
+function getRouteUrl(url: string) {
+  return url
+    .replace('{imageSlug}', encodeURIComponent(imageSlug))
+    .replace('{productSlug}', encodeURIComponent(productSlug));
+}
 ---
 
 <div class={`flex flex-wrap gap-3 ${compact ? 'pt-1' : 'pt-2'}`}>
@@ -31,7 +38,7 @@ const routes = routeKeys
     routes.map((route) => (
       <CTAButton
         external
-        href={route.url}
+        href={getRouteUrl(route.url)}
         label={route.label}
         tracking={printBuyClick(
           {
@@ -41,6 +48,13 @@ const routes = routeKeys
           },
           route.platform,
         )}
+        trackingMeta={{
+          'data-link-type': 'print_purchase',
+          'data-link-platform': route.platform,
+          'data-link-label': route.label,
+          'data-link-image': imageSlug,
+          'data-link-product': productSlug,
+        }}
         variant="secondary"
       />
     ))
@@ -56,8 +70,22 @@ const routes = routeKeys
           productSlug,
           intent: 'custom_print',
         })}
+        trackingMeta={{
+          'data-link-type': 'booking_inquiry',
+          'data-link-intent': 'custom_print',
+          'data-link-location': 'product_routes',
+          'data-link-image': imageSlug,
+          'data-link-product': productSlug,
+        }}
         variant="ghost"
       />
+    )
+  }
+  {
+    !includeInquiry && !hasRoutes && (
+      <p class="text-sm text-steel">
+        Checkout links are being configured. Use the inquiry option on this page if you need a custom print.
+      </p>
     )
   }
 </div>

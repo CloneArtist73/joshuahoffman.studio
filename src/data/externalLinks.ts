@@ -1,54 +1,32 @@
 import type { ExternalLink } from './types';
 
-// TODO: Replace every placeholder URL below with the real Fine Art America, Etsy,
-// Shopify, Pixieset, or other outbound product link before launch.
 export const externalLinks: Record<string, ExternalLink> = {
-  afterTheShowFineArtAmerica: {
-    key: 'afterTheShowFineArtAmerica',
-    label: 'Fine Art America',
-    url: 'https://example.com/fine-art-america/after-the-show',
+  fineArtAmerica: {
+    key: 'fineArtAmerica',
+    label: 'Buy on Fine Art America',
+    url: 'https://www.fineartamerica.com/prints/{imageSlug}-{productSlug}.html',
     platform: 'fine-art-america',
+    note: 'Replace with a real checkout URL once product page details are finalized.',
   },
-  afterTheShowEtsy: {
-    key: 'afterTheShowEtsy',
-    label: 'Etsy',
-    url: 'https://example.com/etsy/after-the-show',
+  etsy: {
+    key: 'etsy',
+    label: 'Buy on Etsy',
+    url: 'https://www.etsy.com/search?q={imageSlug}',
     platform: 'etsy',
+    note: 'Replace with a real Etsy listing URL before launch.',
   },
-  kitchenWindowFineArtAmerica: {
-    key: 'kitchenWindowFineArtAmerica',
-    label: 'Fine Art America',
-    url: 'https://example.com/fine-art-america/kitchen-window',
-    platform: 'fine-art-america',
-  },
-  kitchenWindowPixieset: {
-    key: 'kitchenWindowPixieset',
-    label: 'Pixieset',
-    url: 'https://example.com/pixieset/kitchen-window',
-    platform: 'pixieset',
-  },
-  quietAmpShopify: {
-    key: 'quietAmpShopify',
-    label: 'Shopify',
-    url: 'https://example.com/shopify/quiet-amp',
+  shopify: {
+    key: 'shopify',
+    label: 'Buy on Shopify',
+    url: 'https://shopify.com/products/{productSlug}',
     platform: 'shopify',
+    note: 'Replace with a real Shopify product URL before launch.',
   },
-  quietAmpPixieset: {
-    key: 'quietAmpPixieset',
-    label: 'Pixieset',
-    url: 'https://example.com/pixieset/quiet-amp',
+  pixieset: {
+    key: 'pixieset',
+    label: 'Buy on Pixieset',
+    url: 'https://www.pixieset.com/prints/{imageSlug}',
     platform: 'pixieset',
-  },
-  roomWithFlowersFineArtAmerica: {
-    key: 'roomWithFlowersFineArtAmerica',
-    label: 'Fine Art America',
-    url: 'https://example.com/fine-art-america/room-with-flowers',
-    platform: 'fine-art-america',
-  },
-  roomWithFlowersEtsy: {
-    key: 'roomWithFlowersEtsy',
-    label: 'Etsy',
-    url: 'https://example.com/etsy/room-with-flowers',
-    platform: 'etsy',
+    note: 'Replace with a real Pixieset product URL before launch.',
   },
 };
