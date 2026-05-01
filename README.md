@@ -1,4 +1,3 @@
-<<<<<<< ours
 # Joshua Hoffman Studio MVP
 
 Static-first photography website MVP built with Astro and Tailwind CSS. It is designed to launch quickly, show emotional work clearly, route people toward inquiries or external checkout, and stay easy to edit through local data files.
@@ -141,10 +140,57 @@ If you deploy outside InMotion, remember to replace the form setup first.
 - Analytics is configured for GA4; confirm data appears in Google Analytics after launch
 - Leave form provider set to `none` on Day 1; connect a real static form provider on Day 2
 - Rebuild and test every outbound route and inquiry path
-=======
+- 
 # joshuahoffman.studio
 
 Repository initialized with baseline Git hygiene:
 - `.gitignore` for common local artifacts
 - `.gitattributes` to normalize line endings
->>>>>>> theirs
+
+# joshuahoffman.studio
+
+## Purpose
+
+This repository includes baseline Git defaults to keep commits clean and push operations reliable.
+
+## One-time setup (existing remote repository)
+
+Run this after cloning if the remote already has commits:
+
+```bash
+# 1) Verify remotes
+git remote -v
+
+# 2) Switch/create your local main branch
+git checkout -B main
+
+# 3) Sync remote refs and rebase your local branch
+git fetch origin
+git pull --rebase origin main
+
+# 4) Ensure upstream tracking is configured
+git branch --set-upstream-to=origin/main main
+```
+
+## Daily push workflow
+
+Use this sequence before pushing to avoid `non-fast-forward` failures:
+
+```bash
+git fetch origin
+git pull --rebase origin main
+git push origin main
+```
+
+## If push is still rejected
+
+1. Confirm you are on `main`: `git branch --show-current`
+2. Inspect divergence: `git log --oneline --graph --decorate --all -n 25`
+3. Resolve any rebase conflicts, then continue: `git rebase --continue`
+4. Retry push: `git push origin main`
+
+## Notes
+
+- Prefer `origin` as the primary remote name for consistency.
+- `pull --rebase` keeps history linear and easier to review.
+- Avoid `git push --force` on shared branches unless explicitly coordinated.
