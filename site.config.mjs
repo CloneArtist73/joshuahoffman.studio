@@ -20,7 +20,7 @@ const siteConfig = {
   },
   contactForm: {
     provider: 'none',
-    // Day 2: replace with a static form endpoint (Formspree, Basin, Getform, etc.)
+    // Replace with a static form endpoint (Formspree, Basin, Getform, etc.)
     // while keeping this success route.
     action: '/contact/thank-you/',
   },

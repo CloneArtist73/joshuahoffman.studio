@@ -12,7 +12,7 @@ const { service, context = 'service_card' } = Astro.props;
 const isPrintService = service.slug === 'prints';
 ---
 
-<article class="surface overflow-hidden">
+<article class="surface flex h-full flex-col overflow-hidden">
   {service.imageSrc && (
     <img
       alt={`${service.title} supporting image`}
@@ -23,25 +23,28 @@ const isPrintService = service.slug === 'prints';
       width="1200"
     />
   )}
-  <div class="space-y-4 p-6">
+  <div class="flex flex-1 flex-col space-y-4 p-6">
     <span class="tag-pill">{service.title}</span>
     <h3 class="text-2xl">{service.shortDescription}</h3>
     <p class="text-sm text-steel">{service.longDescription}</p>
     {service.startingPrice && <p class="text-sm font-semibold text-paper">{service.startingPrice}</p>}
-    <CTAButton
-      href={service.pageHref}
-      label={service.slug === 'prints' ? 'View Print Options' : service.ctaLabel}
-      tracking={
-        isPrintService
-          ? printBuyClick({ location: context, service: service.slug })
-          : bookSessionClick({ location: context, service: service.slug })
-      }
-      trackingMeta={{
-        'data-link-type': isPrintService ? 'print_browse' : 'booking_inquiry',
-        'data-link-location': context,
-        'data-link-service': service.slug,
-      }}
-      variant="secondary"
-    />
+    <div class="mt-auto pt-2">
+      <CTAButton
+        class="whitespace-nowrap"
+        href={service.pageHref}
+        label={service.slug === 'prints' ? 'View Print Options' : service.ctaLabel}
+        tracking={
+          isPrintService
+            ? printBuyClick({ location: context, service: service.slug })
+            : bookSessionClick({ location: context, service: service.slug })
+        }
+        trackingMeta={{
+          'data-link-type': isPrintService ? 'print_browse' : 'booking_inquiry',
+          'data-link-location': context,
+          'data-link-service': service.slug,
+        }}
+        variant="secondary"
+      />
+    </div>
   </div>
 </article>

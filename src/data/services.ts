@@ -8,7 +8,7 @@ export const services: ServiceItem[] = [
       'Honest portrait sessions for people who want to be seen clearly, not overly posed.',
     longDescription:
       'Honest portrait sessions for people who want to be seen clearly, not overly posed. Built for individuals, families, artists, and anyone who needs images with presence.',
-    startingPrice: 'Starting at [portrait session rate]',
+    startingPrice: 'Pricing by project after a short planning conversation',
     ctaLabel: 'Book a Portrait',
     imageSrc: '/images/placeholders/portrait-session.svg',
     pageHref: '/portraits/',
@@ -34,7 +34,7 @@ export const services: ServiceItem[] = [
       'Sensitive photography built around memory, family, grief, and the people we do not want forgotten.',
     longDescription:
       'Sensitive photography built around memory, family, grief, and the people we do not want forgotten. These sessions are handled carefully and personally.',
-    startingPrice: 'Starting at [legacy session rate]',
+    startingPrice: 'Pricing by project after a careful planning conversation',
     ctaLabel: 'Start a Conversation',
     imageSrc: '/images/placeholders/legacy-light.svg',
     pageHref: '/legacy/',
@@ -60,7 +60,7 @@ export const services: ServiceItem[] = [
       'Portraits for musicians, performers, and artists who need images that feel like their work sounds.',
     longDescription:
       'Portraits for musicians, performers, and artists who need images that feel like their work sounds: direct, emotional, and usable across press, social, posters, and releases.',
-    startingPrice: 'Starting at [artist session rate]',
+    startingPrice: 'Pricing by project after a short planning conversation',
     ctaLabel: 'Book an Artist Session',
     imageSrc: '/images/placeholders/musician-stage.svg',
     pageHref: '/musicians/',

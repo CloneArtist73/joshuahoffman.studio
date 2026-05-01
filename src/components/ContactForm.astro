@@ -3,17 +3,17 @@ import { siteConfig } from '../data/site';
 import { contactClick, inquirySubmit } from '../utils/analytics';
 
 const isNetlify = siteConfig.contactForm.provider === 'netlify';
+const hasConfiguredForm = siteConfig.contactForm.provider !== 'none';
+const directEmailHref = `mailto:${siteConfig.email}?subject=Photography%20inquiry`;
 ---
 
+{hasConfiguredForm ? (
 <div class="surface p-6 sm:p-8">
-  <!--
-    TODO: Connect this to the selected Day 2 static form handler.
-    Keep provider-specific attributes disabled until the endpoint is chosen.
-  -->
   <form
     action={siteConfig.contactForm.action}
     method="POST"
     name="contact"
+    data-contact-form
     netlify-honeypot={isNetlify ? 'bot-field' : undefined}
     data-netlify={isNetlify ? 'true' : undefined}
     {...inquirySubmit({ form: 'contact_page' })}
@@ -22,27 +22,40 @@ const isNetlify = siteConfig.contactForm.provider === 'netlify';
     {isNetlify && <input name="bot-field" type="hidden" />}
 
     <div class="grid gap-5 sm:grid-cols-2">
-      <label class="space-y-2 text-sm text-paper" for="name">
-        <span>Name</span>
-        <input autocomplete="name" id="name" name="name" placeholder="Your name" required type="text" />
+      <label class="form-field" for="name">
+        <span class="form-field-label">Name</span>
+        <input
+          aria-describedby="name-help name-error"
+          autocomplete="name"
+          id="name"
+          name="name"
+          placeholder="Your name"
+          required
+          type="text"
+        />
+        <span class="form-help" id="name-help">Your preferred name is enough.</span>
+        <span class="form-error" id="name-error">Enter your name.</span>
       </label>
 
-      <label class="space-y-2 text-sm text-paper" for="email">
-        <span>Email</span>
+      <label class="form-field" for="email">
+        <span class="form-field-label">Email</span>
         <input
+          aria-describedby="email-help email-error"
           autocomplete="email"
           id="email"
           name="email"
-          placeholder="info@joshuahoffman.studio"
+          placeholder="you@example.com"
           required
           type="email"
         />
+        <span class="form-help" id="email-help">Use the address Joshua should reply to.</span>
+        <span class="form-error" id="email-error">Enter a valid email address.</span>
       </label>
     </div>
 
-    <label class="mt-5 block space-y-2 text-sm text-paper" for="inquiry-type">
-      <span>Inquiry type</span>
-      <select id="inquiry-type" name="inquiryType" required>
+    <label class="form-field mt-5" for="inquiry-type">
+      <span class="form-field-label">Inquiry type</span>
+      <select aria-describedby="inquiry-type-help inquiry-type-error" id="inquiry-type" name="inquiryType" required>
         <option value="">Select one</option>
         <option value="Portrait session">Portrait session</option>
         <option value="Legacy / memorial work">Legacy / memorial work</option>
@@ -51,20 +64,25 @@ const isNetlify = siteConfig.contactForm.provider === 'netlify';
         <option value="Licensing">Licensing</option>
         <option value="Other">Other</option>
       </select>
+      <span class="form-help" id="inquiry-type-help">Choose the closest fit for this note.</span>
+      <span class="form-error" id="inquiry-type-error">Choose an inquiry type.</span>
     </label>
 
-    <label class="mt-5 block space-y-2 text-sm text-paper" for="message">
-      <span>Message</span>
+    <label class="form-field mt-5" for="message">
+      <span class="form-field-label">Message</span>
       <textarea
+        aria-describedby="message-help message-error"
         id="message"
         name="message"
         placeholder="Tell Joshua what you need, what you are drawn to, and any timing that matters."
         required
       ></textarea>
+      <span class="form-help" id="message-help">Include timing, location, and the kind of work you have in mind.</span>
+      <span class="form-error" id="message-error">Add a brief message.</span>
     </label>
 
     <div class="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-      <p class="max-w-xl text-sm text-steel">
+      <p class="min-w-0 flex-1 text-sm text-steel">
         Prefer direct email? Reach out at
         <a
           class="panel-link text-paper underline decoration-white/30 underline-offset-4 hover:decoration-sage"
@@ -79,7 +97,8 @@ const isNetlify = siteConfig.contactForm.provider === 'netlify';
         and Joshua will reply directly.
       </p>
       <button
-        class="panel-link inline-flex items-center justify-center rounded-full border border-ember/70 bg-ember px-5 py-3 text-sm font-semibold text-obsidian shadow-soft hover:bg-[#d48b63]"
+        class="btn btn-primary w-full sm:w-auto"
+        data-default-label="Start an Inquiry"
         type="submit"
       >
         Start an Inquiry
@@ -87,6 +106,30 @@ const isNetlify = siteConfig.contactForm.provider === 'netlify';
     </div>
   </form>
 </div>
+) : (
+<div class="surface space-y-5 p-6 sm:p-8">
+  <div class="space-y-3">
+    <span class="eyebrow">Direct inquiry</span>
+    <h2 class="text-3xl">Email Joshua directly.</h2>
+    <p class="text-sm text-steel sm:text-base">
+      Include the kind of work you need, your timing, location, and any image or print that brought you here.
+    </p>
+  </div>
+  <a
+    class="btn btn-primary"
+    href={directEmailHref}
+    data-link-type="email_contact"
+    data-link-label={`Email contact: ${siteConfig.email}`}
+    data-link-location="contact_direct_inquiry"
+    {...contactClick({ location: 'contact_direct_inquiry' })}
+  >
+    Email Joshua
+  </a>
+  <p class="text-sm text-steel">
+    Direct email keeps the inquiry reliable and leaves room for timing, privacy, and project details.
+  </p>
+</div>
+)}
 
 <script is:inline>
   const params = new URLSearchParams(window.location.search);
@@ -101,5 +144,24 @@ const isNetlify = siteConfig.contactForm.provider === 'netlify';
 
   if (imageSlug && messageField instanceof HTMLTextAreaElement && !messageField.value) {
     messageField.value = `I am reaching out about ${imageSlug.replaceAll('-', ' ')}.`;
+  }
+
+  const contactForm = document.querySelector('[data-contact-form]');
+  const submitButton = contactForm?.querySelector('button[type="submit"]');
+
+  if (contactForm instanceof HTMLFormElement && submitButton instanceof HTMLButtonElement) {
+    const defaultSubmitLabel = submitButton.dataset.defaultLabel ?? submitButton.textContent ?? 'Start an Inquiry';
+
+    contactForm.addEventListener('submit', () => {
+      submitButton.disabled = true;
+      submitButton.setAttribute('aria-busy', 'true');
+      submitButton.textContent = 'Sending...';
+    });
+
+    window.addEventListener('pageshow', () => {
+      submitButton.disabled = false;
+      submitButton.removeAttribute('aria-busy');
+      submitButton.textContent = defaultSubmitLabel;
+    });
   }
 </script>

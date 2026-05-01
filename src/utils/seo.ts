@@ -29,7 +29,7 @@ export function buildSeo({
   title,
   description,
   path = '/',
-  image = '/images/placeholders/hero-memory.svg',
+    image = '/images/ice-formations-on-a-surface.jpeg',
   type = 'website',
   noindex = false,
 }: SeoInput) {

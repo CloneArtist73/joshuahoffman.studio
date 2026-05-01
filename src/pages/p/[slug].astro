@@ -96,8 +96,8 @@ const fallbackCta =
   title={image.title}
 >
   <section class="section-block">
-    <div class="shell grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
-      <div class="surface overflow-hidden shadow-soft">
+    <div class="shell grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
+      <div class="surface self-start overflow-hidden shadow-soft">
         <img
           alt={image.alt}
           class="w-full object-cover"
@@ -126,6 +126,7 @@ const fallbackCta =
         <div class="flex flex-wrap gap-3">
           {product ? (
             <ProductRouteButtons
+              compact
               imageSlug={image.slug}
               includeInquiry={product.inquiryAllowed}
               productSlug={product.slug}
@@ -185,13 +186,13 @@ const fallbackCta =
     </div>
   </section>
 
-  <section class="section-block pt-0" id="related-work">
+  <section class="section-block scroll-mt-24 pt-0" id="related-work">
     <div class="shell space-y-8">
       <div class="max-w-3xl space-y-4">
         <span class="eyebrow">Related work</span>
         <h2 class="text-3xl sm:text-4xl">Three nearby frames for people who want to keep looking.</h2>
       </div>
-      <div class="grid gap-6 lg:grid-cols-3">
+      <div class="grid items-start gap-6 lg:grid-cols-3">
         {relatedImages.map((relatedImage) => <ImageCard context="image_page_related" image={relatedImage} />)}
       </div>
       {

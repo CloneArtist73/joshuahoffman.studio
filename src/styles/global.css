@@ -11,12 +11,13 @@
     scroll-behavior: smooth;
   }
 
+  [id] {
+    scroll-margin-top: 6rem;
+  }
+
   body {
     @apply bg-obsidian font-sans text-sand antialiased;
-    background-image:
-      radial-gradient(circle at top left, rgba(188, 123, 86, 0.16), transparent 34%),
-      radial-gradient(circle at bottom right, rgba(155, 178, 157, 0.14), transparent 28%),
-      linear-gradient(180deg, rgba(28, 27, 37, 0.7), rgba(12, 12, 12, 1));
+    background-image: linear-gradient(180deg, rgba(28, 27, 37, 0.55), rgba(12, 12, 12, 1));
     min-height: 100vh;
   }
 
@@ -32,17 +33,23 @@
   h2,
   h3,
   h4 {
-    @apply font-display text-paper tracking-tight;
+    @apply font-display text-paper;
   }
 
   input,
   select,
   textarea {
-    @apply w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-base text-paper placeholder:text-steel focus:border-sage focus:outline-none focus:ring-2 focus:ring-sage/70;
+    @apply w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-base text-paper transition-colors placeholder:text-steel focus:border-sage focus:outline-none focus:ring-2 focus:ring-sage/70 disabled:cursor-not-allowed disabled:opacity-60;
   }
 
   textarea {
     @apply min-h-40 resize-y;
+  }
+
+  input:user-invalid,
+  select:user-invalid,
+  textarea:user-invalid {
+    @apply border-ember/80 bg-ember/10 focus:border-ember focus:ring-ember/60;
   }
 
   ::selection {
@@ -75,6 +82,26 @@
     @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage focus-visible:ring-offset-2 focus-visible:ring-offset-obsidian;
   }
 
+  .btn {
+    @apply inline-flex min-h-11 max-w-full shrink-0 items-center justify-center gap-2 rounded-full px-5 py-3 text-center text-sm font-semibold whitespace-nowrap transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage focus-visible:ring-offset-2 focus-visible:ring-offset-obsidian disabled:cursor-not-allowed disabled:opacity-55;
+  }
+
+  .btn-primary {
+    @apply border border-ember/70 bg-ember text-obsidian shadow-soft hover:border-ember hover:bg-[#d48b63] active:bg-[#aa6548] disabled:hover:border-ember/70 disabled:hover:bg-ember;
+  }
+
+  .btn-secondary {
+    @apply border border-white/10 bg-white/5 text-paper hover:border-sage/60 hover:bg-white/10 active:bg-white/15 disabled:hover:border-white/10 disabled:hover:bg-white/5;
+  }
+
+  .btn-ghost {
+    @apply border border-transparent text-sand hover:bg-white/10 hover:text-paper active:bg-white/15 disabled:hover:bg-transparent disabled:hover:text-sand;
+  }
+
+  .btn[aria-busy='true'] {
+    @apply cursor-wait;
+  }
+
   .copy-muted {
     @apply text-sm text-steel sm:text-base;
   }
@@ -90,6 +117,39 @@
   .tag-pill {
     @apply inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-steel;
   }
+
+  .form-field {
+    @apply block space-y-2 text-sm text-paper;
+  }
+
+  .form-field-label {
+    @apply block font-semibold;
+  }
+
+  .form-help,
+  .form-error {
+    @apply text-xs leading-relaxed;
+  }
+
+  .form-help {
+    @apply text-steel;
+  }
+
+  .form-error {
+    @apply hidden font-semibold text-ember;
+  }
+
+  input:user-invalid ~ .form-help,
+  select:user-invalid ~ .form-help,
+  textarea:user-invalid ~ .form-help {
+    @apply hidden;
+  }
+
+  input:user-invalid ~ .form-error,
+  select:user-invalid ~ .form-error,
+  textarea:user-invalid ~ .form-error {
+    @apply block;
+  }
 }
 
 details summary {
@@ -98,4 +158,24 @@ details summary {
 
 details summary::-webkit-details-marker {
   display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-delay: 0ms !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .group:hover img {
+    transform: none !important;
+  }
 }

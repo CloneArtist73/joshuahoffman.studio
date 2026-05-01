@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1600" role="img" aria-labelledby="title desc">
-  <title id="title">Portrait session placeholder</title>
-  <desc id="desc">Vertical placeholder artwork for portrait photographs.</desc>
+  <title id="title">Portrait session study</title>
+  <desc id="desc">Vertical illustrative artwork for portrait photographs.</desc>
   <defs>
     <linearGradient id="bg" x1="0%" x2="100%" y1="0%" y2="100%">
       <stop offset="0%" stop-color="#14151b" />
@@ -17,9 +17,9 @@
   <ellipse cx="610" cy="650" rx="218" ry="290" fill="#121217" opacity=".85" />
   <rect x="392" y="930" width="438" height="368" rx="170" fill="#16161c" opacity=".84" />
   <text x="110" y="1430" fill="#f7f2e8" font-family="Georgia, serif" font-size="56">
-    Portrait placeholder
+    Portrait session
   </text>
   <text x="110" y="1490" fill="#ddd4c2" font-family="Arial, sans-serif" font-size="24" letter-spacing="4">
-    swap with real vertical portrait
+    quiet direct portrait
   </text>
 </svg>

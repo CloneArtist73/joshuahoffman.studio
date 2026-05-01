@@ -21,9 +21,17 @@ const {
   compact = false,
 } = Astro.props;
 
+function isLiveRoute(route: (typeof externalLinks)[string]) {
+  const hasTemplateToken = route.url.includes('{imageSlug}') || route.url.includes('{productSlug}');
+  const markedPlaceholder = /replace with|before launch|once .* finalized/i.test(route.note ?? '');
+
+  return !hasTemplateToken && !markedPlaceholder;
+}
+
 const routes = routeKeys
   .map((routeKey) => externalLinks[routeKey])
-  .filter(Boolean);
+  .filter((route): route is (typeof externalLinks)[string] => Boolean(route))
+  .filter(isLiveRoute);
 const hasRoutes = routes.length > 0;
 
 function getRouteUrl(url: string) {
@@ -33,7 +41,7 @@ function getRouteUrl(url: string) {
 }
 ---
 
-<div class={`flex flex-wrap gap-3 ${compact ? 'pt-1' : 'pt-2'}`}>
+<div class={`flex flex-wrap items-center gap-3 ${compact ? 'p-0' : 'pt-2'}`}>
   {
     routes.map((route) => (
       <CTAButton
@@ -63,7 +71,7 @@ function getRouteUrl(url: string) {
     includeInquiry && (
       <CTAButton
         href={inquiryHref}
-        label="Ask About Custom Print"
+        label={hasRoutes ? 'Ask About Custom Print' : 'Ask About This Print'}
         tracking={contactClick({
           location: 'product_routes',
           imageSlug,
@@ -77,14 +85,14 @@ function getRouteUrl(url: string) {
           'data-link-image': imageSlug,
           'data-link-product': productSlug,
         }}
-        variant="ghost"
+        variant={hasRoutes ? 'ghost' : 'primary'}
       />
     )
   }
   {
     !includeInquiry && !hasRoutes && (
       <p class="text-sm text-steel">
-        Checkout links are being configured. Use the inquiry option on this page if you need a custom print.
+        Direct print availability is handled by request for this image.
       </p>
     )
   }

@@ -23,7 +23,7 @@ export default {
         copy: '68ch',
       },
       borderRadius: {
-        panel: '2rem',
+        panel: '0.5rem',
       },
       letterSpacing: {
         hush: '0.24em',

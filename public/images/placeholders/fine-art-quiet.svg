@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 1400" role="img" aria-labelledby="title desc">
-  <title id="title">Fine-art print placeholder</title>
-  <desc id="desc">Square placeholder artwork for print-forward photography.</desc>
+  <title id="title">Fine-art print study</title>
+  <desc id="desc">Square illustrative artwork for print-forward photography.</desc>
   <defs>
     <linearGradient id="bg" x1="0%" x2="100%" y1="0%" y2="100%">
       <stop offset="0%" stop-color="#16161d" />
@@ -18,9 +18,9 @@
   <circle cx="700" cy="700" r="184" fill="none" opacity=".18" stroke="#f7f2e8" stroke-width="42" />
   <path d="M560 700h280" opacity=".16" stroke="#f7f2e8" stroke-linecap="round" stroke-width="34" />
   <text x="150" y="1220" fill="#f7f2e8" font-family="Georgia, serif" font-size="58">
-    Print placeholder
+    Fine-art print
   </text>
   <text x="150" y="1280" fill="#ddd4c2" font-family="Arial, sans-serif" font-size="24" letter-spacing="4">
-    replace with print-ready square or still life image
+    quiet square study
   </text>
 </svg>

@@ -4,6 +4,8 @@
 
 - Install dependencies:
   - `npm install`
+- Confirm Node runtime requirement:
+  - `node -v` (project requires Node `>=20.0.0`)
 - Start local dev server:
   - `npm run dev`
 - Build production output (static):
@@ -41,6 +43,7 @@
 
 - The project is configured as Astro static output (`astro.config.mjs`, `site: https://joshuahoffman.studio`).
 - Robot configuration points to `/sitemap-index.xml`; confirm sitemap generation/output in build.
+- Deployment uses static assets from `dist/` after `npm run build`.
 
 ## Local workflows
 
@@ -49,6 +52,7 @@
 
 ## TODO (grounded in repo state)
 
-- `src/data/externalLinks.ts` is currently empty, so outbound print/platform buttons are not yet connected.
-- `src/data/products.ts` uses empty `routeKeys` for all products, so outbound purchase buttons currently render only custom-print inquiries.
-- `site.config.mjs` still has placeholder SEO/contact identity values and analytics defaults (`provider: none`) until launch values are finalized.
+- `src/data/externalLinks.ts` contains platform templates (Fine Art America, Etsy, Shopify, Pixieset), but these are still placeholder URLs and should be replaced with real product pages before launch.
+- `src/data/products.ts` routeKeys are populated and product cards render outbound links, but availability depends on real external URLs in `src/data/externalLinks.ts`.
+- `site.config.mjs` analytics is currently set to GA4 (`provider: 'ga4'`) with `gaMeasurementId` set; verify the measurement ID in GA4 before launch.
+- `site.config.mjs` still has `contactForm.provider = 'none'` and requires a real static form endpoint/provider hookup (Day 2) while keeping the `/contact/thank-you/` success route.

@@ -2,6 +2,11 @@
 import CTAButton from './CTAButton.astro';
 import { primaryNavLinks, secondaryNavLinks, siteConfig } from '../data/site';
 import { bookSessionClick } from '../utils/analytics';
+
+const normalizePath = (path: string) => (path === '/' ? path : path.replace(/\/$/, ''));
+const currentPath = normalizePath(Astro.url.pathname);
+const isCurrentLink = (href: string) => normalizePath(href) === currentPath;
+const hasCurrentSecondaryLink = secondaryNavLinks.some((item) => isCurrentLink(item.href));
 ---
 
 <header class="sticky top-0 z-40 border-b border-white/10 bg-obsidian/80 backdrop-blur">
@@ -13,22 +18,75 @@ import { bookSessionClick } from '../utils/analytics';
       </span>
     </a>
 
-    <nav class="hidden items-center gap-6 md:flex">
+    <nav class="hidden items-center gap-4 lg:flex">
       {
         primaryNavLinks.map((item) => (
-          <a class="panel-link text-sm text-steel hover:text-paper" href={item.href}>
+          <a
+            aria-current={isCurrentLink(item.href) ? 'page' : undefined}
+            class:list={[
+              'panel-link whitespace-nowrap text-sm transition',
+              isCurrentLink(item.href)
+                ? 'text-paper underline decoration-sage/70 underline-offset-8'
+                : 'text-steel hover:text-paper',
+            ]}
+            href={item.href}
+          >
             {item.label}
           </a>
         ))
       }
-      {
-        secondaryNavLinks.map((item) => (
-          <a class="panel-link text-sm text-steel hover:text-paper" href={item.href}>
-            {item.label}
-          </a>
-        ))
-      }
+      <div class="hidden items-center gap-4 xl:flex">
+        {
+          secondaryNavLinks.map((item) => (
+            <a
+              aria-current={isCurrentLink(item.href) ? 'page' : undefined}
+              class:list={[
+                'panel-link whitespace-nowrap text-sm transition',
+                isCurrentLink(item.href)
+                  ? 'text-paper underline decoration-sage/70 underline-offset-8'
+                  : 'text-steel hover:text-paper',
+              ]}
+              href={item.href}
+            >
+              {item.label}
+            </a>
+          ))
+        }
+      </div>
+
+      <details class="relative xl:hidden">
+        <summary
+          class:list={[
+            'panel-link inline-flex min-h-11 items-center rounded-full border border-white/10 px-4 py-2 text-sm font-semibold',
+            hasCurrentSecondaryLink ? 'bg-white/10 text-paper' : 'bg-white/5 text-steel hover:text-paper',
+          ]}
+        >
+          More
+        </summary>
+        <div class="surface absolute right-0 top-[calc(100%+0.75rem)] min-w-48 p-3 shadow-soft">
+          <nav class="flex flex-col gap-1">
+            {
+              secondaryNavLinks.map((item) => (
+                <a
+                  aria-current={isCurrentLink(item.href) ? 'page' : undefined}
+                  class:list={[
+                    'panel-link rounded-2xl px-3 py-2 text-sm',
+                    isCurrentLink(item.href)
+                      ? 'bg-white/10 text-paper'
+                      : 'text-steel hover:bg-white/5 hover:text-paper',
+                  ]}
+                  href={item.href}
+                >
+                  {item.label}
+                </a>
+              ))
+            }
+          </nav>
+        </div>
+      </details>
+
       <CTAButton
+        class="shrink-0 whitespace-nowrap"
         href="/contact/?type=Portrait%20session"
         label="Book a Portrait"
         trackingMeta={{
@@ -40,15 +98,24 @@ import { bookSessionClick } from '../utils/analytics';
       />
     </nav>
 
-    <details class="relative md:hidden">
-      <summary class="panel-link inline-flex items-center rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-paper">
+    <details class="relative lg:hidden">
+      <summary class="panel-link inline-flex min-h-11 items-center rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-paper">
         Menu
       </summary>
       <div class="surface absolute right-0 top-[calc(100%+0.75rem)] min-w-64 p-4 shadow-soft">
         <nav class="flex flex-col gap-2">
           {
             [...primaryNavLinks, ...secondaryNavLinks].map((item) => (
-              <a class="panel-link rounded-2xl px-3 py-2 text-sm text-steel hover:bg-white/5 hover:text-paper" href={item.href}>
+              <a
+                aria-current={isCurrentLink(item.href) ? 'page' : undefined}
+                class:list={[
+                  'panel-link rounded-2xl px-3 py-2 text-sm',
+                  isCurrentLink(item.href)
+                    ? 'bg-white/10 text-paper'
+                    : 'text-steel hover:bg-white/5 hover:text-paper',
+                ]}
+                href={item.href}
+              >
                 {item.label}
               </a>
             ))

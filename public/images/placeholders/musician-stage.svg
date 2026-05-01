@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" role="img" aria-labelledby="title desc">
-  <title id="title">Musician placeholder</title>
-  <desc id="desc">Horizontal placeholder artwork for musician and artist portraits.</desc>
+  <title id="title">Musician portrait study</title>
+  <desc id="desc">Horizontal illustrative artwork for musician and artist portraits.</desc>
   <defs>
     <linearGradient id="bg" x1="0%" x2="100%" y1="0%" y2="100%">
       <stop offset="0%" stop-color="#13131a" />
@@ -20,9 +20,9 @@
   <circle cx="753" cy="372" r="28" fill="#f7f2e8" opacity=".16" />
   <circle cx="753" cy="454" r="28" fill="#f7f2e8" opacity=".16" />
   <text x="140" y="848" fill="#f7f2e8" font-family="Georgia, serif" font-size="58">
-    Musician placeholder
+    Musician portrait
   </text>
   <text x="140" y="904" fill="#ddd4c2" font-family="Arial, sans-serif" font-size="24" letter-spacing="4">
-    replace with artist or performance image
+    after the room empties
   </text>
 </svg>

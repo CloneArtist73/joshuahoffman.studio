@@ -22,12 +22,9 @@ const {
 } = Astro.props;
 
 const variantClasses: Record<Variant, string> = {
-  primary:
-    'border border-ember/70 bg-ember px-5 py-3 text-obsidian shadow-soft hover:border-ember hover:bg-[#d48b63]',
-  secondary:
-    'border border-white/10 bg-white/5 px-5 py-3 text-paper hover:border-sage/60 hover:bg-white/10',
-  ghost:
-    'border border-transparent px-4 py-3 text-sand hover:bg-white/10 hover:text-paper',
+  primary: 'btn-primary',
+  secondary: 'btn-secondary',
+  ghost: 'btn-ghost',
 };
 
 const inferredLinkType = external
@@ -46,7 +43,7 @@ const baseTrackingMeta = {
 <a
   href={href}
   class:list={[
-    'panel-link inline-flex items-center justify-center rounded-full text-sm font-semibold tracking-wide',
+    'btn',
     variantClasses[variant],
     className,
   ]}

@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1600" role="img" aria-labelledby="title desc">
-  <title id="title">Joshua portrait placeholder</title>
-  <desc id="desc">Placeholder artwork for Joshua's own portrait on the about page.</desc>
+  <title id="title">Joshua portrait study</title>
+  <desc id="desc">Illustrative artwork for Joshua's own portrait on the about page.</desc>
   <defs>
     <linearGradient id="bg" x1="0%" x2="100%" y1="0%" y2="100%">
       <stop offset="0%" stop-color="#17171e" />
@@ -17,9 +17,9 @@
   <ellipse cx="602" cy="570" rx="206" ry="274" fill="#15161d" opacity=".88" />
   <rect x="390" y="870" width="424" height="394" rx="170" fill="#15161d" opacity=".88" />
   <text x="110" y="1430" fill="#f7f2e8" font-family="Georgia, serif" font-size="56">
-    Joshua portrait placeholder
+    Joshua Hoffman Studio
   </text>
   <text x="110" y="1490" fill="#ddd4c2" font-family="Arial, sans-serif" font-size="24" letter-spacing="4">
-    replace with real portrait of Joshua
+    portrait, memory, artists
   </text>
 </svg>
