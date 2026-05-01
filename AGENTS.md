@@ -18,8 +18,16 @@
 ## Key page routes
 
 - Static routes: `/`, `/gallery`, `/portraits`, `/legacy`, `/musicians`, `/prints`, `/contact`, `/about`, `/contact/thank-you/`
+- Error route: `/404`
 - Dynamic route: `/p/[slug]/` (generated from `src/data/images.ts`)
 - Local helper route: `/entry/` (enabled only in development or when `PUBLIC_ENABLE_ENTRY=true`)
+
+## Repo scripts
+
+- Declared npm scripts are limited to:
+  - `npm run dev`
+  - `npm run build`
+  - `npm run preview`
 
 ## Content editing workflow
 
