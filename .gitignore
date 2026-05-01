@@ -1,9 +1,15 @@
 <<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
 node_modules/
 .astro/
 dist/
 .DS_Store
 =======
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
 # OS
 .DS_Store
 Thumbs.db
@@ -33,4 +39,10 @@ coverage/
 .env
 .env.*
 !.env.example
+<<<<<<< ours
+<<<<<<< ours
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
 >>>>>>> theirs
