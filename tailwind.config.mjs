@@ -9,6 +9,7 @@ export default {
         sand: '#ddd4c2',
         sage: '#9bb29d',
         ember: '#bc7b56',
+        platinum: '#C0C0C0',
         dusk: '#1c1b25',
         steel: '#b7b8c0',
       },
