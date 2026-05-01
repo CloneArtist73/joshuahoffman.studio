@@ -17,7 +17,14 @@
 
   body {
     @apply bg-obsidian font-sans text-sand antialiased;
+<<<<<<< HEAD
     background-image: linear-gradient(180deg, rgba(28, 27, 37, 0.55), rgba(12, 12, 12, 1));
+=======
+    background-image:
+      radial-gradient(circle at top left, rgba(192, 192, 192, 0.2), transparent 34%),
+      radial-gradient(circle at bottom right, rgba(192, 192, 192, 0.12), transparent 28%),
+      linear-gradient(180deg, rgba(24, 24, 27, 0.78), rgba(12, 12, 12, 1));
+>>>>>>> 169fdaee82f0d28e95e1ffb59c513e6cad3e118d
     min-height: 100vh;
   }
 
@@ -39,7 +46,11 @@
   input,
   select,
   textarea {
+<<<<<<< HEAD
     @apply w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-base text-paper transition-colors placeholder:text-steel focus:border-sage focus:outline-none focus:ring-2 focus:ring-sage/70 disabled:cursor-not-allowed disabled:opacity-60;
+=======
+    @apply w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-base text-paper placeholder:text-steel focus:border-platinum focus:outline-none focus:ring-2 focus:ring-platinum/70;
+>>>>>>> 169fdaee82f0d28e95e1ffb59c513e6cad3e118d
   }
 
   textarea {
@@ -53,7 +64,7 @@
   }
 
   ::selection {
-    @apply bg-ember/50 text-paper;
+    @apply bg-platinum/70 text-obsidian;
   }
 }
 
@@ -67,7 +78,7 @@
   }
 
   .eyebrow {
-    @apply text-xs font-semibold uppercase tracking-hush text-sage;
+    @apply text-xs font-semibold uppercase tracking-hush text-platinum;
   }
 
   .headline {
@@ -75,11 +86,11 @@
   }
 
   .surface {
-    @apply rounded-panel border border-white/10 bg-white/5 backdrop-blur;
+    @apply rounded-panel border border-platinum/20 bg-white/5 backdrop-blur;
   }
 
   .panel-link {
-    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage focus-visible:ring-offset-2 focus-visible:ring-offset-obsidian;
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-platinum focus-visible:ring-offset-2 focus-visible:ring-offset-obsidian;
   }
 
   .btn {
@@ -115,7 +126,7 @@
   }
 
   .tag-pill {
-    @apply inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-steel;
+    @apply inline-flex items-center rounded-full border border-platinum/20 bg-white/5 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-steel;
   }
 
   .form-field {

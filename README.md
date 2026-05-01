@@ -1,6 +1,3 @@
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
 # Joshua Hoffman Studio MVP
 
 Static-first photography website MVP built with Astro and Tailwind CSS. It is designed to launch quickly, show emotional work clearly, route people toward inquiries or external checkout, and stay easy to edit through local data files.
@@ -143,19 +140,13 @@ If you deploy outside InMotion, remember to replace the form setup first.
 - Analytics is configured for GA4; confirm data appears in Google Analytics after launch
 - Leave form provider set to `none` on Day 1; connect a real static form provider on Day 2
 - Rebuild and test every outbound route and inquiry path
-=======
-=======
->>>>>>> theirs
+- 
 # joshuahoffman.studio
 
 Repository initialized with baseline Git hygiene:
 - `.gitignore` for common local artifacts
 - `.gitattributes` to normalize line endings
-<<<<<<< ours
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
+
 # joshuahoffman.studio
 
 ## Purpose
@@ -203,4 +194,3 @@ git push origin main
 - Prefer `origin` as the primary remote name for consistency.
 - `pull --rebase` keeps history linear and easier to review.
 - Avoid `git push --force` on shared branches unless explicitly coordinated.
->>>>>>> theirs
