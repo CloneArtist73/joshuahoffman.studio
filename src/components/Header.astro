@@ -88,7 +88,7 @@ const hasCurrentSecondaryLink = secondaryNavLinks.some((item) => isCurrentLink(i
       <CTAButton
         class="shrink-0 whitespace-nowrap"
         href="/contact/?type=Portrait%20session"
-        label="Book a Portrait"
+        label="Start an Inquiry"
         trackingMeta={{
           'data-link-type': 'booking_inquiry',
           'data-link-intent': 'portrait_booking',
@@ -98,7 +98,7 @@ const hasCurrentSecondaryLink = secondaryNavLinks.some((item) => isCurrentLink(i
       />
     </nav>
 
-    <details class="relative lg:hidden">
+  <details class="relative lg:hidden">
       <summary class="panel-link inline-flex min-h-11 items-center rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-paper">
         Menu
       </summary>
@@ -121,17 +121,17 @@ const hasCurrentSecondaryLink = secondaryNavLinks.some((item) => isCurrentLink(i
             ))
           }
           <div class="pt-2">
-            <CTAButton
-              href="/contact/?type=Portrait%20session"
-              label="Book a Portrait"
-              class="w-full"
-              trackingMeta={{
-                'data-link-type': 'booking_inquiry',
-                'data-link-intent': 'portrait_booking',
-                'data-link-location': 'header_mobile_cta',
-              }}
-              tracking={bookSessionClick({ service: 'portrait', location: 'mobile_menu' })}
-            />
+          <CTAButton
+            href="/contact/?type=Portrait%20session"
+            label="Start an Inquiry"
+            class="w-full"
+            trackingMeta={{
+              'data-link-type': 'booking_inquiry',
+              'data-link-intent': 'portrait_booking',
+              'data-link-location': 'header_mobile_cta',
+            }}
+            tracking={bookSessionClick({ service: 'portrait', location: 'mobile_menu' })}
+          />
           </div>
         </nav>
       </div>

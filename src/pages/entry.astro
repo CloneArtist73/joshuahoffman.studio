@@ -24,14 +24,14 @@ const entryFormSeedJson = JSON.stringify(entryFormSeedData).replace(/</g, '\\u00
     entryEnabled ? (
       <ContentEntryForm seedData={entryFormSeedJson} />
     ) : (
-      <main class="mx-auto flex min-h-[60vh] max-w-2xl flex-col justify-center px-6 py-24">
-        <p class="text-sm uppercase tracking-[0.24em] text-neutral-400">Local tool disabled</p>
-        <h1 class="mt-4 text-3xl font-semibold text-neutral-50">Content entry is not available on the public site.</h1>
-        <p class="mt-4 text-base leading-7 text-neutral-300">
+      <section class="mx-auto flex min-h-[60vh] max-w-2xl flex-col justify-center px-6 py-24">
+        <p class="eyebrow">Local tool disabled</p>
+        <h1 class="mt-4 text-3xl font-semibold text-paper">Content entry is not available on the public site.</h1>
+        <p class="mt-4 max-w-copy text-base leading-7 text-steel">
           Run the site locally in development mode to add gallery entries. This keeps the public build static and
           visitor-facing.
         </p>
-      </main>
+      </section>
     )
   }
 </Layout>

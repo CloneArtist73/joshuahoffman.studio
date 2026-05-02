@@ -2,7 +2,7 @@ import type { CtaItem } from './types';
 
 export const ctas: Record<string, CtaItem> = {
   bookPortrait: {
-    label: 'Book a Portrait',
+    label: 'Start an Inquiry',
     href: '/contact/?type=Portrait%20session',
     eventName: 'book_session_click',
     eventProps: {

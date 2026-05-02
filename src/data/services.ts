@@ -9,7 +9,7 @@ export const services: ServiceItem[] = [
     longDescription:
       'Honest portrait sessions for people who want to be seen clearly, not overly posed. Built for individuals, families, artists, and anyone who needs images with presence.',
     startingPrice: 'Pricing by project after a short planning conversation',
-    ctaLabel: 'Book a Portrait',
+    ctaLabel: 'Start an Inquiry',
     imageSrc: '/images/placeholders/portrait-session.svg',
     pageHref: '/portraits/',
     heroTitle: 'Honest portraits with enough room for a person to stay themselves.',
@@ -61,7 +61,7 @@ export const services: ServiceItem[] = [
     longDescription:
       'Portraits for musicians, performers, and artists who need images that feel like their work sounds: direct, emotional, and usable across press, social, posters, and releases.',
     startingPrice: 'Pricing by project after a short planning conversation',
-    ctaLabel: 'Book an Artist Session',
+    ctaLabel: 'Start an Artist Inquiry',
     imageSrc: '/images/placeholders/musician-stage.svg',
     pageHref: '/musicians/',
     heroTitle: 'Portraits for artists who need more than promo gloss.',

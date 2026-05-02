@@ -55,14 +55,14 @@ const categories = [...new Set(images.map((image) => image.category))];
           </button>
           {
             categories.map((category) => (
-              <button
-                aria-pressed="false"
-                class="panel-link min-h-11 rounded-full border border-white/10 px-4 py-2 text-sm font-semibold text-steel hover:text-paper"
-                data-filter={category}
-                type="button"
-              >
-                {categoryLabels[category]}
-              </button>
+      <button
+        aria-pressed="false"
+        class="panel-link min-h-11 rounded-full border border-white/10 px-4 py-2 text-sm font-semibold text-steel transition focus-visible:ring-2 focus-visible:ring-platinum/70 hover:border-platinum/60 hover:text-paper"
+        data-filter={category}
+        type="button"
+      >
+        {categoryLabels[category]}
+      </button>
             ))
           }
         </div>
@@ -94,13 +94,15 @@ const categories = [...new Set(images.map((image) => image.category))];
       const cards = Array.from(galleryGrid?.querySelectorAll('[data-gallery-card]') ?? []);
 
       function updateFilter(filter) {
-        buttons.forEach((button) => {
-          const isActive = button.dataset.filter === filter;
-          button.setAttribute('aria-pressed', String(isActive));
-          button.classList.toggle('bg-white/10', isActive);
-          button.classList.toggle('text-paper', isActive);
-          button.classList.toggle('text-steel', !isActive);
-        });
+      buttons.forEach((button) => {
+        const isActive = button.dataset.filter === filter;
+        button.setAttribute('aria-pressed', String(isActive));
+        button.classList.toggle('bg-white/10', isActive);
+        button.classList.toggle('border-platinum/70', isActive);
+        button.classList.toggle('shadow-soft', isActive);
+        button.classList.toggle('text-paper', isActive);
+        button.classList.toggle('text-steel', !isActive);
+      });
 
         cards.forEach((card) => {
           const matches = filter === 'all' || card.dataset.category === filter;

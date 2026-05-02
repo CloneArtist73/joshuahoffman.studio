@@ -17,14 +17,10 @@
 
   body {
     @apply bg-obsidian font-sans text-sand antialiased;
-<<<<<<< HEAD
-    background-image: linear-gradient(180deg, rgba(28, 27, 37, 0.55), rgba(12, 12, 12, 1));
-=======
     background-image:
       radial-gradient(circle at top left, rgba(192, 192, 192, 0.2), transparent 34%),
       radial-gradient(circle at bottom right, rgba(192, 192, 192, 0.12), transparent 28%),
       linear-gradient(180deg, rgba(24, 24, 27, 0.78), rgba(12, 12, 12, 1));
->>>>>>> 169fdaee82f0d28e95e1ffb59c513e6cad3e118d
     min-height: 100vh;
   }
 
@@ -43,15 +39,11 @@
     @apply font-display text-paper;
   }
 
-  input,
-  select,
-  textarea {
-<<<<<<< HEAD
-    @apply w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-base text-paper transition-colors placeholder:text-steel focus:border-sage focus:outline-none focus:ring-2 focus:ring-sage/70 disabled:cursor-not-allowed disabled:opacity-60;
-=======
-    @apply w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-base text-paper placeholder:text-steel focus:border-platinum focus:outline-none focus:ring-2 focus:ring-platinum/70;
->>>>>>> 169fdaee82f0d28e95e1ffb59c513e6cad3e118d
-  }
+input,
+select,
+textarea {
+    @apply w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-base text-paper transition-colors placeholder:text-steel focus:border-platinum focus:outline-none focus:ring-2 focus:ring-platinum/70 disabled:cursor-not-allowed disabled:opacity-60;
+}
 
   textarea {
     @apply min-h-40 resize-y;
@@ -94,15 +86,15 @@
   }
 
   .btn {
-    @apply inline-flex min-h-11 max-w-full shrink-0 items-center justify-center gap-2 rounded-full px-5 py-3 text-center text-sm font-semibold whitespace-nowrap transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage focus-visible:ring-offset-2 focus-visible:ring-offset-obsidian disabled:cursor-not-allowed disabled:opacity-55;
+    @apply inline-flex min-h-11 max-w-full shrink-0 items-center justify-center gap-2 rounded-full px-5 py-3 text-center text-sm font-semibold leading-tight whitespace-normal transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-platinum focus-visible:ring-offset-2 focus-visible:ring-offset-obsidian disabled:cursor-not-allowed disabled:opacity-55 md:whitespace-nowrap;
   }
 
   .btn-primary {
-    @apply border border-ember/70 bg-ember text-obsidian shadow-soft hover:border-ember hover:bg-[#d48b63] active:bg-[#aa6548] disabled:hover:border-ember/70 disabled:hover:bg-ember;
+    @apply border border-ember/70 bg-ember text-paper shadow-soft hover:border-ember hover:bg-[#d48b63] active:bg-[#be7152] disabled:hover:border-ember/70 disabled:hover:bg-ember;
   }
 
   .btn-secondary {
-    @apply border border-white/10 bg-white/5 text-paper hover:border-sage/60 hover:bg-white/10 active:bg-white/15 disabled:hover:border-white/10 disabled:hover:bg-white/5;
+    @apply border border-white/10 bg-white/5 text-paper hover:border-platinum/60 hover:bg-white/10 active:bg-white/15 disabled:hover:border-white/10 disabled:hover:bg-white/5;
   }
 
   .btn-ghost {
