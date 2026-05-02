@@ -24,8 +24,13 @@ const {
 function isLiveRoute(route: (typeof externalLinks)[string]) {
   const hasTemplateToken = route.url.includes('{imageSlug}') || route.url.includes('{productSlug}');
   const markedPlaceholder = /replace with|before launch|once .* finalized/i.test(route.note ?? '');
+  const genericStorefrontUrl = [
+    /^https:\/\/www\.etsy\.com\/search\?/i,
+    /^https:\/\/shopify\.com\/products\//i,
+    /^https:\/\/www\.pixieset\.com\/prints\//i,
+  ].some((pattern) => pattern.test(route.url));
 
-  return !hasTemplateToken && !markedPlaceholder;
+  return !hasTemplateToken && !markedPlaceholder && !genericStorefrontUrl;
 }
 
 const routes = routeKeys
@@ -41,7 +46,7 @@ function getRouteUrl(url: string) {
 }
 ---
 
-<div class={`flex flex-wrap items-center gap-3 ${compact ? 'p-0' : 'pt-2'}`}>
+<div class={compact ? 'contents' : 'flex flex-wrap items-center gap-3 pt-2'}>
   {
     routes.map((route) => (
       <CTAButton

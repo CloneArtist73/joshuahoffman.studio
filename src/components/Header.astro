@@ -10,15 +10,15 @@ const hasCurrentSecondaryLink = secondaryNavLinks.some((item) => isCurrentLink(i
 ---
 
 <header class="sticky top-0 z-40 border-b border-white/10 bg-obsidian/80 backdrop-blur">
-  <div class="shell flex items-center justify-between gap-4 py-4">
-    <a class="panel-link min-w-0" href="/">
+  <div class="shell flex items-center justify-between gap-3 py-4 sm:gap-4">
+    <a class="panel-link min-w-0 max-w-[16rem] lg:max-w-[15rem] xl:max-w-none" href="/">
       <span class="block truncate font-display text-2xl text-paper">{siteConfig.brandName}</span>
       <span class="copy-muted block truncate text-xs uppercase tracking-hush">
         {siteConfig.ownerName} · {siteConfig.serviceArea}
       </span>
     </a>
 
-    <nav class="hidden items-center gap-4 lg:flex">
+    <nav aria-label="Primary navigation" class="hidden items-center gap-3 lg:flex xl:gap-4">
       {
         primaryNavLinks.map((item) => (
           <a
@@ -35,7 +35,7 @@ const hasCurrentSecondaryLink = secondaryNavLinks.some((item) => isCurrentLink(i
           </a>
         ))
       }
-      <div class="hidden items-center gap-4 xl:flex">
+      <div class="hidden items-center gap-3 xl:flex xl:gap-4">
         {
           secondaryNavLinks.map((item) => (
             <a
@@ -54,10 +54,10 @@ const hasCurrentSecondaryLink = secondaryNavLinks.some((item) => isCurrentLink(i
         }
       </div>
 
-      <details class="relative xl:hidden">
+      <details class="relative shrink-0 xl:hidden">
         <summary
           class:list={[
-            'panel-link inline-flex min-h-11 items-center rounded-full border border-white/10 px-4 py-2 text-sm font-semibold',
+            'panel-link inline-flex min-h-11 cursor-pointer items-center rounded-full border border-white/10 px-4 py-2 text-sm font-semibold',
             hasCurrentSecondaryLink ? 'bg-white/10 text-paper' : 'bg-white/5 text-steel hover:text-paper',
           ]}
         >
@@ -98,12 +98,12 @@ const hasCurrentSecondaryLink = secondaryNavLinks.some((item) => isCurrentLink(i
       />
     </nav>
 
-  <details class="relative lg:hidden">
-      <summary class="panel-link inline-flex min-h-11 items-center rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-paper">
+    <details class="relative lg:hidden">
+      <summary class="panel-link inline-flex min-h-11 cursor-pointer items-center rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-paper">
         Menu
       </summary>
       <div class="surface absolute right-0 top-[calc(100%+0.75rem)] min-w-64 p-4 shadow-soft">
-        <nav class="flex flex-col gap-2">
+        <nav aria-label="Mobile navigation" class="flex flex-col gap-2">
           {
             [...primaryNavLinks, ...secondaryNavLinks].map((item) => (
               <a
@@ -121,17 +121,17 @@ const hasCurrentSecondaryLink = secondaryNavLinks.some((item) => isCurrentLink(i
             ))
           }
           <div class="pt-2">
-          <CTAButton
-            href="/contact/?type=Portrait%20session"
-            label="Start an Inquiry"
-            class="w-full"
-            trackingMeta={{
-              'data-link-type': 'booking_inquiry',
-              'data-link-intent': 'portrait_booking',
-              'data-link-location': 'header_mobile_cta',
-            }}
-            tracking={bookSessionClick({ service: 'portrait', location: 'mobile_menu' })}
-          />
+            <CTAButton
+              href="/contact/?type=Portrait%20session"
+              label="Start an Inquiry"
+              class="w-full"
+              trackingMeta={{
+                'data-link-type': 'booking_inquiry',
+                'data-link-intent': 'portrait_booking',
+                'data-link-location': 'header_mobile_cta',
+              }}
+              tracking={bookSessionClick({ service: 'portrait', location: 'mobile_menu' })}
+            />
           </div>
         </nav>
       </div>

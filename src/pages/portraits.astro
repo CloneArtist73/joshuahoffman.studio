@@ -3,7 +3,7 @@ import CTAButton from '../components/CTAButton.astro';
 import GalleryGrid from '../components/GalleryGrid.astro';
 import Hero from '../components/Hero.astro';
 import Layout from '../components/Layout.astro';
-import { getImageBySlug } from '../data/images';
+import { getImageBySlug, isPublicImage } from '../data/images';
 import { getServiceBySlug } from '../data/services';
 import { bookSessionClick } from '../utils/analytics';
 
@@ -14,7 +14,7 @@ if (!service) {
 
 const galleryImages = service.gallerySlugs
   .map((slug) => getImageBySlug(slug))
-  .filter((image): image is NonNullable<ReturnType<typeof getImageBySlug>> => Boolean(image));
+  .filter((image): image is NonNullable<ReturnType<typeof getImageBySlug>> => Boolean(image) && isPublicImage(image));
 ---
 
 <Layout
@@ -24,8 +24,7 @@ const galleryImages = service.gallerySlugs
 >
   <Hero
     eyebrow="Portrait sessions"
-    imageAlt="Illustrative portrait session image."
-    imageSrc={service.imageSrc ?? '/images/placeholders/portrait-session.svg'}
+    imageSrc={service.imageSrc}
     primaryCta={{
       label: service.ctaLabel,
       href: '/contact/?type=Portrait%20session',
@@ -66,12 +65,16 @@ const galleryImages = service.gallerySlugs
     </div>
   </section>
 
-  <GalleryGrid
-    context="portraits_supporting_gallery"
-    heading="Portrait examples"
-    images={galleryImages}
-    intro="A small supporting edit so visitors can quickly understand the tone of the work."
-  />
+  {
+    galleryImages.length > 0 && (
+      <GalleryGrid
+        context="portraits_supporting_gallery"
+        heading="Portrait examples"
+        images={galleryImages}
+        intro="A small supporting edit so visitors can quickly understand the tone of the work."
+      />
+    )
+  }
 
   <section class="section-block pt-0">
     <div class="shell">

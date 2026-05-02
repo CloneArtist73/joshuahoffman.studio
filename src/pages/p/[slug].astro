@@ -4,13 +4,13 @@ import ImageCard from '../../components/ImageCard.astro';
 import Layout from '../../components/Layout.astro';
 import ProductRouteButtons from '../../components/ProductRouteButtons.astro';
 import { ctas } from '../../data/ctas';
-import { getImageBySlug, getRelatedImages, images } from '../../data/images';
+import { getImageBySlug, getRelatedImages, images, isPublicImage } from '../../data/images';
 import { getProductByImageSlug, getProductBySlug } from '../../data/products';
 import type { ImageItem } from '../../data/types';
 import { bookSessionClick, contactClick } from '../../utils/analytics';
 
 export function getStaticPaths() {
-  return images.map((image) => ({
+  return images.filter(isPublicImage).map((image) => ({
     params: { slug: image.slug },
     props: { image },
   }));
@@ -29,11 +29,18 @@ const metadata = [
   ['Location', image.location],
   ['Medium', image.medium],
   ['Best format', image.bestFormat],
-].filter((entry): entry is [string, string] => Boolean(entry[1]));
+].filter((entry): entry is [string, string] => Boolean(entry[1]) && !/^\[.+\]$/.test(entry[1]));
+
+const imageOrientation = image.orientation ?? 'vertical';
+const imageDimensions = {
+  horizontal: { width: 1600, height: 1067 },
+  square: { width: 1200, height: 1200 },
+  vertical: { width: 1200, height: 1600 },
+}[imageOrientation];
 
 const serviceCtas = {
   portrait: {
-    label: 'Book Something Like This',
+    label: 'Start a Portrait Inquiry',
     href: '/contact/?type=Portrait%20session',
     tracking: bookSessionClick({
       service: 'portrait',
@@ -51,7 +58,7 @@ const serviceCtas = {
     }),
   },
   musician: {
-    label: 'Book Something Like This',
+    label: 'Start an Artist Inquiry',
     href: '/contact/?type=Musician%20%2F%20artist%20portraits',
     tracking: bookSessionClick({
       service: 'musician',
@@ -100,11 +107,11 @@ const fallbackCta =
       <div class="surface self-start overflow-hidden shadow-soft">
         <img
           alt={image.alt}
-          class="w-full object-cover"
-          height="1600"
+          class="block h-auto w-full"
+          height={imageDimensions.height}
           loading="eager"
           src={image.imageSrc}
-          width="1200"
+          width={imageDimensions.width}
         />
       </div>
 
@@ -168,7 +175,7 @@ const fallbackCta =
               'data-link-type': 'internal_navigation',
               'data-link-location': 'image_page_primary_actions',
             }}
-            variant="secondary"
+            variant="ghost"
           />
         </div>
 

@@ -2,7 +2,7 @@
 import CTAButton from '../components/CTAButton.astro';
 import Layout from '../components/Layout.astro';
 import ProductCard from '../components/ProductCard.astro';
-import { getImageBySlug } from '../data/images';
+import { getImageBySlug, isPublicImage } from '../data/images';
 import { products } from '../data/products';
 import { contactClick } from '../utils/analytics';
 
@@ -11,7 +11,7 @@ const printProducts = products
     product,
     image: getImageBySlug(product.imageSlug),
   }))
-  .filter((entry): entry is { product: (typeof products)[number]; image: NonNullable<ReturnType<typeof getImageBySlug>> } => Boolean(entry.image));
+  .filter((entry): entry is { product: (typeof products)[number]; image: NonNullable<ReturnType<typeof getImageBySlug>> } => Boolean(entry.image) && isPublicImage(entry.image));
 ---
 
 <Layout
@@ -50,7 +50,7 @@ const printProducts = products
         printProducts.map(({ product, image }) => <ProductCard image={image} product={product} />)
       ) : (
         <div class="surface p-6 text-sm text-steel">
-          Print products are being prepared. Use the contact page for custom order needs or to request platform checkout links.
+          Print products are being prepared. Use the contact page for custom sizing, signed work, availability, or licensing questions.
         </div>
       )}
     </div>

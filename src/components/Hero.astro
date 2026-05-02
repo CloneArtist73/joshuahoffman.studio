@@ -7,8 +7,8 @@ interface Props {
   eyebrow?: string;
   title: string;
   text: string;
-  imageSrc: string;
-  imageAlt: string;
+  imageSrc?: string;
+  imageAlt?: string;
   primaryCta: CtaItem;
   secondaryCta?: CtaItem;
 }
@@ -23,6 +23,8 @@ const {
   secondaryCta,
 } = Astro.props;
 
+const hasImage = Boolean(imageSrc);
+
 function ctaTracking(cta: CtaItem, fallbackLocation: string) {
   if (!cta.eventName) {
     return {};
@@ -36,7 +38,14 @@ function ctaTracking(cta: CtaItem, fallbackLocation: string) {
 ---
 
 <section class="section-block pt-10 sm:pt-14">
-  <div class="shell grid items-center gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
+  <div
+    class:list={[
+      'grid gap-10',
+      hasImage
+        ? 'shell items-center lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]'
+        : 'mx-auto w-full max-w-5xl px-5 sm:px-6 lg:px-8',
+    ]}
+  >
     <div class="space-y-6">
       <span class="eyebrow">{eyebrow}</span>
       <h1 class="headline max-w-4xl">{title}</h1>
@@ -60,15 +69,19 @@ function ctaTracking(cta: CtaItem, fallbackLocation: string) {
       </div>
     </div>
 
-    <div class="surface overflow-hidden shadow-soft">
-      <img
-        alt={imageAlt}
-        class="aspect-[6/5] w-full object-cover"
-        height="1100"
-        loading="eager"
-        src={imageSrc}
-        width="1320"
-      />
-    </div>
+    {
+      hasImage && (
+        <div class="surface overflow-hidden shadow-soft">
+          <img
+            alt={imageAlt ?? ''}
+            class="aspect-[6/5] w-full object-cover"
+            height="1100"
+            loading="eager"
+            src={imageSrc}
+            width="1320"
+          />
+        </div>
+      )
+    }
   </div>
 </section>

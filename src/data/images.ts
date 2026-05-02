@@ -260,20 +260,26 @@ export const images: ImageItem[] = [
   },
 ];
 
+export function isPublicImage(image: ImageItem) {
+  return !image.imageSrc.includes('/images/placeholders/');
+}
+
 export function getFeaturedImages(limit = 6) {
-  return images.filter((image) => image.featured).slice(0, limit);
+  return images.filter((image) => image.featured && isPublicImage(image)).slice(0, limit);
 }
 
 export function getGalleryImages(limit?: number) {
+  const publicImages = images.filter(isPublicImage);
+
   if (typeof limit === 'number') {
-    return images.slice(0, Math.max(0, limit));
+    return publicImages.slice(0, Math.max(0, limit));
   }
 
-  return images;
+  return publicImages;
 }
 
 export function getImagesByCategory(category: ImageItem['category'], limit?: number) {
-  const matches = images.filter((image) => image.category === category);
+  const matches = images.filter((image) => image.category === category && isPublicImage(image));
   return typeof limit === 'number' ? matches.slice(0, limit) : matches;
 }
 
@@ -283,7 +289,7 @@ export function getImageBySlug(slug: string) {
 
 export function getRelatedImages(currentImage: ImageItem, limit = 3) {
   return images
-    .filter((image) => image.slug !== currentImage.slug)
+    .filter((image) => image.slug !== currentImage.slug && isPublicImage(image))
     .map((image) => {
       const sharedTags = image.tags.filter((tag) => currentImage.tags.includes(tag)).length;
       const categoryBoost = image.category === currentImage.category ? 2 : 0;

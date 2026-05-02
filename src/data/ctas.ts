@@ -46,7 +46,7 @@ export const ctas: Record<string, CtaItem> = {
     },
   },
   musicianInquiry: {
-    label: 'Book an Artist Session',
+    label: 'Start an Artist Inquiry',
     href: '/contact/?type=Musician%20%2F%20artist%20portraits',
     eventName: 'book_session_click',
     eventProps: {

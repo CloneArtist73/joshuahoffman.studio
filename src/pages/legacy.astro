@@ -3,7 +3,7 @@ import CTAButton from '../components/CTAButton.astro';
 import GalleryGrid from '../components/GalleryGrid.astro';
 import Hero from '../components/Hero.astro';
 import Layout from '../components/Layout.astro';
-import { getImageBySlug } from '../data/images';
+import { getImageBySlug, isPublicImage } from '../data/images';
 import { getServiceBySlug } from '../data/services';
 import { bookSessionClick } from '../utils/analytics';
 
@@ -14,7 +14,7 @@ if (!service) {
 
 const galleryImages = service.gallerySlugs
   .map((slug) => getImageBySlug(slug))
-  .filter((image): image is NonNullable<ReturnType<typeof getImageBySlug>> => Boolean(image));
+  .filter((image): image is NonNullable<ReturnType<typeof getImageBySlug>> => Boolean(image) && isPublicImage(image));
 ---
 
 <Layout
@@ -24,8 +24,7 @@ const galleryImages = service.gallerySlugs
 >
   <Hero
     eyebrow="Legacy / memorial work"
-    imageAlt="Illustrative legacy photography image."
-    imageSrc={service.imageSrc ?? '/images/placeholders/legacy-light.svg'}
+    imageSrc={service.imageSrc}
     primaryCta={{
       label: service.ctaLabel,
       href: '/contact/?type=Legacy%20%2F%20memorial%20work',
@@ -67,12 +66,16 @@ const galleryImages = service.gallerySlugs
     </div>
   </section>
 
-  <GalleryGrid
-    context="legacy_supporting_gallery"
-    heading="Legacy work examples"
-    images={galleryImages}
-    intro="A respectful supporting edit showing how memory-based work can live across portraits, domestic details, and family photographs."
-  />
+  {
+    galleryImages.length > 0 && (
+      <GalleryGrid
+        context="legacy_supporting_gallery"
+        heading="Legacy work examples"
+        images={galleryImages}
+        intro="A respectful supporting edit showing how memory-based work can live across portraits, domestic details, and family photographs."
+      />
+    )
+  }
 
   <section class="section-block pt-0">
     <div class="shell">

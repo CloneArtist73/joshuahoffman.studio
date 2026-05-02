@@ -3,7 +3,7 @@ import CTAButton from '../components/CTAButton.astro';
 import GalleryGrid from '../components/GalleryGrid.astro';
 import Hero from '../components/Hero.astro';
 import Layout from '../components/Layout.astro';
-import { getImageBySlug } from '../data/images';
+import { getImageBySlug, isPublicImage } from '../data/images';
 import { getServiceBySlug } from '../data/services';
 import { bookSessionClick } from '../utils/analytics';
 
@@ -14,7 +14,7 @@ if (!service) {
 
 const galleryImages = service.gallerySlugs
   .map((slug) => getImageBySlug(slug))
-  .filter((image): image is NonNullable<ReturnType<typeof getImageBySlug>> => Boolean(image));
+  .filter((image): image is NonNullable<ReturnType<typeof getImageBySlug>> => Boolean(image) && isPublicImage(image));
 
 const musicianUseCases = [
   'Press photos',
@@ -31,8 +31,7 @@ const musicianUseCases = [
 >
   <Hero
     eyebrow="Musician / artist portraits"
-    imageAlt="Illustrative musician portrait image."
-    imageSrc={service.imageSrc ?? '/images/placeholders/musician-stage.svg'}
+    imageSrc={service.imageSrc}
     primaryCta={{
       label: service.ctaLabel,
       href: '/contact/?type=Musician%20%2F%20artist%20portraits',
@@ -72,12 +71,16 @@ const musicianUseCases = [
     </div>
   </section>
 
-  <GalleryGrid
-    context="musicians_supporting_gallery"
-    heading="Artist-focused images"
-    images={galleryImages}
-    intro="Press photos, promo frames, and images that can sit on posters, release pages, and social without feeling generic."
-  />
+  {
+    galleryImages.length > 0 && (
+      <GalleryGrid
+        context="musicians_supporting_gallery"
+        heading="Artist-focused images"
+        images={galleryImages}
+        intro="Press photos, promo frames, and images that can sit on posters, release pages, and social without feeling generic."
+      />
+    )
+  }
 
   <section class="section-block pt-0">
     <div class="shell">

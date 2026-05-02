@@ -10,8 +10,8 @@ interface Props {
 const { product, image } = Astro.props;
 ---
 
-<article class="surface">
-  <a class="panel-link block" href={`/p/${image.slug}/`}>
+<article class="surface flex h-full flex-col overflow-hidden">
+  <a class="panel-link block shrink-0" href={`/p/${image.slug}/`}>
     <img
       alt={image.alt}
       class="aspect-[5/4] w-full object-cover"
@@ -21,7 +21,7 @@ const { product, image } = Astro.props;
       width="1200"
     />
   </a>
-  <div class="space-y-4 p-6">
+  <div class="flex flex-1 flex-col space-y-4 p-6">
     <div class="space-y-2">
       <span class="tag-pill">Prints</span>
       <h3 class="text-2xl">{product.title}</h3>
@@ -30,11 +30,13 @@ const { product, image } = Astro.props;
     <p class="text-sm text-paper">
       Available formats: {product.availableFormats.join(' · ')}
     </p>
-    <ProductRouteButtons
-      imageSlug={image.slug}
-      includeInquiry={product.inquiryAllowed}
-      productSlug={product.slug}
-      routeKeys={product.routeKeys}
-    />
+    <div class="mt-auto pt-1">
+      <ProductRouteButtons
+        imageSlug={image.slug}
+        includeInquiry={product.inquiryAllowed}
+        productSlug={product.slug}
+        routeKeys={product.routeKeys}
+      />
+    </div>
   </div>
 </article>

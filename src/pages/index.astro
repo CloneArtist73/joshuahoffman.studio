@@ -6,19 +6,20 @@ import ProductCard from '../components/ProductCard.astro';
 import ServiceCard from '../components/ServiceCard.astro';
 import CTAButton from '../components/CTAButton.astro';
 import { ctas } from '../data/ctas';
-import { getFeaturedImages, getImageBySlug } from '../data/images';
+import { getFeaturedImages, getImageBySlug, isPublicImage } from '../data/images';
 import { products } from '../data/products';
 import { services } from '../data/services';
 import { siteConfig } from '../data/site';
 import { contactClick } from '../utils/analytics';
 
 const featuredImages = getFeaturedImages(6);
-const previewProducts = products.slice(0, 3)
+const previewProducts = products
   .map((product) => ({
     product,
     image: getImageBySlug(product.imageSlug),
   }))
-  .filter((entry): entry is { product: (typeof products)[number]; image: NonNullable<ReturnType<typeof getImageBySlug>> } => Boolean(entry.image));
+  .filter((entry): entry is { product: (typeof products)[number]; image: NonNullable<ReturnType<typeof getImageBySlug>> } => Boolean(entry.image) && isPublicImage(entry.image))
+  .slice(0, 3);
 
 const hasPrintProducts = previewProducts.length > 0;
 ---
@@ -59,7 +60,7 @@ const hasPrintProducts = previewProducts.length > 0;
     context="homepage_featured_gallery"
     heading="Featured work"
     images={featuredImages}
-    intro="A compact edit with enough range to move from portraits and memory work into quieter personal frames."
+    intro="A compact edit led by finished photographs, with new portrait, legacy, and artist work added as it is ready."
   />
 
   <section class="section-block pt-0">
