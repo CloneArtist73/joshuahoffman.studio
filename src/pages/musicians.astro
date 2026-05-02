@@ -55,7 +55,7 @@ const musicianUseCases = [
   />
 
   <section class="section-block pt-0">
-    <div class="shell grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+    <div class="shell grid gap-6 lg:grid-cols-3">
       <article class="surface p-6 sm:p-8">
         <span class="eyebrow">Built for</span>
         <div class="mt-5 space-y-3">
@@ -66,6 +66,12 @@ const musicianUseCases = [
         <span class="eyebrow">Use cases</span>
         <div class="mt-5 space-y-3">
           {musicianUseCases.map((item) => <p class="text-steel">{item}</p>)}
+        </div>
+      </article>
+      <article class="surface p-6 sm:p-8">
+        <span class="eyebrow">What this includes</span>
+        <div class="mt-5 space-y-3">
+          {service.includes.map((item) => <p class="text-steel">{item}</p>)}
         </div>
       </article>
     </div>

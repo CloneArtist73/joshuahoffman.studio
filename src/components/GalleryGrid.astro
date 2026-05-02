@@ -29,6 +29,7 @@ const categoryLabels: Record<ImageCategory, string> = {
 };
 
 const categories = [...new Set(images.map((image) => image.category))];
+const showFilters = enableFilter && categories.length > 1;
 ---
 
 <section class="section-block">
@@ -43,8 +44,8 @@ const categories = [...new Set(images.map((image) => image.category))];
     }
 
     {
-      enableFilter && (
-        <div class="mt-8 flex flex-wrap gap-3" data-filter-controls>
+      showFilters && (
+        <div aria-label="Gallery filters" class="mt-8 flex flex-wrap gap-3" data-filter-controls>
           <button
             aria-pressed="true"
             class="panel-link min-h-11 rounded-full border border-white/10 bg-white/10 px-4 py-2 text-sm font-semibold text-paper"
@@ -55,14 +56,14 @@ const categories = [...new Set(images.map((image) => image.category))];
           </button>
           {
             categories.map((category) => (
-      <button
-        aria-pressed="false"
-        class="panel-link min-h-11 rounded-full border border-white/10 px-4 py-2 text-sm font-semibold text-steel transition focus-visible:ring-2 focus-visible:ring-platinum/70 hover:border-platinum/60 hover:text-paper"
-        data-filter={category}
-        type="button"
-      >
-        {categoryLabels[category]}
-      </button>
+              <button
+                aria-pressed="false"
+                class="panel-link min-h-11 rounded-full border border-white/10 px-4 py-2 text-sm font-semibold text-steel transition focus-visible:ring-2 focus-visible:ring-platinum/70 hover:border-platinum/60 hover:text-paper"
+                data-filter={category}
+                type="button"
+              >
+                {categoryLabels[category]}
+              </button>
             ))
           }
         </div>
@@ -86,7 +87,7 @@ const categories = [...new Set(images.map((image) => image.category))];
 </section>
 
 {
-  enableFilter && (
+  showFilters && (
     <script define:vars={{ gridId: id }} is:inline>
       const galleryGrid = document.getElementById(gridId);
       const section = galleryGrid?.closest('section');
@@ -94,15 +95,15 @@ const categories = [...new Set(images.map((image) => image.category))];
       const cards = Array.from(galleryGrid?.querySelectorAll('[data-gallery-card]') ?? []);
 
       function updateFilter(filter) {
-      buttons.forEach((button) => {
-        const isActive = button.dataset.filter === filter;
-        button.setAttribute('aria-pressed', String(isActive));
-        button.classList.toggle('bg-white/10', isActive);
-        button.classList.toggle('border-platinum/70', isActive);
-        button.classList.toggle('shadow-soft', isActive);
-        button.classList.toggle('text-paper', isActive);
-        button.classList.toggle('text-steel', !isActive);
-      });
+        buttons.forEach((button) => {
+          const isActive = button.dataset.filter === filter;
+          button.setAttribute('aria-pressed', String(isActive));
+          button.classList.toggle('bg-white/10', isActive);
+          button.classList.toggle('border-platinum/70', isActive);
+          button.classList.toggle('shadow-soft', isActive);
+          button.classList.toggle('text-paper', isActive);
+          button.classList.toggle('text-steel', !isActive);
+        });
 
         cards.forEach((card) => {
           const matches = filter === 'all' || card.dataset.category === filter;

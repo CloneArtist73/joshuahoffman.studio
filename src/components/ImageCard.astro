@@ -38,8 +38,10 @@ const aspectClass =
       <img
         alt={image.alt}
         class="h-full w-full object-cover transition duration-500 group-hover:scale-[1.02]"
+        decoding="async"
         height="1600"
         loading={eager ? 'eager' : 'lazy'}
+        sizes="(min-width: 1280px) 30vw, (min-width: 640px) 45vw, calc(100vw - 2.5rem)"
         src={image.imageSrc}
         width="1200"
       />

@@ -75,8 +75,11 @@ function ctaTracking(cta: CtaItem, fallbackLocation: string) {
           <img
             alt={imageAlt ?? ''}
             class="aspect-[6/5] w-full object-cover"
+            decoding="async"
+            fetchpriority="high"
             height="1100"
             loading="eager"
+            sizes="(min-width: 1024px) 44vw, calc(100vw - 2.5rem)"
             src={imageSrc}
             width="1320"
           />

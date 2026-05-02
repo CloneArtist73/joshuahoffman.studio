@@ -54,8 +54,9 @@ const hasCurrentSecondaryLink = secondaryNavLinks.some((item) => isCurrentLink(i
         }
       </div>
 
-      <details class="relative shrink-0 xl:hidden">
+      <details class="relative shrink-0 xl:hidden" data-site-menu>
         <summary
+          aria-label="Open secondary navigation"
           class:list={[
             'panel-link inline-flex min-h-11 cursor-pointer items-center rounded-full border border-white/10 px-4 py-2 text-sm font-semibold',
             hasCurrentSecondaryLink ? 'bg-white/10 text-paper' : 'bg-white/5 text-steel hover:text-paper',
@@ -75,6 +76,7 @@ const hasCurrentSecondaryLink = secondaryNavLinks.some((item) => isCurrentLink(i
                       ? 'bg-white/10 text-paper'
                       : 'text-steel hover:bg-white/5 hover:text-paper',
                   ]}
+                  data-menu-link
                   href={item.href}
                 >
                   {item.label}
@@ -98,8 +100,8 @@ const hasCurrentSecondaryLink = secondaryNavLinks.some((item) => isCurrentLink(i
       />
     </nav>
 
-    <details class="relative lg:hidden">
-      <summary class="panel-link inline-flex min-h-11 cursor-pointer items-center rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-paper">
+    <details class="relative lg:hidden" data-site-menu>
+      <summary aria-label="Open site navigation" class="panel-link inline-flex min-h-11 cursor-pointer items-center rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-paper">
         Menu
       </summary>
       <div class="surface absolute right-0 top-[calc(100%+0.75rem)] min-w-64 p-4 shadow-soft">
@@ -114,6 +116,7 @@ const hasCurrentSecondaryLink = secondaryNavLinks.some((item) => isCurrentLink(i
                     ? 'bg-white/10 text-paper'
                     : 'text-steel hover:bg-white/5 hover:text-paper',
                 ]}
+                data-menu-link
                 href={item.href}
               >
                 {item.label}
@@ -126,6 +129,7 @@ const hasCurrentSecondaryLink = secondaryNavLinks.some((item) => isCurrentLink(i
               label="Start an Inquiry"
               class="w-full"
               trackingMeta={{
+                'data-menu-link': 'true',
                 'data-link-type': 'booking_inquiry',
                 'data-link-intent': 'portrait_booking',
                 'data-link-location': 'header_mobile_cta',
@@ -138,3 +142,34 @@ const hasCurrentSecondaryLink = secondaryNavLinks.some((item) => isCurrentLink(i
     </details>
   </div>
 </header>
+
+<script is:inline>
+  const siteMenus = Array.from(document.querySelectorAll('header details[data-site-menu]'));
+
+  document.addEventListener('click', (event) => {
+    const target = event.target;
+
+    if (!(target instanceof Element)) {
+      return;
+    }
+
+    siteMenus.forEach((menu) => {
+      if (target.closest('[data-menu-link]')) {
+        menu.removeAttribute('open');
+        return;
+      }
+
+      if (!menu.contains(target)) {
+        menu.removeAttribute('open');
+      }
+    });
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape') {
+      return;
+    }
+
+    siteMenus.forEach((menu) => menu.removeAttribute('open'));
+  });
+</script>

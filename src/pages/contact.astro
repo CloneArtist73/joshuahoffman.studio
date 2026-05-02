@@ -4,6 +4,12 @@ import CTAButton from '../components/CTAButton.astro';
 import Layout from '../components/Layout.astro';
 import { siteConfig } from '../data/site';
 import { contactClick } from '../utils/analytics';
+
+const inquiryGuidance = [
+  'What kind of photographs, print, or license you need',
+  'Timing, location, and where the images need to work',
+  'Any privacy, family, memorial, or usage details Joshua should understand early',
+];
 ---
 
 <Layout
@@ -19,7 +25,7 @@ import { contactClick } from '../utils/analytics';
         <p class="max-w-copy text-base text-steel sm:text-lg">
           Reach out about portrait sessions, legacy work, musician portraits, print questions, licensing, or anything else that fits the site.
         </p>
-        <div class="surface space-y-4 p-6">
+        <div class="surface space-y-5 p-6">
           <p class="text-sm text-steel">
             Direct email: <a
               class="panel-link text-paper underline decoration-white/20 underline-offset-4 hover:decoration-platinum"
@@ -33,6 +39,12 @@ import { contactClick } from '../utils/analytics';
             </a>
           </p>
           <p class="text-sm text-steel">Service area: {siteConfig.serviceArea}</p>
+          <div class="border-t border-white/10 pt-5">
+            <h2 class="text-xl">What to include</h2>
+            <ul class="mt-3 list-disc space-y-2 pl-5 text-sm text-steel">
+              {inquiryGuidance.map((item) => <li>{item}</li>)}
+            </ul>
+          </div>
           <CTAButton
             href="/about/"
             label="About Joshua"
@@ -64,7 +76,7 @@ import { contactClick } from '../utils/analytics';
           </p>
         </noscript>
         <p class="text-sm text-steel">
-          For the clearest reply, include timing, location, and the kind of photographs or print question you have in mind.
+          Joshua replies directly. For the clearest reply, include timing, location, and the kind of photographs or print question you have in mind.
         </p>
       </div>
     </div>

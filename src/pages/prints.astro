@@ -4,8 +4,10 @@ import Layout from '../components/Layout.astro';
 import ProductCard from '../components/ProductCard.astro';
 import { getImageBySlug, isPublicImage } from '../data/images';
 import { products } from '../data/products';
+import { getServiceBySlug } from '../data/services';
 import { contactClick } from '../utils/analytics';
 
+const printService = getServiceBySlug('prints');
 const printProducts = products
   .map((product) => ({
     product,
@@ -43,6 +45,24 @@ const printProducts = products
       </div>
     </div>
   </section>
+
+  {printService && (
+    <section class="section-block pt-0">
+      <div class="shell">
+        <div class="surface grid gap-6 p-6 sm:p-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
+          <div class="space-y-3">
+            <span class="eyebrow">How print inquiries work</span>
+            <h2 class="text-3xl sm:text-4xl">Confirm the details before anything moves to order.</h2>
+          </div>
+          <div class="grid gap-3 sm:grid-cols-2">
+            {printService.includes.map((item) => (
+              <p class="text-sm text-steel">{item}</p>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  )}
 
   <section class="section-block pt-0">
     <div class="shell grid gap-6 lg:grid-cols-2">

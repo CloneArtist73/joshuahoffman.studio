@@ -15,8 +15,10 @@ const { product, image } = Astro.props;
     <img
       alt={image.alt}
       class="aspect-[5/4] w-full object-cover"
+      decoding="async"
       height="1000"
       loading="lazy"
+      sizes="(min-width: 1024px) 45vw, calc(100vw - 2.5rem)"
       src={image.imageSrc}
       width="1200"
     />
@@ -27,9 +29,16 @@ const { product, image } = Astro.props;
       <h3 class="text-2xl">{product.title}</h3>
       <p class="text-sm text-steel">{product.shortDescription}</p>
     </div>
-    <p class="text-sm text-paper">
-      Available formats: {product.availableFormats.join(' · ')}
-    </p>
+    <dl class="grid gap-3 border-t border-white/10 pt-4 text-sm">
+      <div>
+        <dt class="font-semibold text-paper">Available sizes</dt>
+        <dd class="mt-1 text-steel">{product.availableFormats.join(' · ')}</dd>
+      </div>
+      <div>
+        <dt class="font-semibold text-paper">Ordering</dt>
+        <dd class="mt-1 text-steel">Direct inquiry for paper, availability, signed work, and custom sizing.</dd>
+      </div>
+    </dl>
     <div class="mt-auto pt-1">
       <ProductRouteButtons
         imageSlug={image.slug}

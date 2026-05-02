@@ -47,7 +47,7 @@ const galleryImages = service.gallerySlugs
   />
 
   <section class="section-block pt-0">
-    <div class="shell grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+    <div class="shell grid gap-6 lg:grid-cols-3">
       <article class="surface p-6 sm:p-8">
         <span class="eyebrow">Approach</span>
         <div class="rich-copy mt-5 max-w-copy">
@@ -61,6 +61,12 @@ const galleryImages = service.gallerySlugs
         <span class="eyebrow">Good fit for</span>
         <div class="mt-5 space-y-3">
           {service.idealFor.map((item) => <p class="text-steel">{item}</p>)}
+        </div>
+      </article>
+      <article class="surface p-6 sm:p-8">
+        <span class="eyebrow">What this includes</span>
+        <div class="mt-5 space-y-3">
+          {service.includes.map((item) => <p class="text-steel">{item}</p>)}
         </div>
       </article>
     </div>

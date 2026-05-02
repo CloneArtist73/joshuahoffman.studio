@@ -108,8 +108,11 @@ const fallbackCta =
         <img
           alt={image.alt}
           class="block h-auto w-full"
+          decoding="async"
+          fetchpriority="high"
           height={imageDimensions.height}
           loading="eager"
+          sizes="(min-width: 1024px) 50vw, calc(100vw - 2.5rem)"
           src={image.imageSrc}
           width={imageDimensions.width}
         />
@@ -130,53 +133,58 @@ const fallbackCta =
           </div>
         )}
 
-        <div class="flex flex-wrap gap-3">
-          {product ? (
-            <ProductRouteButtons
-              compact
-              imageSlug={image.slug}
-              includeInquiry={product.inquiryAllowed}
-              productSlug={product.slug}
-              routeKeys={product.routeKeys}
-            />
-          ) : (
+        <div class="space-y-3">
+          <div aria-label="Image actions" class="flex flex-wrap gap-3" role="group">
+            {product ? (
+              <ProductRouteButtons
+                compact
+                imageSlug={image.slug}
+                includeInquiry={product.inquiryAllowed}
+                productSlug={product.slug}
+                routeKeys={product.routeKeys}
+              />
+            ) : (
+              <CTAButton
+                href={fallbackCta.href}
+                label={fallbackCta.label}
+                tracking={fallbackCta.tracking}
+                trackingMeta={{
+                  'data-link-type': 'booking_inquiry',
+                  'data-link-location': 'image_page_primary_cta',
+                  'data-link-image': image.slug,
+                }}
+              />
+            )}
+
             <CTAButton
-              href={fallbackCta.href}
-              label={fallbackCta.label}
-              tracking={fallbackCta.tracking}
+              href={`/contact/?type=Licensing&image=${encodeURIComponent(image.slug)}`}
+              label="License Image"
+              tracking={contactClick({
+                location: 'image_page_license_cta',
+                imageSlug: image.slug,
+                intent: 'licensing',
+              })}
               trackingMeta={{
                 'data-link-type': 'booking_inquiry',
-                'data-link-location': 'image_page_primary_cta',
+                'data-link-location': 'image_page_license_cta',
+                'data-link-intent': 'licensing',
                 'data-link-image': image.slug,
               }}
+              variant="ghost"
             />
-          )}
-
-          <CTAButton
-            href={`/contact/?type=Licensing&image=${encodeURIComponent(image.slug)}`}
-            label="License Image"
-            tracking={contactClick({
-              location: 'image_page_license_cta',
-              imageSlug: image.slug,
-              intent: 'licensing',
-            })}
-            trackingMeta={{
-              'data-link-type': 'booking_inquiry',
-              'data-link-location': 'image_page_license_cta',
-              'data-link-intent': 'licensing',
-              'data-link-image': image.slug,
-            }}
-            variant="ghost"
-          />
-          <CTAButton
-            href="#related-work"
-            label="View Related Work"
-            trackingMeta={{
-              'data-link-type': 'internal_navigation',
-              'data-link-location': 'image_page_primary_actions',
-            }}
-            variant="ghost"
-          />
+            <CTAButton
+              href="#related-work"
+              label="View Related Work"
+              trackingMeta={{
+                'data-link-type': 'internal_navigation',
+                'data-link-location': 'image_page_primary_actions',
+              }}
+              variant="ghost"
+            />
+          </div>
+          <p class="max-w-copy text-sm text-steel">
+            Print, licensing, and session questions go directly to Joshua, so the next step stays specific to this image.
+          </p>
         </div>
 
         {metadata.length > 0 && (
