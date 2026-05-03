@@ -2,6 +2,7 @@
 import CTAButton from './CTAButton.astro';
 import { externalLinks } from '../data/externalLinks';
 import { printBuyClick, contactClick } from '../utils/analytics';
+import { isLiveExternalRoute } from '../utils/readiness';
 
 interface Props {
   routeKeys: string[];
@@ -21,22 +22,10 @@ const {
   compact = false,
 } = Astro.props;
 
-function isLiveRoute(route: (typeof externalLinks)[string]) {
-  const hasTemplateToken = route.url.includes('{imageSlug}') || route.url.includes('{productSlug}');
-  const markedPlaceholder = /replace with|before launch|once .* finalized/i.test(route.note ?? '');
-  const genericStorefrontUrl = [
-    /^https:\/\/www\.etsy\.com\/search\?/i,
-    /^https:\/\/shopify\.com\/products\//i,
-    /^https:\/\/www\.pixieset\.com\/prints\//i,
-  ].some((pattern) => pattern.test(route.url));
-
-  return !hasTemplateToken && !markedPlaceholder && !genericStorefrontUrl;
-}
-
 const routes = routeKeys
   .map((routeKey) => externalLinks[routeKey])
   .filter((route): route is (typeof externalLinks)[string] => Boolean(route))
-  .filter(isLiveRoute);
+  .filter(isLiveExternalRoute);
 const hasRoutes = routes.length > 0;
 
 function getRouteUrl(url: string) {

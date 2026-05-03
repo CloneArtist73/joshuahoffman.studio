@@ -25,6 +25,12 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
           This page stays local-only. Submit can copy a selected image into <code>public/images</code>
           and add the local data entries used by the gallery before you push the site.
         </p>
+        <a
+          class="panel-link inline-flex w-fit items-center justify-center rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-paper hover:bg-white/10"
+          href="/entry/readiness.json"
+        >
+          Open Readiness Report
+        </a>
       </div>
 
       <div class="surface p-6 sm:p-8">
@@ -333,6 +339,17 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
             </div>
 
             <div class="grid gap-5 sm:grid-cols-2">
+              <label class="space-y-2 text-sm text-paper" for="image-status">
+                <span>Readiness status</span>
+                <select id="image-status" name="imageStatus">
+                  <option value="draft" selected>Draft</option>
+                  <option value="public">Public</option>
+                </select>
+                <span class="copy-muted block">
+                  Keep new entries draft until the asset, copy, metadata, and routes are ready.
+                </span>
+              </label>
+
               <label class="space-y-2 text-sm text-paper" for="image-category">
                 <span>Category</span>
                 <select id="image-category" name="imageCategory">
@@ -347,7 +364,7 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
                 </span>
               </label>
 
-              <label class="space-y-2 text-sm text-paper" for="image-src">
+              <label class="space-y-2 text-sm text-paper sm:col-span-2" for="image-src">
                 <span>Public image path</span>
                 <input
                   id="image-src"
@@ -520,6 +537,17 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
             </div>
 
             <fieldset class="space-y-5 opacity-60" disabled id="product-fields">
+              <label class="space-y-2 text-sm text-paper" for="product-status">
+                <span>Product readiness status</span>
+                <select id="product-status" name="productStatus">
+                  <option value="draft" selected>Draft</option>
+                  <option value="public">Public</option>
+                </select>
+                <span class="copy-muted block">
+                  Products should stay draft until the linked image is public and purchase or inquiry language is safe.
+                </span>
+              </label>
+
               <div class="grid gap-5 sm:grid-cols-2">
                 <label class="space-y-2 text-sm text-paper" for="product-title">
                   <span>Product title</span>
@@ -1047,6 +1075,10 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
     return value && typeof value === 'object' ? value : null;
   }
 
+  function normalizeContentStatus(value) {
+    return value === 'public' ? 'public' : 'draft';
+  }
+
   function clearInputValue(targetId) {
     const target = document.getElementById(targetId);
     if (!target) {
@@ -1128,6 +1160,7 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
   function clearEditFormFields() {
     setValue('image-title', '');
     setValue('image-slug', '');
+    setValue('image-status', 'draft');
     setValue('image-src', '');
     setValue('image-category', 'portrait');
     setValue('image-tags', '');
@@ -1174,6 +1207,7 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
 
     setValue('image-title', String(sourceRecord.title || '').trim());
     setValue('image-slug', String(sourceRecord.slug || '').trim());
+    setValue('image-status', normalizeContentStatus(sourceRecord.status));
     setValue('image-src', String(sourceRecord.imageSrc || '').trim());
     setValue('image-category', String(sourceRecord.category || 'portrait').trim());
     setValue('image-tags', Array.isArray(sourceRecord.tags) ? sourceRecord.tags.join(', ') : '');
@@ -1214,6 +1248,7 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
 
     return {
       slug: String(sourceRecord.slug || ''),
+      status: normalizeContentStatus(sourceRecord.status),
       imageSlug: String(sourceRecord.imageSlug || ''),
       title: String(sourceRecord.title || ''),
       shortDescription: String(sourceRecord.shortDescription || ''),
@@ -1246,6 +1281,7 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
 
     if (!product) {
       createProductCheckbox.checked = false;
+      setValue('product-status', 'draft');
       productTitleInput.value = '';
       productSlugInput.value = '';
       clearInputValue('product-description');
@@ -1258,6 +1294,7 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
     }
 
     createProductCheckbox.checked = true;
+    setValue('product-status', product.status);
     setValue('product-title', product.title);
     setValue('product-slug', product.slug);
     setValue('product-description', product.shortDescription);
@@ -1417,7 +1454,7 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
     for (const image of sortedImages) {
       const option = document.createElement('option');
       option.value = String(image.slug);
-      option.textContent = `${String(image.title)} (${String(image.slug)})`;
+      option.textContent = `${String(image.title)} (${normalizeContentStatus(image.status)}, ${String(image.slug)})`;
       editImageSelect.append(option);
     }
 
@@ -2281,12 +2318,19 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
 
     const productTitle = String(formData.get('productTitle') || '').trim();
     const productSlug = getResolvedProductSlug();
+    const imageSrc = String(formData.get('imageSrc') || '').trim();
+    const imageStatus = imageSrc.includes('/images/placeholders/')
+      ? 'draft'
+      : normalizeContentStatus(formData.get('imageStatus'));
+    const productStatus =
+      imageStatus === 'public' ? normalizeContentStatus(formData.get('productStatus')) : 'draft';
     const productDescription = String(formData.get('productDescription') || '').trim();
     const productFormats = collectProductFormats(formData);
     const inquiryAllowed = Boolean(formData.get('productInquiryAllowed'));
 
     const lines = ['{'];
     pushString(lines, 'slug', productSlug);
+    pushString(lines, 'status', productStatus);
     pushString(lines, 'imageSlug', imageSlug);
     pushString(lines, 'title', productTitle || String(formData.get('imageTitle') || '').trim());
     pushString(lines, 'shortDescription', productDescription);
@@ -2299,8 +2343,10 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
 
   function buildImageSnippet(formData, imageSlug, productSlugValue, routeKeys) {
     const title = String(formData.get('imageTitle') || '').trim();
+    const requestedStatus = normalizeContentStatus(formData.get('imageStatus'));
     const category = String(formData.get('imageCategory') || 'portrait').trim();
     const imageSrc = String(formData.get('imageSrc') || '').trim();
+    const imageStatus = imageSrc.includes('/images/placeholders/') ? 'draft' : requestedStatus;
     const tags = splitList(String(formData.get('imageTags') || ''));
     const alt = String(formData.get('imageAlt') || '').trim();
     const hook = String(formData.get('imageHook') || '').trim();
@@ -2317,6 +2363,7 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
 
     const lines = ['{'];
     pushString(lines, 'slug', imageSlug);
+    pushString(lines, 'status', imageStatus);
     pushString(lines, 'title', title);
     pushString(lines, 'category', category);
     lines.push(arrayLine('tags', tags));

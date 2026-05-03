@@ -3,6 +3,7 @@ import type { ProductItem } from './types';
 export const products: ProductItem[] = [
   {
     slug: 'after-the-show-print',
+    status: 'draft',
     imageSlug: 'after-the-show',
     title: 'After the Show',
     shortDescription:
@@ -13,6 +14,7 @@ export const products: ProductItem[] = [
   },
   {
     slug: 'kitchen-window-print',
+    status: 'draft',
     imageSlug: 'kitchen-window',
     title: 'Kitchen Window',
     shortDescription:
@@ -23,6 +25,7 @@ export const products: ProductItem[] = [
   },
   {
     slug: 'quiet-amp-print',
+    status: 'draft',
     imageSlug: 'quiet-amp',
     title: 'Quiet Amp',
     shortDescription:
@@ -33,6 +36,7 @@ export const products: ProductItem[] = [
   },
   {
     slug: 'room-with-flowers-print',
+    status: 'draft',
     imageSlug: 'room-with-flowers',
     title: 'Room with Flowers',
     shortDescription:
@@ -43,6 +47,7 @@ export const products: ProductItem[] = [
   },
   {
     slug: 'star-trails-over-trees-print',
+    status: 'public',
     imageSlug: 'star-trails-over-trees',
     title: 'Star Trails Over Trees',
     shortDescription:
@@ -53,6 +58,7 @@ export const products: ProductItem[] = [
   },
   {
     slug: 'city-street-perspective-print',
+    status: 'public',
     imageSlug: 'city-street-perspective',
     title: 'City street perspective',
     shortDescription:

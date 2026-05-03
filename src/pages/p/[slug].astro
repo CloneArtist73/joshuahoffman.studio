@@ -8,6 +8,7 @@ import { getImageBySlug, getRelatedImages, images, isPublicImage } from '../../d
 import { getProductByImageSlug, getProductBySlug } from '../../data/products';
 import type { ImageItem } from '../../data/types';
 import { bookSessionClick, contactClick } from '../../utils/analytics';
+import { isPublicReadyProduct } from '../../utils/readiness';
 
 export function getStaticPaths() {
   return images.filter(isPublicImage).map((image) => ({
@@ -17,9 +18,10 @@ export function getStaticPaths() {
 }
 
 const { image } = Astro.props as { image: ImageItem };
-const product =
+const candidateProduct =
   (image.productSlug ? getProductBySlug(image.productSlug) : undefined) ??
   getProductByImageSlug(image.slug);
+const product = isPublicReadyProduct(candidateProduct, image) ? candidateProduct : undefined;
 const relatedImages = getRelatedImages(image, 3);
 
 const metadata = [

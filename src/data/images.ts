@@ -1,10 +1,12 @@
 import type { ImageItem } from './types';
+import { isPublicReadyImage } from '../utils/readiness';
 
 // TODO: Replace these placeholder SVG paths with real photo files in /public/images/
 // and update each title, alt, hook, story, and metadata as real work is added.
 export const images: ImageItem[] = [
   {
     slug: 'after-the-show',
+    status: 'draft',
     title: 'After the Show',
     category: 'musician',
     tags: ['musicians', 'performance', 'portrait'],
@@ -25,6 +27,7 @@ export const images: ImageItem[] = [
   },
   {
     slug: 'hands-at-rest',
+    status: 'draft',
     title: 'Hands at Rest',
     category: 'legacy',
     tags: ['legacy', 'family', 'memory'],
@@ -43,6 +46,7 @@ export const images: ImageItem[] = [
   },
   {
     slug: 'before-the-vow',
+    status: 'draft',
     title: 'Before the Vow',
     category: 'portrait',
     tags: ['portrait', 'family', 'honest'],
@@ -61,6 +65,7 @@ export const images: ImageItem[] = [
   },
   {
     slug: 'room-with-flowers',
+    status: 'draft',
     title: 'Room with Flowers',
     category: 'print',
     tags: ['print', 'memory', 'interior'],
@@ -81,6 +86,7 @@ export const images: ImageItem[] = [
   },
   {
     slug: 'green-room',
+    status: 'draft',
     title: 'Green Room',
     category: 'musician',
     tags: ['musicians', 'promo', 'artist'],
@@ -99,6 +105,7 @@ export const images: ImageItem[] = [
   },
   {
     slug: 'kitchen-window',
+    status: 'draft',
     title: 'Kitchen Window',
     category: 'personal',
     tags: ['personal', 'print', 'domestic'],
@@ -119,6 +126,7 @@ export const images: ImageItem[] = [
   },
   {
     slug: 'father-and-daughter',
+    status: 'draft',
     title: 'Father and Daughter',
     category: 'legacy',
     tags: ['legacy', 'family', 'portrait'],
@@ -136,6 +144,7 @@ export const images: ImageItem[] = [
   },
   {
     slug: 'studio-stillness',
+    status: 'draft',
     title: 'Studio Stillness',
     category: 'portrait',
     tags: ['portrait', 'artist', 'direct'],
@@ -153,6 +162,7 @@ export const images: ImageItem[] = [
   },
   {
     slug: 'hallway-blue',
+    status: 'draft',
     title: 'Hallway Blue',
     category: 'personal',
     tags: ['personal', 'print', 'quiet'],
@@ -170,6 +180,7 @@ export const images: ImageItem[] = [
   },
   {
     slug: 'quiet-amp',
+    status: 'draft',
     title: 'Quiet Amp',
     category: 'print',
     tags: ['print', 'music', 'still-life'],
@@ -190,6 +201,7 @@ export const images: ImageItem[] = [
   },
   {
     slug: 'soft-jacket',
+    status: 'draft',
     title: 'Soft Jacket',
     category: 'portrait',
     tags: ['portrait', 'editorial', 'musician'],
@@ -207,6 +219,7 @@ export const images: ImageItem[] = [
   },
   {
     slug: 'empty-chair-sunday',
+    status: 'draft',
     title: 'Empty Chair, Sunday',
     category: 'legacy',
     tags: ['legacy', 'memory', 'print'],
@@ -224,6 +237,7 @@ export const images: ImageItem[] = [
   },
   {
     slug: 'star-trails-over-trees',
+    status: 'public',
     title: 'Star Trails Over Trees',
     category: 'personal',
     tags: ['astrophotography', 'night-sky', 'star-trails', 'landscape'],
@@ -242,6 +256,7 @@ export const images: ImageItem[] = [
   },
   {
     slug: 'city-street-perspective',
+    status: 'public',
     title: 'City street perspective',
     category: 'personal',
     tags: ['urban', 'architecture', 'street-photography', 'manhattan', 'perspective'],
@@ -261,7 +276,7 @@ export const images: ImageItem[] = [
 ];
 
 export function isPublicImage(image: ImageItem) {
-  return !image.imageSrc.includes('/images/placeholders/');
+  return isPublicReadyImage(image);
 }
 
 export function getFeaturedImages(limit = 6) {

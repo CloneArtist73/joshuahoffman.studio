@@ -19,17 +19,22 @@ Deployment model for Day 1:
   `ownerName`, `brandName`, and `defaultTitle` now use Joshua Hoffman / Joshua Hoffman Studio instead of the previous generic placeholder.
 - Placeholder domain removal:
   Public config no longer emits placeholder domains for the production site URL, public email, or outbound print buttons. Print products currently fall back to direct custom-print inquiry links until real platform URLs are added.
+- Content readiness gating:
+  Image and product records now use explicit `draft` / `public` status fields. Public galleries, image detail routes, related work, and print cards only use public-ready images, and product cards only render when the product and linked image are public-ready.
+- Local readiness report:
+  `/entry/readiness.json` is available in local development for a read-only report of placeholder assets, temporary copy, fake routes, draft/public mismatches, and asset sizing issues. Normal static builds prune `/entry/` from `dist/`.
 
 ## Working
 
 - Static Astro MVP is present with homepage, gallery, service pages, print routing, contact page, image detail routes, SEO helpers, sitemap integration, and `robots.txt`.
 - Local content entry tooling exists behind development mode or `PUBLIC_ENABLE_ENTRY=true`, is noindexed, is excluded from the sitemap, and is removed from normal static build output.
+- The entry form can preserve and generate readiness status for image and product records.
 - Contact form is Day 1-safe (`contactForm.provider = 'none'`) and uses `/contact/thank-you/` as the success route.
 - Analytics hooks are wired and GA4 is configured with the active Measurement ID.
 
 ## Todo Before Launch
 
-- Add real outbound product URLs in `src/data/externalLinks.ts` and attach their keys in `src/data/products.ts`.
+- Add real outbound product URLs in `src/data/externalLinks.ts` and attach their keys in `src/data/products.ts`, or keep products inquiry-only.
 - Confirm business info in `site.config.mjs`:
   `info@joshuahoffman.studio`, `Upstate New York`, and `https://www.instagram.com/joshuahoffmanphotography/`.
 - Replace placeholder pricing in `src/data/services.ts`.
@@ -46,8 +51,10 @@ Deployment model for Day 1:
 
 - Replace placeholder image assets in `public/images/placeholders/`.
 - Replace placeholder image references, alt text, hooks, story copy, locations, and metadata in `src/data/images.ts`.
+- Promote image records from `status: 'draft'` to `status: 'public'` only after real assets and finished copy are in place.
 - Replace the about-page portrait image.
 - Replace any placeholder product descriptions, available formats, and print routing details in `src/data/products.ts`.
+- Promote product records from `status: 'draft'` to `status: 'public'` only when their linked image is public-ready and inquiry or live route behavior is clear.
 - Replace any remaining generic or temporary copy in the image/story data before sending traffic.
 
 ## Optional After First Traffic

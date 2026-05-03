@@ -79,6 +79,25 @@ Most launch edits happen in `src/data/` and `site.config.mjs`.
 - `src/data/ctas.ts`
   Adjust shared CTA labels and destinations if Joshua wants different routing.
 
+## Content readiness
+
+Images and print products use an explicit readiness status:
+
+- `status: 'draft'` keeps the record out of public galleries, related work, print cards, and `/p/[slug]/` routes.
+- `status: 'public'` makes the record eligible for public rendering only when the linked image is not in `/images/placeholders/`.
+- Products render publicly only when the product is public and its linked image is public-ready.
+- Public products without live external routes fall back to direct inquiry when `inquiryAllowed` is true.
+
+Use the local entry helper at `/entry/` to create or edit records. New records should stay draft until image assets, alt text, copy, metadata, and product routing are ready.
+
+The local read-only readiness report is available in development at:
+
+```txt
+/entry/readiness.json
+```
+
+Normal static builds prune `/entry/` from `dist/`, and `/entry/readiness.json` is excluded from sitemap output.
+
 ## Placeholder assets
 
 Placeholder artwork lives in `public/images/placeholders/`.

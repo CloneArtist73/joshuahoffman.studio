@@ -11,6 +11,7 @@ import { products } from '../data/products';
 import { services } from '../data/services';
 import { siteConfig } from '../data/site';
 import { contactClick } from '../utils/analytics';
+import { isPublicReadyProduct } from '../utils/readiness';
 
 const featuredImages = getFeaturedImages(6);
 const previewProducts = products
@@ -18,7 +19,9 @@ const previewProducts = products
     product,
     image: getImageBySlug(product.imageSlug),
   }))
-  .filter((entry): entry is { product: (typeof products)[number]; image: NonNullable<ReturnType<typeof getImageBySlug>> } => Boolean(entry.image) && isPublicImage(entry.image))
+  .filter((entry): entry is { product: (typeof products)[number]; image: NonNullable<ReturnType<typeof getImageBySlug>> } =>
+    Boolean(entry.image) && isPublicImage(entry.image) && isPublicReadyProduct(entry.product, entry.image),
+  )
   .slice(0, 3);
 
 const hasPrintProducts = previewProducts.length > 0;

@@ -7,6 +7,8 @@ export type ImageCategory =
 
 export type Orientation = 'vertical' | 'horizontal' | 'square';
 
+export type ContentStatus = 'draft' | 'public';
+
 export type Platform =
   | 'fine-art-america'
   | 'etsy'
@@ -28,6 +30,7 @@ export type ExternalLink = {
 
 export type ImageItem = {
   slug: string;
+  status: ContentStatus;
   title: string;
   category: ImageCategory;
   tags: string[];
@@ -48,6 +51,7 @@ export type ImageItem = {
 
 export type ProductItem = {
   slug: string;
+  status: ContentStatus;
   imageSlug: string;
   title: string;
   shortDescription: string;

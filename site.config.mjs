@@ -12,7 +12,7 @@ const siteConfig = {
   email: 'info@joshuahoffman.studio',
   serviceArea: 'Upstate New York',
   instagramUrl: 'https://www.instagram.com/joshuahoffmanphotography/',
-  noindexPaths: ['/404.html', '/contact/thank-you/', '/entry/'],
+  noindexPaths: ['/404.html', '/contact/thank-you/', '/entry/', '/entry/readiness.json'],
   localOnlyBuildPaths: ['/entry/'],
   analytics: {
     provider: 'ga4',

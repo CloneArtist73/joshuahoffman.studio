@@ -6,6 +6,7 @@ import { getImageBySlug, isPublicImage } from '../data/images';
 import { products } from '../data/products';
 import { getServiceBySlug } from '../data/services';
 import { contactClick } from '../utils/analytics';
+import { isPublicReadyProduct } from '../utils/readiness';
 
 const printService = getServiceBySlug('prints');
 const printProducts = products
@@ -13,7 +14,9 @@ const printProducts = products
     product,
     image: getImageBySlug(product.imageSlug),
   }))
-  .filter((entry): entry is { product: (typeof products)[number]; image: NonNullable<ReturnType<typeof getImageBySlug>> } => Boolean(entry.image) && isPublicImage(entry.image));
+  .filter((entry): entry is { product: (typeof products)[number]; image: NonNullable<ReturnType<typeof getImageBySlug>> } =>
+    Boolean(entry.image) && isPublicImage(entry.image) && isPublicReadyProduct(entry.product, entry.image),
+  );
 ---
 
 <Layout
