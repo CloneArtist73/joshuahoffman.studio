@@ -20,7 +20,7 @@
 - Static routes: `/`, `/gallery`, `/portraits`, `/legacy`, `/musicians`, `/prints`, `/contact`, `/about`, `/contact/thank-you/`
 - Error route: `/404`
 - Dynamic route: `/p/[slug]/` (generated from `src/data/images.ts`)
-- Local helper route: `/entry/` (enabled only in development or when `PUBLIC_ENABLE_ENTRY=true`)
+- Local helper route: `/entry/` (development helper only; noindex, disallowed in `robots.txt`, excluded from the sitemap, and pruned from normal static build output)
 
 ## Repo scripts
 
@@ -50,12 +50,14 @@
 ## Deployment notes
 
 - The project is configured as Astro static output (`astro.config.mjs`, `site: https://joshuahoffman.studio`).
-- Robot configuration points to `/sitemap-index.xml`; confirm sitemap generation/output in build.
+- Robot configuration points to `/sitemap-index.xml`; noindex paths are listed in `site.config.mjs` and filtered out of sitemap output.
+- Normal static builds remove local-only routes listed in `site.config.mjs` from `dist/`; `/entry/` remains a dev/local authoring route.
 - Deployment uses static assets from `dist/` after `npm run build`.
 
 ## Local workflows
 
-- `/entry/` is present but only functional when `import.meta.env.DEV` is true or `PUBLIC_ENABLE_ENTRY === 'true'`.
+- `/entry/` is present in local development but normal static builds prune it from `dist/`.
+- `/entry/` is only functional when `import.meta.env.DEV` is true or `PUBLIC_ENABLE_ENTRY === 'true'`.
 - The entry helper is optional and uses browser file-write APIs, so it is intended for local authoring and can show capability fallbacks in unsupported browsers.
 
 ## TODO (grounded in repo state)

@@ -12,11 +12,11 @@ const { service, context = 'service_card' } = Astro.props;
 const isPrintService = service.slug === 'prints';
 ---
 
-<article class="surface flex h-full flex-col overflow-hidden">
+<article class="surface flex h-full flex-col">
   {service.imageSrc && (
     <img
       alt={`${service.title} supporting image`}
-      class="aspect-[5/4] w-full object-cover"
+      class="aspect-[5/4] w-full rounded-t-panel object-cover"
       height="960"
       loading="lazy"
       src={service.imageSrc}

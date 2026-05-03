@@ -82,7 +82,7 @@
   }
 
   .eyebrow {
-    @apply text-xs font-semibold uppercase tracking-hush text-platinum;
+    @apply text-[0.72rem] font-semibold uppercase leading-relaxed tracking-[0.18em] text-sand;
   }
 
   .headline {
@@ -98,7 +98,11 @@
   }
 
   .btn {
-    @apply inline-flex min-h-11 max-w-full shrink-0 select-none items-center justify-center gap-2 rounded-full px-5 py-3 text-center text-sm font-semibold leading-tight whitespace-nowrap transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-platinum focus-visible:ring-offset-2 focus-visible:ring-offset-obsidian disabled:cursor-not-allowed disabled:opacity-55;
+    @apply inline-flex min-h-11 max-w-full min-w-0 select-none items-center justify-center gap-2 overflow-hidden text-ellipsis rounded-full px-5 py-3 text-center text-sm font-semibold leading-tight whitespace-nowrap transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-platinum focus-visible:ring-offset-2 focus-visible:ring-offset-obsidian disabled:cursor-not-allowed disabled:opacity-55;
+  }
+
+  .btn > span {
+    @apply min-w-0 truncate;
   }
 
   .btn-primary {
@@ -130,7 +134,15 @@
   }
 
   .tag-pill {
-    @apply inline-flex items-center rounded-full border border-platinum/20 bg-white/5 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-steel;
+    @apply inline-flex items-center rounded-full border border-platinum/30 bg-white/[0.07] px-3 py-1 text-xs font-semibold uppercase leading-none tracking-[0.14em] text-sand;
+  }
+
+  .filter-pill {
+    @apply inline-flex min-h-11 items-center justify-center rounded-full border border-white/10 bg-transparent px-4 py-2 text-sm font-semibold leading-tight text-sand transition-colors duration-200 hover:border-platinum/60 hover:bg-white/[0.07] hover:text-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-platinum focus-visible:ring-offset-2 focus-visible:ring-offset-obsidian;
+  }
+
+  .filter-pill[aria-pressed='true'] {
+    @apply border-platinum/70 bg-white/10 text-paper shadow-soft;
   }
 
   .form-field {

@@ -13,6 +13,8 @@ Deployment model for Day 1:
   `site.config.mjs` now uses `https://joshuahoffman.studio`, and `astro.config.mjs` imports that value for Astro's canonical site setting and sitemap generation.
 - SEO URL plumbing:
   canonical URLs, `og:url`, Open Graph image URLs, and `robots.txt` sitemap references flow from `siteConfig.siteUrl`.
+- Noindex and local route hygiene:
+  `site.config.mjs` lists noindex paths for SEO/sitemap filtering, and normal static builds prune `/entry/` from `dist/` so the local content-entry helper is not published.
 - Public brand baseline:
   `ownerName`, `brandName`, and `defaultTitle` now use Joshua Hoffman / Joshua Hoffman Studio instead of the previous generic placeholder.
 - Placeholder domain removal:
@@ -21,7 +23,7 @@ Deployment model for Day 1:
 ## Working
 
 - Static Astro MVP is present with homepage, gallery, service pages, print routing, contact page, image detail routes, SEO helpers, sitemap integration, and `robots.txt`.
-- Local content entry tooling exists behind development mode or `PUBLIC_ENABLE_ENTRY=true`.
+- Local content entry tooling exists behind development mode or `PUBLIC_ENABLE_ENTRY=true`, is noindexed, is excluded from the sitemap, and is removed from normal static build output.
 - Contact form is Day 1-safe (`contactForm.provider = 'none'`) and uses `/contact/thank-you/` as the success route.
 - Analytics hooks are wired and GA4 is configured with the active Measurement ID.
 

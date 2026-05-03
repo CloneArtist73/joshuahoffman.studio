@@ -48,7 +48,7 @@ const showFilters = enableFilter && categories.length > 1;
         <div aria-label="Gallery filters" class="mt-8 flex flex-wrap gap-3" data-filter-controls>
           <button
             aria-pressed="true"
-            class="panel-link min-h-11 rounded-full border border-white/10 bg-white/10 px-4 py-2 text-sm font-semibold text-paper"
+            class="filter-pill"
             data-filter="all"
             type="button"
           >
@@ -58,7 +58,7 @@ const showFilters = enableFilter && categories.length > 1;
             categories.map((category) => (
               <button
                 aria-pressed="false"
-                class="panel-link min-h-11 rounded-full border border-white/10 px-4 py-2 text-sm font-semibold text-steel transition focus-visible:ring-2 focus-visible:ring-platinum/70 hover:border-platinum/60 hover:text-paper"
+                class="filter-pill"
                 data-filter={category}
                 type="button"
               >
@@ -98,11 +98,6 @@ const showFilters = enableFilter && categories.length > 1;
         buttons.forEach((button) => {
           const isActive = button.dataset.filter === filter;
           button.setAttribute('aria-pressed', String(isActive));
-          button.classList.toggle('bg-white/10', isActive);
-          button.classList.toggle('border-platinum/70', isActive);
-          button.classList.toggle('shadow-soft', isActive);
-          button.classList.toggle('text-paper', isActive);
-          button.classList.toggle('text-steel', !isActive);
         });
 
         cards.forEach((card) => {

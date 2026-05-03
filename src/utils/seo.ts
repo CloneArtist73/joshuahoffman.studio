@@ -17,6 +17,27 @@ export function absoluteUrl(path = '/') {
   return new URL(path, siteConfig.siteUrl).toString();
 }
 
+export function normalizeRoutePath(path = '/') {
+  const pathname = path.startsWith('http://') || path.startsWith('https://')
+    ? new URL(path).pathname
+    : path.split(/[?#]/, 1)[0] || '/';
+  const normalizedPath = pathname.startsWith('/') ? pathname : `/${pathname}`;
+
+  if (normalizedPath === '/') {
+    return normalizedPath;
+  }
+
+  return normalizedPath.endsWith('/') || normalizedPath.includes('.')
+    ? normalizedPath
+    : `${normalizedPath}/`;
+}
+
+export function isNoindexPath(path = '/') {
+  return (siteConfig.noindexPaths ?? [])
+    .map(normalizeRoutePath)
+    .includes(normalizeRoutePath(path));
+}
+
 export function buildTitle(title?: string) {
   if (!title) {
     return siteConfig.defaultTitle;
@@ -29,7 +50,7 @@ export function buildSeo({
   title,
   description,
   path = '/',
-    image = '/images/ice-formations-on-a-surface.jpeg',
+  image = '/images/ice-formations-on-a-surface.jpeg',
   type = 'website',
   noindex = false,
 }: SeoInput) {
@@ -39,6 +60,6 @@ export function buildSeo({
     canonical: absoluteUrl(path),
     image: absoluteUrl(image),
     type,
-    noindex,
+    noindex: noindex || isNoindexPath(path),
   };
 }

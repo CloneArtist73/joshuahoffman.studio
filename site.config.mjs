@@ -12,6 +12,8 @@ const siteConfig = {
   email: 'info@joshuahoffman.studio',
   serviceArea: 'Upstate New York',
   instagramUrl: 'https://www.instagram.com/joshuahoffmanphotography/',
+  noindexPaths: ['/404.html', '/contact/thank-you/', '/entry/'],
+  localOnlyBuildPaths: ['/entry/'],
   analytics: {
     provider: 'ga4',
     // GA4 is configured. Keep Plausible empty unless switching providers later.

@@ -10,11 +10,11 @@ interface Props {
 const { product, image } = Astro.props;
 ---
 
-<article class="surface flex h-full flex-col overflow-hidden">
-  <a class="panel-link block shrink-0" href={`/p/${image.slug}/`}>
+<article class="surface flex h-full flex-col">
+  <a class="panel-link block shrink-0 rounded-t-panel focus-visible:ring-inset focus-visible:ring-offset-0" href={`/p/${image.slug}/`}>
     <img
       alt={image.alt}
-      class="aspect-[5/4] w-full object-cover"
+      class="aspect-[5/4] w-full rounded-t-panel object-cover"
       decoding="async"
       height="1000"
       loading="lazy"

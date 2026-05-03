@@ -1,7 +1,11 @@
 import { siteConfig } from '../data/site';
 
 export function GET() {
-  const body = `User-agent: *\nAllow: /\nSitemap: ${siteConfig.siteUrl}/sitemap-index.xml\n`;
+  const localOnlyRules = (siteConfig.localOnlyBuildPaths ?? [])
+    .map((path) => `Disallow: ${path}`)
+    .join('\n');
+  const crawlRules = localOnlyRules || 'Allow: /';
+  const body = `User-agent: *\n${crawlRules}\nSitemap: ${siteConfig.siteUrl}/sitemap-index.xml\n`;
 
   return new Response(body, {
     headers: {

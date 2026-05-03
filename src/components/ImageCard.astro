@@ -26,7 +26,7 @@ const aspectClass =
 
 <article class="surface">
   <a
-    class="panel-link group block overflow-hidden"
+    class="panel-link group block rounded-panel"
     href={`/p/${image.slug}/`}
     {...galleryImageClick({
       imageSlug: image.slug,
@@ -34,7 +34,7 @@ const aspectClass =
       location: context,
     })}
   >
-    <div class={`overflow-hidden ${aspectClass}`}>
+    <div class={`overflow-hidden rounded-t-panel ${aspectClass}`}>
       <img
         alt={image.alt}
         class="h-full w-full object-cover transition duration-500 group-hover:scale-[1.02]"

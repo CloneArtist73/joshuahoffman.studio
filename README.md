@@ -26,13 +26,19 @@ Production domain: `https://joshuahoffman.studio`
    npm run dev
    ```
 
-3. Build the static site:
+3. Start local development with the content-entry helper explicitly enabled:
+
+   ```powershell
+   $env:PUBLIC_ENABLE_ENTRY = 'true'; npm run dev
+   ```
+
+4. Build the static site:
 
    ```bash
    npm run build
    ```
 
-4. Preview the production build locally:
+5. Preview the production build locally:
 
    ```bash
    npm run preview
@@ -61,7 +67,7 @@ tailwind.config.mjs
 Most launch edits happen in `src/data/` and `site.config.mjs`.
 
 - `site.config.mjs`
-  Source of truth for the production site URL, name, service area, email, Instagram URL, analytics provider, analytics IDs, and form endpoint. `astro.config.mjs` imports this file so canonical URLs, Open Graph URLs, robots.txt, and sitemap generation stay on `https://joshuahoffman.studio`.
+  Source of truth for the production site URL, name, service area, email, Instagram URL, noindex/local-only paths, analytics provider, analytics IDs, and form endpoint. `astro.config.mjs` imports this file so canonical URLs, Open Graph URLs, robots.txt, sitemap generation, and local-only build pruning stay aligned with `https://joshuahoffman.studio`.
 - `src/data/images.ts`
   Replace placeholder image paths, alt text, titles, hooks, stories, and metadata.
 - `src/data/products.ts`
@@ -122,6 +128,8 @@ Current setup:
 
 The production origin is configured as `https://joshuahoffman.studio` in `site.config.mjs`. Astro reads that same value in `astro.config.mjs`, so `npm run build` emits sitemap and canonical metadata for the custom domain.
 
+Noindex routes in `site.config.mjs` are filtered out of the generated sitemap. Normal static builds also remove `/entry/` from `dist/`; use `npm run dev` for the local content-entry helper.
+
 This project builds to static output and launches with this Day 1 workflow:
 
 - InMotion Hosting (`public_html`) via `npm run build` then upload only `dist/`
@@ -140,7 +148,6 @@ If you deploy outside InMotion, remember to replace the form setup first.
 - Analytics is configured for GA4; confirm data appears in Google Analytics after launch
 - Leave form provider set to `none` on Day 1; connect a real static form provider on Day 2
 - Rebuild and test every outbound route and inquiry path
-- 
 # joshuahoffman.studio
 
 Repository initialized with baseline Git hygiene:
