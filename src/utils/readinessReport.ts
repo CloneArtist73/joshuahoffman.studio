@@ -253,15 +253,20 @@ function validateProduct(issues: ReadinessIssue[], product: ProductItem) {
     issue(issues, 'blocker', 'products', product.slug, `Product links to a non-public image: ${product.imageSlug}`);
   }
 
-  if (!product.title.trim()) {
+  const title = typeof product.title === 'string' ? product.title : '';
+  const shortDescription = typeof product.shortDescription === 'string' ? product.shortDescription : '';
+  const availableFormats = Array.isArray(product.availableFormats) ? product.availableFormats : [];
+  const routeKeys = Array.isArray(product.routeKeys) ? product.routeKeys : [];
+
+  if (!title.trim()) {
     issue(issues, 'blocker', 'products', product.slug, 'Public product is missing a title.');
   }
 
-  if (!product.shortDescription.trim()) {
+  if (!shortDescription.trim()) {
     issue(issues, 'blocker', 'products', product.slug, 'Public product is missing a short description.');
   }
 
-  if (!product.availableFormats.length) {
+  if (!availableFormats.length) {
     issue(issues, 'blocker', 'products', product.slug, 'Public product has no available formats.');
   }
 
@@ -270,13 +275,13 @@ function validateProduct(issues: ReadinessIssue[], product: ProductItem) {
     'products',
     product.slug,
     {
-      title: product.title,
-      shortDescription: product.shortDescription,
+      title,
+      shortDescription,
     },
     'blocker',
   );
 
-  const routes = product.routeKeys
+  const routes = routeKeys
     .map((routeKey) => externalLinks[routeKey])
     .filter(Boolean);
   const liveRoutes = routes.filter(isLiveExternalRoute);
@@ -285,7 +290,7 @@ function validateProduct(issues: ReadinessIssue[], product: ProductItem) {
     issue(issues, 'blocker', 'products', product.slug, 'Public product has no live route and inquiry fallback is disabled.');
   }
 
-  for (const routeKey of product.routeKeys) {
+  for (const routeKey of routeKeys) {
     const route = externalLinks[routeKey];
     if (!route) {
       issue(issues, 'warning', 'products', product.slug, `Route key is missing from externalLinks: ${routeKey}`);
