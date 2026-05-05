@@ -1,5 +1,6 @@
 ---
 import type { ImageItem } from '../data/types';
+import { getImageCategoryLabel } from '../data/categories';
 import { galleryImageClick } from '../utils/analytics';
 
 interface Props {
@@ -22,6 +23,7 @@ const aspectClass =
     : image.orientation === 'square'
       ? 'aspect-square'
       : 'aspect-[4/5]';
+const categoryLabel = getImageCategoryLabel(image.category);
 ---
 
 <article class="surface">
@@ -47,7 +49,7 @@ const aspectClass =
       />
     </div>
     <div class="space-y-3 p-5">
-      {showCategory && <span class="tag-pill">{image.category}</span>}
+      {showCategory && <span class="tag-pill">{categoryLabel}</span>}
       <h3 class="text-2xl">{image.title}</h3>
       <p class="text-sm text-steel">{image.hook}</p>
       <span class="inline-flex items-center text-sm font-semibold text-paper">

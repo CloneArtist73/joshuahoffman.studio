@@ -5,6 +5,10 @@ interface SeedData {
   images?: unknown[];
   products?: unknown[];
   externalLinks?: Record<string, unknown>;
+  categories?: {
+    slug?: string;
+    label?: string;
+  }[];
   siteConfig?: {
     analytics?: {
       provider?: string;
@@ -58,6 +62,19 @@ const siteConfigSnapshot = parsedSeedData.siteConfig ?? {};
 const contactFormConfig = siteConfigSnapshot.contactForm ?? {};
 const analyticsConfig = siteConfigSnapshot.analytics ?? {};
 const contactHandlerPath = readinessReport?.launch?.contactHandlerPath ?? '/contact.php';
+const fallbackCategoryOptions = [
+  { slug: 'portrait', label: 'Portrait' },
+  { slug: 'legacy', label: 'Legacy' },
+  { slug: 'musician', label: 'Musician' },
+  { slug: 'print', label: 'Print' },
+  { slug: 'personal', label: 'Personal' },
+];
+const categoryOptions = (Array.isArray(parsedSeedData.categories) ? parsedSeedData.categories : fallbackCategoryOptions)
+  .map((category) => ({
+    slug: String(category?.slug ?? '').trim(),
+    label: String(category?.label ?? category?.slug ?? '').trim(),
+  }))
+  .filter((category) => category.slug && category.label);
 const summaryCards = [
   { label: 'Blockers', value: readinessSummary.blockers ?? 0 },
   { label: 'Warnings', value: readinessSummary.warnings ?? 0 },
@@ -213,8 +230,7 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
             <div class="space-y-2">
               <h2 class="text-2xl" id="file-import">File import</h2>
               <p class="copy-muted">
-                Choose a local image file and your repo root. Submit copies the file into
-                <code>public/images</code> and writes the gallery data locally.
+                Choose an image and repo root. Submit imports the file and writes local data.
               </p>
             </div>
 
@@ -264,8 +280,7 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
                     type="text"
                   />
                   <span class="copy-muted block">
-                    Use nested paths like <code>portraits</code> or <code>musicians/live</code>. Each part
-                    will be sanitized to kebab-case.
+                    Use folders like <code>portraits</code> or <code>musicians/live</code>.
                   </span>
                 </label>
 
@@ -277,7 +292,7 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
                     </code>
                   </div>
                   <span class="copy-muted block">
-                    Imported files are renamed to the image slug and keep the original extension.
+                    Files are renamed to the image slug.
                   </span>
                 </div>
               </div>
@@ -297,7 +312,7 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
             <div class="space-y-2">
               <h2 class="text-2xl" id="edit-gallery">Edit gallery</h2>
               <p class="copy-muted">
-                Select an existing image and edit its metadata, product links, and outbound links.
+                Select an image to edit its metadata, product, and links.
               </p>
             </div>
 
@@ -307,163 +322,17 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
                 <option value="">Choose an image to edit</option>
               </select>
               <span class="copy-muted block" id="edit-image-meta">
-                Select a current gallery image to pre-fill image and product fields.
+                Select an image to pre-fill the form.
               </span>
             </label>
           </section>
 
-          <section class="space-y-5 border-t border-white/10 pt-8" id="ai-review-panel">
-            <div class="space-y-2">
-              <span class="eyebrow">PromptForge local export</span>
-              <h2 class="text-2xl">AI image review</h2>
+          <details class="rounded-2xl border border-white/10 bg-white/[0.03] p-5" id="image-entry-section" open>
+            <summary class="cursor-pointer text-2xl text-paper">Image</summary>
+            <div class="mt-5 space-y-5">
               <p class="copy-muted">
-                Run a local vision model against the selected image, then review and apply suggested field
-                values yourself.
+                Writes the image record in <code>src/data/images.ts</code>.
               </p>
-            </div>
-
-            <div
-              aria-live="polite"
-              class="rounded-2xl border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-sm text-paper"
-              id="ai-review-local-warning"
-            >
-              AI review is intended for local use only. Controls appear on localhost, file URLs, or with
-              <code>?localAi=1</code>.
-            </div>
-
-            <div class="space-y-5" id="ai-review-controls">
-              <div class="grid gap-5 lg:grid-cols-[0.8fr_1fr_0.8fr]">
-                <label class="space-y-2 text-sm text-paper" for="ai-provider">
-                  <span>Local provider</span>
-                  <select id="ai-provider" name="aiProvider">
-                    <option value="ollama" selected={entryAiPrompt.providerDefault === 'ollama'}>Ollama image review</option>
-                    <option value="promptforge" selected={entryAiPrompt.providerDefault === 'promptforge'}>PromptForge launcher</option>
-                  </select>
-                  <span class="copy-muted block" id="ai-provider-help">
-                    Ollama is used for image scans when a vision model is installed and running.
-                  </span>
-                </label>
-
-                <label class="space-y-2 text-sm text-paper" for="ai-endpoint">
-                  <span>Endpoint</span>
-                  <input id="ai-endpoint" name="aiEndpoint" type="url" value={entryAiPrompt.endpointDefault} />
-                </label>
-
-                <label class="space-y-2 text-sm text-paper" for="ai-model">
-                  <span>Model name</span>
-                  <input id="ai-model" list="ai-model-options" name="aiModel" type="text" value={entryAiPrompt.modelDefault} />
-                  <select id="ai-model-preset" name="aiModelPreset">
-                    <option value="">Custom model name (typed)</option>
-                  </select>
-                  <datalist id="ai-model-options"></datalist>
-                  <span class="copy-muted block" id="ai-model-preset-hint">
-                    Choose a preset to fill the model name quickly, or type a custom value.
-                  </span>
-                  <span class="copy-muted block" id="ai-model-meta">
-                    Refresh models after the local provider is running.
-                  </span>
-                </label>
-              </div>
-
-              <div class="grid gap-5 lg:grid-cols-[0.85fr_1.15fr]">
-                <div class="space-y-3">
-                  <div class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-steel">
-                    <p class="text-paper">
-                      Prompt: {entryAiPrompt.source} · {entryAiPrompt.channel} · {entryAiPrompt.version}
-                    </p>
-                    <p class="mt-2">
-                      The model can suggest descriptive content, category, orientation, service routing, and
-                      print notes. Product fields stay opt-in. It should not guess year, location, storefront
-                      URLs, or identities.
-                    </p>
-                  </div>
-
-                  <div class="grid gap-3 sm:grid-cols-2">
-                    <button
-                      class="panel-link inline-flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-paper hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-50"
-                      data-start-ai
-                      type="button"
-                    >
-                      Start Provider
-                    </button>
-
-                    <button
-                      class="panel-link inline-flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-paper hover:bg-white/10"
-                      data-refresh-ai-models
-                      type="button"
-                    >
-                      Refresh Models
-                    </button>
-                  </div>
-
-                  <button
-                    class="panel-link inline-flex w-full items-center justify-center rounded-full border border-sage/70 bg-sage px-5 py-3 text-sm font-semibold text-obsidian hover:bg-[#b5c7b7] disabled:cursor-not-allowed disabled:opacity-50"
-                    data-run-ai-review
-                    type="button"
-                  >
-                    Review Selected Image
-                  </button>
-
-                  <div
-                    aria-live="polite"
-                    class="hidden rounded-2xl border px-4 py-3 text-sm"
-                    id="ai-review-status"
-                    role="status"
-                  ></div>
-                </div>
-
-                <details class="rounded-2xl border border-white/10 bg-white/5 p-4">
-                  <summary class="cursor-pointer text-sm font-semibold text-paper">
-                    Paste review JSON fallback
-                  </summary>
-                  <div class="mt-4 space-y-3">
-                    <textarea
-                      class="min-h-48"
-                      id="ai-review-json"
-                      placeholder='{"title":"...","category":"portrait","tags":["portrait"],"alt":"..."}'
-                    ></textarea>
-                    <button
-                      class="panel-link inline-flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-paper hover:bg-white/10"
-                      data-parse-ai-json
-                      type="button"
-                    >
-                      Load Pasted Suggestions
-                    </button>
-                  </div>
-                </details>
-              </div>
-
-              <div class="hidden space-y-4 rounded-2xl border border-white/10 bg-obsidian/60 p-4" id="ai-suggestions-wrap">
-                <div class="flex flex-wrap items-center justify-between gap-3">
-                  <div>
-                    <h3 class="text-xl">Review suggestions</h3>
-                    <p class="copy-muted">
-                      Checked values will be copied into the Image section. Product fields stay unchecked until
-                      you opt in.
-                    </p>
-                  </div>
-                  <button
-                    class="panel-link inline-flex items-center justify-center rounded-full border border-ember/70 bg-ember px-5 py-3 text-sm font-semibold text-obsidian hover:bg-[#d48b63]"
-                    data-apply-ai-suggestions
-                    type="button"
-                  >
-                    Apply Checked Fields
-                  </button>
-                </div>
-
-                <div class="grid gap-3" id="ai-suggestions-list"></div>
-                <div class="hidden rounded-2xl border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-sm text-paper" id="ai-cautions"></div>
-              </div>
-            </div>
-          </section>
-
-          <section class="space-y-5 border-t border-white/10 pt-8" id="image-entry-section">
-            <div class="space-y-2">
-              <h2 class="text-2xl">Image</h2>
-              <p class="copy-muted">
-                These fields generate the object for <code>src/data/images.ts</code>.
-              </p>
-            </div>
 
             <div class="grid gap-5 sm:grid-cols-2">
               <label class="space-y-2 text-sm text-paper" for="image-title">
@@ -475,7 +344,7 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
                 <span>Slug</span>
                 <input id="image-slug" name="imageSlug" placeholder="after-the-show" type="text" />
                 <span class="copy-muted block">
-                  Leave this blank and it will derive from the title.
+                  Blank uses the title.
                 </span>
               </label>
             </div>
@@ -488,21 +357,17 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
                   <option value="public">Public</option>
                 </select>
                 <span class="copy-muted block">
-                  Keep new entries draft until the asset, copy, metadata, and routes are ready.
+                  Keep draft until asset, copy, metadata, and routes are ready.
                 </span>
               </label>
 
               <label class="space-y-2 text-sm text-paper" for="image-category">
                 <span>Category</span>
                 <select id="image-category" name="imageCategory">
-                  <option value="portrait">Portrait</option>
-                  <option value="legacy">Legacy</option>
-                  <option value="musician">Musician</option>
-                  <option value="print">Print</option>
-                  <option value="personal">Personal</option>
+                  {categoryOptions.map((category) => <option value={category.slug}>{category.label}</option>)}
                 </select>
                 <span class="copy-muted block">
-                  Choose the category used for gallery grouping and service routing.
+                  Controls gallery grouping and filters.
                 </span>
               </label>
 
@@ -515,7 +380,7 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
                   type="text"
                 />
                 <span class="copy-muted block">
-                  Submit fills this automatically after import. In fallback mode, enter it manually.
+                  Auto-filled after import. Manual path is the fallback.
                 </span>
               </label>
             </div>
@@ -529,7 +394,7 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
                 type="text"
               />
               <span class="copy-muted block">
-                Use comma-separated tags for related work and future filtering.
+                Comma-separated tags for related work.
               </span>
             </label>
 
@@ -541,7 +406,7 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
                 placeholder="Low-lit portrait of a musician standing after a performance."
               ></textarea>
               <span class="copy-muted block">
-                Write the image description a screen reader should announce.
+                Plain description for screen readers.
               </span>
             </label>
 
@@ -553,7 +418,7 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
                 placeholder="A musician portrait made after the room emptied out."
               ></textarea>
               <span class="copy-muted block">
-                Keep this short. It shows up in cards and previews.
+                Short card copy.
               </span>
             </label>
 
@@ -565,21 +430,21 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
                 placeholder="Two to four sentences of context for the image page."
               ></textarea>
               <span class="copy-muted block">
-                Use direct context for the individual image page.
+                Context for the detail page.
               </span>
             </label>
 
             <fieldset class="space-y-3">
               <legend class="text-sm font-semibold text-paper">Orientation</legend>
               <p class="copy-muted">
-                These labels map to the current schema values. Leave it unset for panorama or unusual custom crops.
+                Leave unset for panorama or unusual crops.
               </p>
               <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
                 <label class="flex h-full cursor-pointer flex-col gap-2 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-paper">
                   <input checked class="h-4 w-4" name="imageOrientation" type="radio" value="" />
                   <span class="font-semibold">Not set</span>
                   <span class="copy-muted text-xs">
-                    Use when the crop is unusual and you do not want to force a schema value.
+                    Unusual or custom crop.
                   </span>
                 </label>
 
@@ -587,7 +452,7 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
                   <input class="h-4 w-4" name="imageOrientation" type="radio" value="vertical" />
                   <span class="font-semibold">Portrait</span>
                   <span class="copy-muted text-xs">
-                    Stores <code>vertical</code> for tall, portrait-oriented images.
+                    Tall crop.
                   </span>
                 </label>
 
@@ -595,7 +460,7 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
                   <input class="h-4 w-4" name="imageOrientation" type="radio" value="horizontal" />
                   <span class="font-semibold">Landscape</span>
                   <span class="copy-muted text-xs">
-                    Stores <code>horizontal</code> for wide, landscape-oriented images.
+                    Wide crop.
                   </span>
                 </label>
 
@@ -603,7 +468,7 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
                   <input class="h-4 w-4" name="imageOrientation" type="radio" value="square" />
                   <span class="font-semibold">Square</span>
                   <span class="copy-muted text-xs">
-                    Stores <code>square</code> for 1:1 images and crops.
+                    1:1 crop.
                   </span>
                 </label>
               </div>
@@ -647,7 +512,7 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
                   <option value="custom">Custom</option>
                 </select>
                 <span class="copy-muted block">
-                  Choose the inquiry path that best matches this image.
+                  Inquiry path for this image.
                 </span>
               </label>
             </div>
@@ -669,18 +534,17 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
               </label>
             </div>
             <p class="copy-muted">
-              In edit mode, unchecking product entry unlinks/skips product output. It does not delete an existing
-              product record.
+              In edit mode, unchecking product entry skips product output. It does not delete existing products.
             </p>
-          </section>
-
-          <section class="space-y-5 border-t border-white/10 pt-8">
-            <div class="space-y-2">
-              <h2 class="text-2xl">Product</h2>
-              <p class="copy-muted">
-                Enable this only when the image should also appear in <code>src/data/products.ts</code>.
-              </p>
             </div>
+          </details>
+
+          <details class="rounded-2xl border border-white/10 bg-white/[0.03] p-5" hidden id="product-section">
+            <summary class="cursor-pointer text-2xl text-paper">Product</summary>
+            <div class="mt-5 space-y-5">
+              <p class="copy-muted">
+                Only for images that should appear in print/product data.
+              </p>
 
             <fieldset class="space-y-5 opacity-60" disabled id="product-fields">
               <label class="space-y-2 text-sm text-paper" for="product-status">
@@ -690,7 +554,7 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
                   <option value="public">Public</option>
                 </select>
                 <span class="copy-muted block">
-                  Products should stay draft until the linked image is public and purchase or inquiry language is safe.
+                  Keep draft until image and routing are ready.
                 </span>
               </label>
 
@@ -718,7 +582,7 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
               <fieldset class="space-y-3">
                 <legend class="text-sm font-semibold text-paper">Selectable print sizes</legend>
                 <p class="copy-muted">
-                  These choices populate the <code>availableFormats</code> array in <code>products.ts</code>.
+                  Used for <code>availableFormats</code>.
                 </p>
                 <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                   {
@@ -744,7 +608,7 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
                     type="text"
                   />
                   <span class="copy-muted block">
-                    Add any extra sizes as comma-separated values.
+                    Comma-separated extra sizes.
                   </span>
                 </label>
 
@@ -754,20 +618,20 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
                 </label>
               </div>
             </fieldset>
-          </section>
-
-          <section class="space-y-5 border-t border-white/10 pt-8">
-            <div class="space-y-2">
-              <h2 class="text-2xl">Outbound links</h2>
-              <p class="copy-muted">
-                Add only the storefronts you want to use for this image or product.
-              </p>
             </div>
+          </details>
+
+          <details class="rounded-2xl border border-white/10 bg-white/[0.03] p-5" id="outbound-links-section">
+            <summary class="cursor-pointer text-2xl text-paper">Outbound Links</summary>
+            <div class="mt-5 space-y-5">
+              <p class="copy-muted">
+                Use exact listing URLs only.
+              </p>
 
             <fieldset class="space-y-3" id="shared-route-keys-fieldset">
               <legend class="text-sm font-semibold text-paper">Shared route keys</legend>
               <p class="copy-muted">
-                Include selected route keys when this product should use shared storefront placeholders.
+                Use only when shared routes contain real URLs.
               </p>
               <div class="grid gap-3 sm:grid-cols-2">
                 <label class="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-paper">
@@ -830,7 +694,202 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
                 <input id="other-url" name="otherUrl" placeholder="https://your-platform-url.invalid/..." type="url" />
               </label>
             </div>
-          </section>
+            </div>
+          </details>
+
+          <details class="rounded-2xl border border-white/10 bg-white/[0.03] p-5" id="ai-review-panel">
+            <summary class="cursor-pointer text-2xl text-paper">AI Image Review</summary>
+            <div class="mt-5 space-y-5">
+              <span class="eyebrow">PromptForge local export</span>
+              <p class="copy-muted">
+                Run local image review, then choose which suggestions to apply.
+              </p>
+
+              <div
+                aria-live="polite"
+                class="rounded-2xl border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-sm text-paper"
+                id="ai-review-local-warning"
+              >
+                AI review is intended for local use only. Controls appear on localhost, file URLs, or with
+                <code>?localAi=1</code>.
+              </div>
+
+              <div class="space-y-5" id="ai-review-controls">
+                <div class="grid gap-5 lg:grid-cols-[0.8fr_1fr_0.8fr]">
+                  <label class="space-y-2 text-sm text-paper" for="ai-provider">
+                    <span>Local provider</span>
+                    <select id="ai-provider" name="aiProvider">
+                      <option value="ollama" selected={entryAiPrompt.providerDefault === 'ollama'}>Ollama image review</option>
+                      <option value="promptforge" selected={entryAiPrompt.providerDefault === 'promptforge'}>PromptForge launcher</option>
+                    </select>
+                    <span class="copy-muted block" id="ai-provider-help">
+                      Requires a running local vision model.
+                    </span>
+                  </label>
+
+                  <label class="space-y-2 text-sm text-paper" for="ai-endpoint">
+                    <span>Endpoint</span>
+                    <input id="ai-endpoint" name="aiEndpoint" type="url" value={entryAiPrompt.endpointDefault} />
+                  </label>
+
+                  <label class="space-y-2 text-sm text-paper" for="ai-model">
+                    <span>Model name</span>
+                    <input id="ai-model" list="ai-model-options" name="aiModel" type="text" value={entryAiPrompt.modelDefault} />
+                    <select id="ai-model-preset" name="aiModelPreset">
+                      <option value="">Custom model name (typed)</option>
+                    </select>
+                    <datalist id="ai-model-options"></datalist>
+                    <span class="copy-muted block" id="ai-model-preset-hint">
+                      Choose a preset or type a model.
+                    </span>
+                    <span class="copy-muted block" id="ai-model-meta">
+                      Refresh after the provider starts.
+                    </span>
+                  </label>
+                </div>
+
+                <div class="grid gap-5 lg:grid-cols-[0.85fr_1.15fr]">
+                  <div class="space-y-3">
+                    <div class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-steel">
+                      <p class="text-paper">
+                        Prompt: {entryAiPrompt.source} · {entryAiPrompt.channel} · {entryAiPrompt.version}
+                      </p>
+                      <p class="mt-2">
+                        The model can suggest descriptive content, category, orientation, service routing, and
+                        print notes. Product fields stay opt-in. It should not guess year, location, storefront
+                        URLs, or identities.
+                      </p>
+                    </div>
+
+                    <div class="grid gap-3 sm:grid-cols-2">
+                      <button
+                        class="panel-link inline-flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-paper hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-50"
+                        data-start-ai
+                        type="button"
+                      >
+                        Start Provider
+                      </button>
+
+                      <button
+                        class="panel-link inline-flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-paper hover:bg-white/10"
+                        data-refresh-ai-models
+                        type="button"
+                      >
+                        Refresh Models
+                      </button>
+                    </div>
+
+                    <button
+                      class="panel-link inline-flex w-full items-center justify-center rounded-full border border-sage/70 bg-sage px-5 py-3 text-sm font-semibold text-obsidian hover:bg-[#b5c7b7] disabled:cursor-not-allowed disabled:opacity-50"
+                      data-run-ai-review
+                      type="button"
+                    >
+                      Review Selected Image
+                    </button>
+
+                    <div
+                      aria-live="polite"
+                      class="hidden rounded-2xl border px-4 py-3 text-sm"
+                      id="ai-review-status"
+                      role="status"
+                    ></div>
+                  </div>
+
+                  <details class="rounded-2xl border border-white/10 bg-white/5 p-4">
+                    <summary class="cursor-pointer text-sm font-semibold text-paper">
+                      Paste review JSON fallback
+                    </summary>
+                    <div class="mt-4 space-y-3">
+                      <textarea
+                        class="min-h-48"
+                        id="ai-review-json"
+                        placeholder='{"title":"...","category":"portrait","tags":["portrait"],"alt":"..."}'
+                      ></textarea>
+                      <button
+                        class="panel-link inline-flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-paper hover:bg-white/10"
+                        data-parse-ai-json
+                        type="button"
+                      >
+                        Load Pasted Suggestions
+                      </button>
+                    </div>
+                  </details>
+                </div>
+
+                <div class="hidden space-y-4 rounded-2xl border border-white/10 bg-obsidian/60 p-4" id="ai-suggestions-wrap">
+                  <div class="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                      <h3 class="text-xl">Review suggestions</h3>
+                      <p class="copy-muted">
+                        Checked values copy into the form. Product fields stay opt-in.
+                      </p>
+                    </div>
+                    <button
+                      class="panel-link inline-flex items-center justify-center rounded-full border border-ember/70 bg-ember px-5 py-3 text-sm font-semibold text-obsidian hover:bg-[#d48b63]"
+                      data-apply-ai-suggestions
+                      type="button"
+                    >
+                      Apply Checked Fields
+                    </button>
+                  </div>
+
+                  <div class="grid gap-3" id="ai-suggestions-list"></div>
+                  <div class="hidden rounded-2xl border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-sm text-paper" id="ai-cautions"></div>
+                </div>
+              </div>
+            </div>
+          </details>
+
+          <details class="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+            <summary class="cursor-pointer text-2xl text-paper" id="category-manager">Categories</summary>
+            <div class="mt-5 space-y-5">
+              <p class="copy-muted">
+                Maintain <code>src/data/categories.ts</code>. Used slugs stay locked.
+              </p>
+
+              <div class="grid gap-3" id="category-list"></div>
+
+              <div class="grid gap-5 lg:grid-cols-[0.4fr_0.4fr_auto] lg:items-end">
+                <label class="space-y-2 text-sm text-paper" for="new-category-label">
+                  <span>New category label</span>
+                  <input id="new-category-label" placeholder="Street Work" type="text" />
+                </label>
+
+                <label class="space-y-2 text-sm text-paper" for="new-category-slug">
+                  <span>New category slug</span>
+                  <input id="new-category-slug" placeholder="street-work" type="text" />
+                </label>
+
+                <button
+                  class="panel-link inline-flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-paper hover:bg-white/10"
+                  data-add-category
+                  type="button"
+                >
+                  Add Category
+                </button>
+              </div>
+
+              <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <button
+                  class="btn btn-secondary w-full sm:w-auto"
+                  data-save-categories
+                  type="button"
+                >
+                  Save Categories
+                </button>
+                <p class="copy-muted text-sm">
+                  Save before using a new category.
+                </p>
+              </div>
+
+              <div
+                aria-live="polite"
+                class="hidden rounded-2xl border px-4 py-3 text-sm"
+                id="category-status"
+                role="status"
+              ></div>
+            </div>
+          </details>
 
           <div
             aria-live="polite"
@@ -881,9 +940,9 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
         </div>
       </div>
 
-      <section class="surface p-6 sm:p-8">
-        <div class="flex items-center justify-between gap-3">
-          <h3 class="text-xl">External links snippet</h3>
+      <details class="surface p-6 sm:p-8" data-snippet-panel>
+        <summary class="cursor-pointer text-xl text-paper">External links snippet</summary>
+        <div class="mt-4 flex items-center justify-end gap-3">
           <button
             class="panel-link inline-flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold uppercase tracking-hush text-paper hover:bg-white/10"
             data-copy-target="external-links-output"
@@ -897,11 +956,11 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
           id="external-links-output"
           readonly
         ></textarea>
-      </section>
+      </details>
 
-      <section class="surface p-6 sm:p-8">
-        <div class="flex items-center justify-between gap-3">
-          <h3 class="text-xl">Product snippet</h3>
+      <details class="surface p-6 sm:p-8" data-snippet-panel>
+        <summary class="cursor-pointer text-xl text-paper">Product snippet</summary>
+        <div class="mt-4 flex items-center justify-end gap-3">
           <button
             class="panel-link inline-flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold uppercase tracking-hush text-paper hover:bg-white/10"
             data-copy-target="product-output"
@@ -915,11 +974,11 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
           id="product-output"
           readonly
         ></textarea>
-      </section>
+      </details>
 
-      <section class="surface p-6 sm:p-8">
-        <div class="flex items-center justify-between gap-3">
-          <h3 class="text-xl">Image snippet</h3>
+      <details class="surface p-6 sm:p-8" data-snippet-panel>
+        <summary class="cursor-pointer text-xl text-paper">Image snippet</summary>
+        <div class="mt-4 flex items-center justify-end gap-3">
           <button
             class="panel-link inline-flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold uppercase tracking-hush text-paper hover:bg-white/10"
             data-copy-target="image-output"
@@ -933,7 +992,7 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
           id="image-output"
           readonly
         ></textarea>
-      </section>
+      </details>
     </div>
   </div>
 </section>
@@ -1000,9 +1059,19 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
   const productSlugInput = document.getElementById('product-slug');
   const createProductCheckbox = document.getElementById('create-product');
   const printAvailableCheckbox = document.getElementById('image-print-available');
+  const productSection = document.getElementById('product-section');
+  const outboundLinksSection = document.getElementById('outbound-links-section');
   const productFieldset = document.getElementById('product-fields');
   const imageEntrySection = document.getElementById('image-entry-section');
+  const imageCategorySelect = document.getElementById('image-category');
+  const categoryList = document.getElementById('category-list');
+  const newCategoryLabelInput = document.getElementById('new-category-label');
+  const newCategorySlugInput = document.getElementById('new-category-slug');
+  const addCategoryButton = document.querySelector('[data-add-category]');
+  const saveCategoriesButton = document.querySelector('[data-save-categories]');
+  const categoryStatus = document.getElementById('category-status');
   const sharedRouteCheckboxes = Array.from(document.querySelectorAll('input[name=\"routeKey\"]'));
+  const snippetPanels = Array.from(document.querySelectorAll('[data-snippet-panel]'));
 
   const routePlatformFields = [
     {
@@ -1053,6 +1122,23 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
   const seedImages = Array.isArray(seedData.images) ? seedData.images : [];
   const seedProducts = Array.isArray(seedData.products) ? seedData.products : [];
   const seedExternalLinks = seedData.externalLinks && typeof seedData.externalLinks === 'object' ? seedData.externalLinks : {};
+  const fallbackCategoryEntries = [
+    { slug: 'portrait', label: 'Portrait' },
+    { slug: 'legacy', label: 'Legacy' },
+    { slug: 'musician', label: 'Musician' },
+    { slug: 'print', label: 'Print' },
+    { slug: 'personal', label: 'Personal' },
+  ];
+  const seedCategoryEntries = Array.isArray(seedData.categories) && seedData.categories.length
+    ? seedData.categories
+    : fallbackCategoryEntries;
+  const categoryUsageCounts = seedImages.reduce((counts, image) => {
+    const category = String(image?.category || '').trim();
+    if (category) {
+      counts.set(category, (counts.get(category) || 0) + 1);
+    }
+    return counts;
+  }, new Map());
   const seedImageBySlug = new Map(seedImages.map((image) => [image?.slug, image || {}]));
   const seedProductBySlug = new Map(seedProducts.map((product) => [product?.slug, product || {}]));
   const seedProductByImageSlug = new Map(seedProducts.map((product) => [product?.imageSlug, product || {}]));
@@ -1066,7 +1152,8 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
   let selectedProductRecord = null;
 
   const formatPresets = ['8 x 10', '11 x 14', '12 x 18', '16 x 20', '16 x 24', '20 x 30', '24 x 36'];
-  const imageCategories = ['portrait', 'legacy', 'musician', 'print', 'personal'];
+  let editableCategories = normalizeCategoryEntries(seedCategoryEntries);
+  let imageCategories = editableCategories.map((category) => category.slug);
   const orientations = ['vertical', 'horizontal', 'square'];
   const serviceCtas = ['portrait', 'legacy', 'musician', 'custom'];
   const aiReviewSchema = {
@@ -1729,6 +1816,192 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
     return `${indent}${key}: [${items.map((item) => quoted(item)).join(', ')}],`;
   }
 
+  function labelFromSlug(slug) {
+    return slug
+      .split('-')
+      .filter(Boolean)
+      .map((segment) => `${segment.charAt(0).toUpperCase()}${segment.slice(1)}`)
+      .join(' ');
+  }
+
+  function normalizeCategoryEntries(entries) {
+    const seen = new Set();
+    return entries
+      .map((entry) => {
+        const slug = slugify(String(entry?.slug || entry?.label || ''));
+        const label = String(entry?.label || labelFromSlug(slug)).trim();
+        return slug && label ? { slug, label, originalSlug: String(entry?.slug || slug).trim() } : null;
+      })
+      .filter((entry) => {
+        if (!entry || seen.has(entry.slug)) {
+          return false;
+        }
+
+        seen.add(entry.slug);
+        return true;
+      });
+  }
+
+  function getCategoryUsageCount(slug) {
+    return categoryUsageCounts.get(slug) || 0;
+  }
+
+  function setCategoryStatus(message, variant) {
+    categoryStatus.textContent = message;
+    applyStatusStyle(categoryStatus, variant);
+  }
+
+  function clearCategoryStatus() {
+    categoryStatus.textContent = '';
+    categoryStatus.classList.add('hidden');
+  }
+
+  function syncCategorySelect() {
+    const selectedValue = imageCategorySelect.value;
+    imageCategories = editableCategories.map((category) => category.slug);
+    imageCategorySelect.innerHTML = '';
+
+    for (const category of editableCategories) {
+      const option = document.createElement('option');
+      option.value = category.slug;
+      option.textContent = category.label;
+      imageCategorySelect.append(option);
+    }
+
+    if (imageCategories.includes(selectedValue)) {
+      imageCategorySelect.value = selectedValue;
+    } else if (imageCategories.length) {
+      imageCategorySelect.value = imageCategories[0];
+    }
+
+    if (aiReviewSchema?.properties?.category) {
+      aiReviewSchema.properties.category.enum = imageCategories;
+    }
+  }
+
+  function renderCategoryRows() {
+    categoryList.innerHTML = '';
+
+    editableCategories.forEach((category, index) => {
+      const usageCount = getCategoryUsageCount(category.originalSlug || category.slug);
+      const row = document.createElement('div');
+      row.className = 'grid gap-3 rounded-2xl border border-white/10 bg-white/5 p-4 lg:grid-cols-[0.35fr_0.35fr_0.15fr_auto] lg:items-end';
+
+      const slugLabel = document.createElement('label');
+      slugLabel.className = 'space-y-2 text-sm text-paper';
+      const slugText = document.createElement('span');
+      slugText.textContent = 'Slug';
+      const slugInput = document.createElement('input');
+      slugInput.value = category.slug;
+      slugInput.disabled = usageCount > 0;
+      slugInput.type = 'text';
+      slugInput.addEventListener('input', () => {
+        category.slug = slugify(slugInput.value);
+        slugInput.value = category.slug;
+        syncCategorySelect();
+      });
+      slugLabel.append(slugText, slugInput);
+
+      const labelLabel = document.createElement('label');
+      labelLabel.className = 'space-y-2 text-sm text-paper';
+      const labelText = document.createElement('span');
+      labelText.textContent = 'Label';
+      const labelInput = document.createElement('input');
+      labelInput.value = category.label;
+      labelInput.type = 'text';
+      labelInput.addEventListener('input', () => {
+        category.label = labelInput.value.trim();
+        syncCategorySelect();
+      });
+      labelLabel.append(labelText, labelInput);
+
+      const usage = document.createElement('p');
+      usage.className = 'copy-muted text-sm';
+      usage.textContent = usageCount === 1 ? '1 image uses this' : `${usageCount} images use this`;
+
+      const removeButton = document.createElement('button');
+      removeButton.className = 'panel-link inline-flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-paper hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-50';
+      removeButton.disabled = usageCount > 0 || editableCategories.length <= 1;
+      removeButton.type = 'button';
+      removeButton.textContent = 'Remove';
+      removeButton.addEventListener('click', () => {
+        editableCategories = editableCategories.filter((_, currentIndex) => currentIndex !== index);
+        renderCategoryRows();
+        setCategoryStatus('Category removed from the local list. Save categories to write the data file.', 'warning');
+      });
+
+      row.append(slugLabel, labelLabel, usage, removeButton);
+      categoryList.append(row);
+    });
+
+    syncCategorySelect();
+  }
+
+  function getCategoriesForSave() {
+    const normalized = normalizeCategoryEntries(editableCategories);
+    if (!normalized.length) {
+      throw new Error('Keep at least one category.');
+    }
+
+    for (const [slug, count] of categoryUsageCounts.entries()) {
+      if (count > 0 && !normalized.some((category) => category.slug === slug)) {
+        throw new Error(`The category "${slug}" is used by ${count} image record(s). Reassign those images before removing or renaming it.`);
+      }
+    }
+
+    return normalized.map(({ slug, label }) => ({ slug, label }));
+  }
+
+  function buildCategoriesFileContent(categories) {
+    const entries = categories
+      .map((category) => `  { slug: ${quoted(category.slug)}, label: ${quoted(category.label)} },`)
+      .join('\n');
+
+    return `export const imageCategories = [\n${entries}\n] as const;\n\nexport function getImageCategoryLabel(slug: string) {\n  return imageCategories.find((category) => category.slug === slug)?.label ?? slug;\n}\n`;
+  }
+
+  function handleAddCategory() {
+    const label = newCategoryLabelInput.value.trim();
+    const slug = slugify(newCategorySlugInput.value || label);
+
+    if (!label || !slug) {
+      setCategoryStatus('Enter a label before adding a category.', 'error');
+      return;
+    }
+
+    if (editableCategories.some((category) => category.slug === slug)) {
+      setCategoryStatus(`A category with slug "${slug}" already exists.`, 'error');
+      return;
+    }
+
+    editableCategories.push({ slug, label, originalSlug: slug });
+    newCategoryLabelInput.value = '';
+    newCategorySlugInput.value = '';
+    newCategorySlugInput.dataset.dirty = '';
+    renderCategoryRows();
+    setCategoryStatus('Category added locally. Save categories before using it in an image entry.', 'warning');
+  }
+
+  async function handleSaveCategories() {
+    clearCategoryStatus();
+
+    try {
+      if (!fsApiSupported || !selectedProjectDirectory) {
+        setCategoryStatus('Choose the repo root first so the helper can write src/data/categories.ts.', 'warning');
+        return;
+      }
+
+      const categories = getCategoriesForSave();
+      const categoriesHandle = await getDataFileHandle('categories.ts');
+      await writeTextFile(categoriesHandle, buildCategoriesFileContent(categories));
+      editableCategories = categories.map((category) => ({ ...category, originalSlug: category.slug }));
+      renderCategoryRows();
+      setCategoryStatus('Saved src/data/categories.ts. New category labels are now available to the entry form.', 'success');
+    } catch (error) {
+      setCategoryStatus(error instanceof Error ? error.message : 'Categories could not be saved.', 'error');
+    }
+  }
+
   function pushString(lines, key, value) {
     if (value) {
       lines.push(`  ${key}: ${quoted(value)},`);
@@ -2388,8 +2661,52 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
 
   function updateProductFieldsState() {
     const enabled = getEffectiveCreateProductState();
+    const wasProductSectionHidden = productSection.hidden;
     productFieldset.disabled = !enabled;
     productFieldset.classList.toggle('opacity-60', !enabled);
+    productSection.hidden = !enabled;
+
+    if (enabled && wasProductSectionHidden) {
+      productSection.open = true;
+    } else if (!enabled) {
+      productSection.open = false;
+    }
+
+    updateOutboundLinksPanelState(enabled);
+  }
+
+  function hasOutboundLinkValues() {
+    const directFieldIds = [
+      'fine-art-america-url',
+      'etsy-url',
+      'shopify-url',
+      'pixieset-url',
+      'other-url',
+    ];
+
+    return directFieldIds.some((fieldId) => document.getElementById(fieldId)?.value.trim()) ||
+      sharedRouteCheckboxes.some((checkbox) => checkbox.checked);
+  }
+
+  function updateOutboundLinksPanelState(productEnabled = getEffectiveCreateProductState()) {
+    const isRelevant = productEnabled || hasOutboundLinkValues();
+    const wasRelevant = outboundLinksSection.dataset.relevant === 'true';
+
+    if (!isRelevant) {
+      outboundLinksSection.open = false;
+    } else if (!wasRelevant) {
+      outboundLinksSection.open = true;
+    }
+
+    outboundLinksSection.dataset.relevant = String(isRelevant);
+  }
+
+  function applySnippetPanelDefaults() {
+    if (!fsApiSupported) {
+      for (const panel of snippetPanels) {
+        panel.open = true;
+      }
+    }
   }
 
   function buildDirectEntries(imageSlug, formData) {
@@ -3070,6 +3387,7 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
       await imagesHandle.getDirectoryHandle('placeholders');
       const srcHandle = await handle.getDirectoryHandle('src');
       const dataHandle = await srcHandle.getDirectoryHandle('data');
+      await dataHandle.getFileHandle('categories.ts');
       await dataHandle.getFileHandle('images.ts');
       await dataHandle.getFileHandle('products.ts');
       await dataHandle.getFileHandle('externalLinks.ts');
@@ -3642,6 +3960,17 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
   }
 
   folderButton.addEventListener('click', handleChooseFolder);
+  addCategoryButton.addEventListener('click', handleAddCategory);
+  saveCategoriesButton.addEventListener('click', handleSaveCategories);
+  newCategoryLabelInput.addEventListener('input', () => {
+    if (!newCategorySlugInput.dataset.dirty) {
+      newCategorySlugInput.value = slugify(newCategoryLabelInput.value);
+    }
+  });
+  newCategorySlugInput.addEventListener('input', () => {
+    newCategorySlugInput.dataset.dirty = newCategorySlugInput.value.trim() ? 'true' : '';
+    newCategorySlugInput.value = slugify(newCategorySlugInput.value);
+  });
   aiProviderSelect.addEventListener('change', () => {
     applyAiProviderDefaults({ resetEndpoint: true, resetModel: true });
     clearAiStatus();
@@ -3678,6 +4007,8 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
   }
 
   folderButton.disabled = !fsApiSupported;
+  applySnippetPanelDefaults();
+  renderCategoryRows();
   populateEditGallerySelect();
   refreshModeTabs('file-import', { announce: false });
   updateSupportMessage();

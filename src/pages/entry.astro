@@ -1,6 +1,7 @@
 ---
 import ContentEntryForm from '../components/ContentEntryForm.astro';
 import Layout from '../components/Layout.astro';
+import { imageCategories } from '../data/categories';
 import { images } from '../data/images';
 import { products } from '../data/products';
 import { externalLinks } from '../data/externalLinks';
@@ -12,6 +13,7 @@ const entryFormSeedData = {
   images,
   products,
   externalLinks,
+  categories: imageCategories,
   siteConfig,
   readinessReport: getContentReadinessReport(),
 };

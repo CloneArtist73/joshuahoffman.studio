@@ -1,5 +1,6 @@
 ---
 import ImageCard from './ImageCard.astro';
+import { getImageCategoryLabel } from '../data/categories';
 import type { ImageCategory, ImageItem } from '../data/types';
 
 interface Props {
@@ -19,14 +20,6 @@ const {
   id = 'gallery-grid',
   context = 'gallery_grid',
 } = Astro.props;
-
-const categoryLabels: Record<ImageCategory, string> = {
-  portrait: 'Portraits',
-  legacy: 'Legacy',
-  musician: 'Musicians',
-  print: 'Prints',
-  personal: 'Personal Work',
-};
 
 const categories = [...new Set(images.map((image) => image.category))];
 const showFilters = enableFilter && categories.length > 1;
@@ -62,7 +55,7 @@ const showFilters = enableFilter && categories.length > 1;
                 data-filter={category}
                 type="button"
               >
-                {categoryLabels[category]}
+                {getImageCategoryLabel(category)}
               </button>
             ))
           }

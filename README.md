@@ -88,7 +88,7 @@ Images and print products use an explicit readiness status:
 - Products render publicly only when the product is public and its linked image is public-ready.
 - Public products without live external routes fall back to direct inquiry when `inquiryAllowed` is true.
 
-Use the local entry helper at `/entry/` to create or edit records. New records should stay draft until image assets, alt text, copy, metadata, and product routing are ready.
+Use the local entry helper at `/entry/` to create or edit records and maintain image category labels in `src/data/categories.ts`. New records should stay draft until image assets, alt text, copy, metadata, and product routing are ready.
 
 The local read-only readiness report is available in development at:
 

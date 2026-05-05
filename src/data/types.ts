@@ -1,9 +1,6 @@
-export type ImageCategory =
-  | 'portrait'
-  | 'legacy'
-  | 'musician'
-  | 'print'
-  | 'personal';
+import type { imageCategories } from './categories';
+
+export type ImageCategory = (typeof imageCategories)[number]['slug'];
 
 export type Orientation = 'vertical' | 'horizontal' | 'square';
 

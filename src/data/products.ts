@@ -50,10 +50,9 @@ export const products: ProductItem[] = [
     status: 'public',
     imageSlug: 'star-trails-over-trees',
     title: 'Star Trails Over Trees',
-    shortDescription:
-      'A night-sky photograph for buyers who want quiet scale, movement, and a strong sense of time.',
-    availableFormats: ['8 x 10', '11 x 14', '12 x 18'],
-    routeKeys: ['pixieset', 'shopify'],
+    shortDescription: 'A night-sky photograph for buyers who want quiet scale, movement, and a strong sense of time.',
+    availableFormats: [],
+    routeKeys: [],
     inquiryAllowed: true,
   },
   {
@@ -65,6 +64,15 @@ export const products: ProductItem[] = [
       'An urban geometry print built around rail lines, layered architecture, and evening city light.',
     availableFormats: ['8 x 10', '16 x 20', '16 x 24'],
     routeKeys: ['etsy', 'fineArtAmerica'],
+    inquiryAllowed: true,
+  },
+  {
+    slug: 'albany-skyline-at-night-print',
+    status: 'public',
+    imageSlug: 'albany-skyline-at-night',
+    title: 'Albany Skyline at Night',
+    availableFormats: [],
+    routeKeys: [],
     inquiryAllowed: true,
   },
 ];
