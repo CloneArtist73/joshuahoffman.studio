@@ -31,7 +31,7 @@ const musicianUseCases = [
 >
   <Hero
     eyebrow="Musician / artist portraits"
-    imageSrc={service.imageSrc}
+    imageSrc={service.imageSrc ?? '/images/placeholders/musician-stage.svg'}
     primaryCta={{
       label: service.ctaLabel,
       href: '/contact/?type=Musician%20%2F%20artist%20portraits',

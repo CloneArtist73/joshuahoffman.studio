@@ -24,7 +24,7 @@ const galleryImages = service.gallerySlugs
 >
   <Hero
     eyebrow="Portrait sessions"
-    imageSrc={service.imageSrc}
+    imageSrc={service.imageSrc ?? '/images/placeholders/portrait-session.svg'}
     primaryCta={{
       label: service.ctaLabel,
       href: '/contact/?type=Portrait%20session',

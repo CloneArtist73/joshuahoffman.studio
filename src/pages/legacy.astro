@@ -24,7 +24,7 @@ const galleryImages = service.gallerySlugs
 >
   <Hero
     eyebrow="Legacy / memorial work"
-    imageSrc={service.imageSrc}
+    imageSrc={service.imageSrc ?? '/images/placeholders/legacy-light.svg'}
     primaryCta={{
       label: service.ctaLabel,
       href: '/contact/?type=Legacy%20%2F%20memorial%20work',
