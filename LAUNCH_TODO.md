@@ -29,7 +29,7 @@ Deployment model for Day 1:
 - Static Astro MVP is present with homepage, gallery, service pages, print routing, contact page, image detail routes, SEO helpers, sitemap integration, and `robots.txt`.
 - Local content entry tooling exists behind development mode or `PUBLIC_ENABLE_ENTRY=true`, is noindexed, is excluded from the sitemap, and is removed from normal static build output.
 - The entry form can preserve and generate readiness status for image and product records.
-- Contact form is Day 1-safe (`contactForm.provider = 'none'`) and uses `/contact/thank-you/` as the success route.
+- Contact form is configured for an InMotion-hosted PHP handler at `/contact.php` and uses `/contact/thank-you/` as the success route.
 - Analytics hooks are wired and GA4 is configured with the active Measurement ID.
 
 ## Todo Before Launch
@@ -38,8 +38,8 @@ Deployment model for Day 1:
 - Confirm business info in `site.config.mjs`:
   `info@joshuahoffman.studio`, `Upstate New York`, and `https://www.instagram.com/joshuahoffmanphotography/`.
 - Replace placeholder pricing in `src/data/services.ts`.
-- Connect the contact form on Day 2:
-  set `contactForm.provider` and endpoint in `site.config.mjs` and complete integration in `src/components/ContactForm.astro` for a real provider (Formspree/Basin/Getform/etc.).
+- Verify the PHP contact form on InMotion:
+  upload the built `dist/` output, submit a real message, confirm delivery to `info@joshuahoffman.studio`, and confirm the `/contact/thank-you/` redirect.
 - Confirm analytics after deployment:
   GA4 is configured in `site.config.mjs`; verify page views and key events appear in Google Analytics after the site is live.
 - Confirm social link before launch:

@@ -9,7 +9,7 @@ Production domain: `https://joshuahoffman.studio`
 - Astro
 - Tailwind CSS
 - Local TypeScript data files
-- Static form wiring with no default backend on Day 1
+- Static form wiring for an InMotion-hosted PHP handler
 - Lightweight analytics helper configured for Google Analytics 4
 
 ## Setup
@@ -108,17 +108,12 @@ Placeholder artwork lives in `public/images/placeholders/`.
 
 ## Forms
 
-The contact form is set up for a Day-1 static workflow:
+The contact form is set up for the InMotion deployment path:
 
-- Day 1: no active backend provider (`contactForm.provider = 'none'`) and a thank-you route at `/contact/thank-you/`.
-- Day 2: replace `site.config.mjs -> contactForm.action` with a real static form endpoint (Formspree, Basin, Getform, etc.), then tune provider attributes in `src/components/ContactForm.astro`.
-
-Day 2 static provider shortlist:
-
-- Formspree
-- Basin
-- Getform
-- Any other static form handler you already use
+- `site.config.mjs -> contactForm.action` posts to `/contact.php`
+- The handler lives in `public/contact.php` so Astro copies it to `dist/contact.php`
+- Successful submissions redirect to `/contact/thank-you/`
+- Local Astro preview does not execute PHP, so test the form after uploading to InMotion.
 
 ## Analytics
 
@@ -155,7 +150,7 @@ This project builds to static output and launches with this Day 1 workflow:
 - Vercel
 - Cloudflare Pages
 
-If you deploy outside InMotion, remember to replace the form setup first.
+If you deploy outside InMotion, remember to replace the PHP form setup first.
 
 ## Before launch
 
@@ -165,7 +160,7 @@ If you deploy outside InMotion, remember to replace the form setup first.
 - Confirm service area wording stays `Upstate New York`
 - Replace pricing placeholders
 - Analytics is configured for GA4; confirm data appears in Google Analytics after launch
-- Leave form provider set to `none` on Day 1; connect a real static form provider on Day 2
+- Test the PHP contact form on InMotion
 - Rebuild and test every outbound route and inquiry path
 # joshuahoffman.studio
 

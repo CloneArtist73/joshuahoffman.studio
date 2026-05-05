@@ -21,10 +21,9 @@ const siteConfig = {
     gaMeasurementId: 'G-F3LFGP6E25',
   },
   contactForm: {
-    provider: 'none',
-    // Replace with a static form endpoint (Formspree, Basin, Getform, etc.)
-    // while keeping this success route.
-    action: '/contact/thank-you/',
+    provider: 'php',
+    // InMotion runs this PHP handler from the static build output.
+    action: '/contact.php',
   },
 };
 
