@@ -5,6 +5,35 @@ interface SeedData {
   images?: unknown[];
   products?: unknown[];
   externalLinks?: Record<string, unknown>;
+  siteConfig?: {
+    analytics?: {
+      provider?: string;
+      gaMeasurementId?: string;
+    };
+    contactForm?: {
+      provider?: string;
+      action?: string;
+    };
+  };
+  readinessReport?: {
+    generatedAt?: string;
+    summary?: Record<string, number>;
+    launch?: {
+      contactHandlerPath?: string;
+      gates?: {
+        key: string;
+        label: string;
+        status: 'ready' | 'blocked' | 'warning';
+        message: string;
+      }[];
+    };
+    issues?: {
+      severity: 'blocker' | 'warning';
+      area: string;
+      id: string;
+      message: string;
+    }[];
+  };
 }
 
 interface Props {
@@ -12,6 +41,36 @@ interface Props {
 }
 
 const { seedData = '{}' } = Astro.props as Props;
+const parsedSeedData = (() => {
+  try {
+    return JSON.parse(seedData) as SeedData;
+  } catch {
+    return {};
+  }
+})();
+const readinessReport = parsedSeedData.readinessReport;
+const readinessSummary = readinessReport?.summary ?? {};
+const launchGates = readinessReport?.launch?.gates ?? [];
+const nextActions = [...(readinessReport?.issues ?? [])]
+  .sort((left, right) => (left.severity === right.severity ? 0 : left.severity === 'blocker' ? -1 : 1))
+  .slice(0, 6);
+const siteConfigSnapshot = parsedSeedData.siteConfig ?? {};
+const contactFormConfig = siteConfigSnapshot.contactForm ?? {};
+const analyticsConfig = siteConfigSnapshot.analytics ?? {};
+const contactHandlerPath = readinessReport?.launch?.contactHandlerPath ?? '/contact.php';
+const summaryCards = [
+  { label: 'Blockers', value: readinessSummary.blockers ?? 0 },
+  { label: 'Warnings', value: readinessSummary.warnings ?? 0 },
+  { label: 'Public images', value: readinessSummary.publicImages ?? 0 },
+  { label: 'Draft images', value: readinessSummary.draftImages ?? 0 },
+  { label: 'Public products', value: readinessSummary.publicProducts ?? 0 },
+  { label: 'Draft products', value: readinessSummary.draftProducts ?? 0 },
+];
+const statusClasses = {
+  ready: 'border-sage/40 bg-sage/10 text-sage',
+  blocked: 'border-ember/50 bg-ember/10 text-ember',
+  warning: 'border-amber-400/40 bg-amber-400/10 text-sand',
+};
 const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c');
 ---
 
@@ -32,6 +91,89 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
           Open Readiness Report
         </a>
       </div>
+
+      <section class="surface space-y-6 p-6 sm:p-8" aria-labelledby="launch-dashboard">
+        <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div class="space-y-2">
+            <span class="eyebrow">Launch dashboard</span>
+            <h2 class="text-3xl sm:text-4xl" id="launch-dashboard">Readiness for InMotion launch.</h2>
+            <p class="max-w-copy text-sm text-steel sm:text-base">
+              This panel is read-only. It reflects local content, launch gates, and config values so the entry
+              helper can act like the future backend without writing site-level config.
+            </p>
+          </div>
+          <div class="rounded-2xl border border-white/10 bg-obsidian/60 px-4 py-3 text-sm text-steel">
+            <p class="text-paper">Generated {readinessReport?.generatedAt ? new Date(readinessReport.generatedAt).toLocaleString('en-US') : 'locally'}</p>
+            <p class="mt-1">Recommended contact action: <code>{contactHandlerPath}</code></p>
+          </div>
+        </div>
+
+        <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-6">
+          {summaryCards.map((card) => (
+            <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+              <p class="text-xs font-semibold uppercase tracking-hush text-steel">{card.label}</p>
+              <p class="mt-2 text-3xl text-paper">{card.value}</p>
+            </div>
+          ))}
+        </div>
+
+        <div class="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
+          <div class="space-y-3">
+            <h3 class="text-xl">Launch gates</h3>
+            <div class="grid gap-3 sm:grid-cols-2">
+              {launchGates.map((gate) => (
+                <article class="rounded-2xl border border-white/10 bg-white/5 p-4">
+                  <div class="flex flex-wrap items-center justify-between gap-3">
+                    <h4 class="text-lg text-paper">{gate.label}</h4>
+                    <span class={`rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-hush ${statusClasses[gate.status]}`}>
+                      {gate.status}
+                    </span>
+                  </div>
+                  <p class="mt-3 text-sm text-steel">{gate.message}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xl">Read-only config</h3>
+            <div class="space-y-3 rounded-2xl border border-white/10 bg-obsidian/60 p-4 text-sm">
+              <div>
+                <p class="text-xs font-semibold uppercase tracking-hush text-steel">Contact</p>
+                <p class="mt-1 text-paper">provider: <code>{contactFormConfig.provider ?? 'unset'}</code></p>
+                <p class="mt-1 text-paper">action: <code>{contactFormConfig.action ?? 'unset'}</code></p>
+                <p class="mt-2 text-steel">For InMotion, use <code>provider: 'php'</code> and <code>action: '{contactHandlerPath}'</code>.</p>
+              </div>
+              <div class="border-t border-white/10 pt-3">
+                <p class="text-xs font-semibold uppercase tracking-hush text-steel">Analytics</p>
+                <p class="mt-1 text-paper">provider: <code>{analyticsConfig.provider ?? 'unset'}</code></p>
+                <p class="mt-1 text-paper">GA4 ID: <code>{analyticsConfig.gaMeasurementId ?? 'unset'}</code></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="space-y-3">
+          <h3 class="text-xl">Next actions</h3>
+          {nextActions.length > 0 ? (
+            <ol class="grid gap-3">
+              {nextActions.map((action) => (
+                <li class="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-steel">
+                  <span class={`mr-2 rounded-full border px-2 py-1 text-xs font-semibold uppercase tracking-hush ${statusClasses[action.severity === 'blocker' ? 'blocked' : 'warning']}`}>
+                    {action.severity}
+                  </span>
+                  <span class="text-paper">{action.area}:{action.id}</span>
+                  <span class="ml-2">{action.message}</span>
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <p class="rounded-2xl border border-sage/40 bg-sage/10 p-4 text-sm text-sage">
+              No readiness blockers or warnings are currently reported.
+            </p>
+          )}
+        </div>
+      </section>
 
       <div class="surface p-6 sm:p-8">
         <div

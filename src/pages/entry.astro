@@ -4,12 +4,16 @@ import Layout from '../components/Layout.astro';
 import { images } from '../data/images';
 import { products } from '../data/products';
 import { externalLinks } from '../data/externalLinks';
+import { siteConfig } from '../data/site';
+import { getContentReadinessReport } from '../utils/readinessReport';
 
 const entryEnabled = import.meta.env.DEV || import.meta.env.PUBLIC_ENABLE_ENTRY === 'true';
 const entryFormSeedData = {
   images,
   products,
   externalLinks,
+  siteConfig,
+  readinessReport: getContentReadinessReport(),
 };
 const entryFormSeedJson = JSON.stringify(entryFormSeedData).replace(/</g, '\\u003c');
 ---

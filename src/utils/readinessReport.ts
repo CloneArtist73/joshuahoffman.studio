@@ -4,6 +4,7 @@ import { externalLinks } from '../data/externalLinks';
 import { images } from '../data/images';
 import { products } from '../data/products';
 import { services } from '../data/services';
+import { siteConfig } from '../data/site';
 import type { ImageItem, ProductItem } from '../data/types';
 import {
   isLiveExternalRoute,
@@ -15,14 +16,23 @@ type Severity = 'blocker' | 'warning';
 
 type ReadinessIssue = {
   severity: Severity;
-  area: 'images' | 'products' | 'services' | 'externalLinks';
+  area: 'analytics' | 'contact' | 'externalLinks' | 'images' | 'products' | 'services';
   id: string;
+  message: string;
+};
+
+type LaunchGate = {
+  key: string;
+  label: string;
+  status: 'ready' | 'blocked' | 'warning';
   message: string;
 };
 
 const temporaryCopyPattern =
   /\b(placeholder|draft|mvp|todo|tbd|sample|lorem|illustrative)\b|\[[^\]]+\]/i;
 const genericAltPattern = /^(image|photo|portrait|gallery image)$/i;
+const minimumPublicImages = 3;
+const contactHandlerPath = '/contact.php';
 
 function issue(
   issues: ReadinessIssue[],
@@ -40,6 +50,10 @@ function publicFilePath(imageSrc: string) {
   }
 
   return join(process.cwd(), 'public', ...imageSrc.split('/').filter(Boolean));
+}
+
+function publicRootFilePath(publicPath: string) {
+  return join(process.cwd(), 'public', ...publicPath.split('/').filter(Boolean));
 }
 
 function readJpegDimensions(buffer: Buffer) {
@@ -320,6 +334,106 @@ function validateExternalLinks(issues: ReadinessIssue[]) {
   }
 }
 
+function validateContact(issues: ReadinessIssue[]) {
+  const provider = String(siteConfig.contactForm?.provider ?? '');
+  const action = String(siteConfig.contactForm?.action ?? '');
+  const hasPhpHandler = existsSync(publicRootFilePath(contactHandlerPath));
+
+  if (provider !== 'php') {
+    issue(issues, 'blocker', 'contact', 'provider', 'Contact form provider should be set to php for InMotion contact handling.');
+  }
+
+  if (action !== contactHandlerPath) {
+    issue(issues, 'blocker', 'contact', 'action', `Contact form action should point to ${contactHandlerPath}.`);
+  }
+
+  if (!hasPhpHandler) {
+    issue(issues, 'blocker', 'contact', 'handler', `Contact handler is missing from public${contactHandlerPath}.`);
+  }
+}
+
+function validateAnalytics(issues: ReadinessIssue[]) {
+  const provider = String(siteConfig.analytics?.provider ?? '');
+  const gaMeasurementId = String(siteConfig.analytics?.gaMeasurementId ?? '');
+
+  if (provider !== 'ga4') {
+    issue(issues, 'warning', 'analytics', 'provider', 'GA4 should be the configured analytics provider before launch verification.');
+  }
+
+  if (!gaMeasurementId.trim()) {
+    issue(issues, 'warning', 'analytics', 'gaMeasurementId', 'GA4 measurement ID is missing.');
+  }
+}
+
+function getLaunchGates(): LaunchGate[] {
+  const publicImages = images.filter(isPublicReadyImage);
+  const contactProvider = String(siteConfig.contactForm?.provider ?? '');
+  const contactAction = String(siteConfig.contactForm?.action ?? '');
+  const contactHandlerExists = existsSync(publicRootFilePath(contactHandlerPath));
+  const analyticsProvider = String(siteConfig.analytics?.provider ?? '');
+  const gaMeasurementId = String(siteConfig.analytics?.gaMeasurementId ?? '');
+  const publicProducts = products.filter((product) => product.status === 'public');
+  const publicProductIssues = publicProducts.filter((product) => {
+    const image = getImageForProduct(product);
+    const routes = product.routeKeys.map((routeKey) => externalLinks[routeKey]).filter(Boolean);
+    return !image || !isPublicReadyImage(image) || (!routes.some(isLiveExternalRoute) && !product.inquiryAllowed);
+  });
+  const placeholderRouteKeys = new Set(
+    Object.entries(externalLinks)
+      .filter(([, route]) => !isLiveExternalRoute(route))
+      .map(([key]) => key),
+  );
+  const visibleProductsUsingPlaceholderRoutes = publicProducts.filter((product) =>
+    product.routeKeys.some((routeKey) => placeholderRouteKeys.has(routeKey)),
+  );
+
+  return [
+    {
+      key: 'contact',
+      label: 'Contact',
+      status: contactProvider === 'php' && contactAction === contactHandlerPath && contactHandlerExists ? 'ready' : 'blocked',
+      message:
+        contactProvider === 'php' && contactAction === contactHandlerPath && contactHandlerExists
+          ? 'PHP contact handling is aligned for InMotion.'
+          : `Set contactForm.provider to php, action to ${contactHandlerPath}, and keep public${contactHandlerPath} in the build.`,
+    },
+    {
+      key: 'analytics',
+      label: 'Analytics',
+      status: analyticsProvider === 'ga4' && Boolean(gaMeasurementId.trim()) ? 'ready' : 'warning',
+      message:
+        analyticsProvider === 'ga4' && Boolean(gaMeasurementId.trim())
+          ? 'GA4 is configured; verify events after deployment.'
+          : 'Configure GA4 provider and measurement ID before launch verification.',
+    },
+    {
+      key: 'content',
+      label: 'Public images',
+      status: publicImages.length >= minimumPublicImages ? 'ready' : 'blocked',
+      message:
+        publicImages.length >= minimumPublicImages
+          ? `${publicImages.length} public-ready images are available.`
+          : `Publish at least ${minimumPublicImages} real images; ${publicImages.length} are public-ready now.`,
+    },
+    {
+      key: 'products',
+      label: 'Products',
+      status: publicProductIssues.length ? 'blocked' : 'ready',
+      message: publicProductIssues.length
+        ? `${publicProductIssues.length} public product needs a live route or inquiry fallback.`
+        : 'Public products have live routes or inquiry fallback.',
+    },
+    {
+      key: 'external-links',
+      label: 'External links',
+      status: visibleProductsUsingPlaceholderRoutes.length ? 'warning' : 'ready',
+      message: visibleProductsUsingPlaceholderRoutes.length
+        ? `${visibleProductsUsingPlaceholderRoutes.length} public product uses placeholder route keys and will fall back to inquiry.`
+        : 'No public product depends on placeholder external routes.',
+    },
+  ];
+}
+
 export function getContentReadinessReport() {
   const issues: ReadinessIssue[] = [];
 
@@ -327,6 +441,8 @@ export function getContentReadinessReport() {
   products.forEach((product) => validateProduct(issues, product));
   validateServices(issues);
   validateExternalLinks(issues);
+  validateContact(issues);
+  validateAnalytics(issues);
 
   const blockers = issues.filter((entry) => entry.severity === 'blocker');
   const warnings = issues.filter((entry) => entry.severity === 'warning');
@@ -340,6 +456,11 @@ export function getContentReadinessReport() {
       draftImages: images.filter((image) => image.status === 'draft').length,
       publicProducts: products.filter((product) => product.status === 'public').length,
       draftProducts: products.filter((product) => product.status === 'draft').length,
+    },
+    launch: {
+      minimumPublicImages,
+      contactHandlerPath,
+      gates: getLaunchGates(),
     },
     issues,
   };
