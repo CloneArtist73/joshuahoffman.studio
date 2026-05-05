@@ -668,6 +668,10 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
                 Create product entry
               </label>
             </div>
+            <p class="copy-muted">
+              In edit mode, unchecking product entry unlinks/skips product output. It does not delete an existing
+              product record.
+            </p>
           </section>
 
           <section class="space-y-5 border-t border-white/10 pt-8">
@@ -1256,15 +1260,7 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
   }
 
   function getEffectiveCreateProductState() {
-    return (
-      Boolean(form?.querySelector('input[name=\"createProduct\"]')?.checked) ||
-      (currentMode === 'edit-gallery' &&
-        Boolean(
-          selectedProductRecord ||
-            selectedOriginalProductSlug ||
-            (selectedImageRecord?.productSlug && selectedOriginalImageSlug),
-        ))
-    );
+    return Boolean(form?.querySelector('input[name=\"createProduct\"]')?.checked);
   }
 
   function getEditModeProductRecord() {
@@ -2392,15 +2388,8 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
 
   function updateProductFieldsState() {
     const enabled = getEffectiveCreateProductState();
-    if (enabled && currentMode === 'edit-gallery' && (selectedProductRecord || selectedOriginalProductSlug)) {
-      createProductCheckbox.checked = true;
-    }
     productFieldset.disabled = !enabled;
     productFieldset.classList.toggle('opacity-60', !enabled);
-
-    if (enabled) {
-      printAvailableCheckbox.checked = true;
-    }
   }
 
   function buildDirectEntries(imageSlug, formData) {
@@ -2500,7 +2489,7 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
     const bestFormat = String(formData.get('imageBestFormat') || '').trim();
     const createProduct = getEffectiveCreateProductState();
     const featured = Boolean(formData.get('imageFeatured'));
-    const printAvailable = Boolean(formData.get('imagePrintAvailable')) || createProduct;
+    const printAvailable = Boolean(formData.get('imagePrintAvailable'));
     const serviceCta = String(formData.get('imageServiceCta') || '').trim();
 
     const lines = ['{'];
