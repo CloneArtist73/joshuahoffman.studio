@@ -14,6 +14,8 @@
   - `npm run preview`
 - Enable local content-entry helper on a non-default environment (Windows PowerShell):
   - `$env:PUBLIC_ENABLE_ENTRY = 'true'; npm run dev`
+- Enable local content-entry helper in Bash/macOS shells:
+  - `PUBLIC_ENABLE_ENTRY=true npm run dev`
 
 ## Key page routes
 
@@ -55,6 +57,7 @@
 - Robot configuration points to `/sitemap-index.xml`; noindex paths are listed in `site.config.mjs` and filtered out of sitemap output.
 - Normal static builds remove local-only routes listed in `site.config.mjs` from `dist/`; `/entry/` remains a dev/local authoring route.
 - Deployment uses static assets from `dist/` after `npm run build`.
+- For cPanel/InMotion (or any static host), deploy by uploading the contents of `dist/` to your web root (for cPanel typically `public_html/`).
 
 ## Local workflows
 
