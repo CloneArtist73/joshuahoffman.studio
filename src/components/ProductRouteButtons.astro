@@ -37,7 +37,7 @@ function getRouteUrl(url: string) {
 
 <div class={compact ? 'contents' : 'flex flex-wrap items-center gap-3 pt-2'}>
   {
-    routes.map((route) => (
+    routes.map((route, index) => (
       <CTAButton
         external
         href={getRouteUrl(route.url)}
@@ -57,7 +57,7 @@ function getRouteUrl(url: string) {
           'data-link-image': imageSlug,
           'data-link-product': productSlug,
         }}
-        variant="secondary"
+        variant={index === 0 ? 'primary' : 'secondary'}
       />
     ))
   }
