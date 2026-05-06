@@ -66,7 +66,18 @@ const showFilters = enableFilter && categories.length > 1;
     <div class="mt-10 grid items-start gap-6 sm:grid-cols-2 xl:grid-cols-3" id={id}>
       {
         images.map((image, index) => (
-          <div data-gallery-card data-category={image.category}>
+          <div
+            class:list={[
+              'sm:w-full',
+              // Staggered mobile rhythm: full -> indented left -> indented right -> small centered
+              index % 4 === 1 ? 'w-[85%] mr-auto' :
+              index % 4 === 2 ? 'w-[85%] ml-auto' :
+              index % 4 === 3 ? 'w-[90%] mx-auto' :
+              'w-full'
+            ]}
+            data-gallery-card
+            data-category={image.category}
+          >
             <ImageCard
               context={context}
               eager={index < 2}

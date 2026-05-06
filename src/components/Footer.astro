@@ -1,5 +1,6 @@
 ---
 import CTAButton from './CTAButton.astro';
+import ActiveLink from './ActiveLink.astro';
 import { primaryNavLinks, secondaryNavLinks, siteConfig, socialLinks } from '../data/site';
 import { contactClick } from '../utils/analytics';
 
@@ -27,20 +28,24 @@ const currentYear = new Date().getFullYear();
     </div>
 
     <div class="space-y-3">
-      <h3 class="text-lg">Browse</h3>
-      <div class="flex flex-col gap-2">
+      <h3 class="text-xs font-sans font-semibold tracking-wide text-steel uppercase">Browse</h3>
+      <nav class="flex flex-col gap-2">
         {
           [...primaryNavLinks, ...secondaryNavLinks].map((item) => (
-            <a class="panel-link text-sm text-steel hover:text-paper" href={item.href}>
+            <ActiveLink
+              activeClass="text-paper underline decoration-sage/70 underline-offset-4"
+              class="panel-link text-sm transition"
+              href={item.href}
+            >
               {item.label}
-            </a>
+            </ActiveLink>
           ))
         }
-      </div>
+      </nav>
     </div>
 
     <div class="space-y-3">
-      <h3 class="text-lg">Contact</h3>
+      <h3 class="text-xs font-sans font-semibold tracking-wide text-steel uppercase">Contact</h3>
       <a
         class="panel-link block text-sm text-steel hover:text-paper"
         href={`mailto:${siteConfig.email}`}
@@ -52,19 +57,22 @@ const currentYear = new Date().getFullYear();
         {siteConfig.email}
       </a>
       <p class="text-sm text-steel">{siteConfig.serviceArea}</p>
-      {
-        socialLinks.map((item) => (
-          <a
-            class="panel-link block text-sm text-steel hover:text-paper"
-            href={item.href}
-            rel="noreferrer noopener"
-            target="_blank"
-            {...contactClick({ location: 'footer_social', network: item.label.toLowerCase() })}
-          >
-            {item.label}
-          </a>
-        ))
-      }
+      <div class="flex flex-col gap-2">
+        {
+          socialLinks.map((item) => (
+            <a
+              aria-label={`Visit Joshua Hoffman's ${item.label}`}
+              class="panel-link block text-sm text-steel hover:text-paper"
+              href={item.href}
+              rel="noreferrer noopener"
+              target="_blank"
+              {...contactClick({ location: 'footer_social', network: item.label.toLowerCase() })}
+            >
+              {item.label}
+            </a>
+          ))
+        }
+      </div>
     </div>
   </div>
 

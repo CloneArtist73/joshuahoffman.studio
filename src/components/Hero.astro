@@ -71,7 +71,26 @@ function ctaTracking(cta: CtaItem, fallbackLocation: string) {
 
     {
       hasImage && (
-        <div class="surface overflow-hidden shadow-soft">
+        <div class="mt-10 sm:hidden">
+          <div class="w-[calc(100%+1.25rem)] -mr-5 surface overflow-hidden shadow-soft rounded-r-none border-r-0">
+            <img
+              alt={imageAlt ?? ''}
+              class="aspect-[16/9] w-full object-cover"
+              decoding="async"
+              fetchpriority="high"
+              height="1100"
+              loading="eager"
+              src={imageSrc}
+              width="1320"
+            />
+          </div>
+        </div>
+      )
+    }
+
+    {
+      hasImage && (
+        <div class="hidden sm:block surface overflow-hidden shadow-soft">
           <img
             alt={imageAlt ?? ''}
             class="aspect-[6/5] w-full object-cover"

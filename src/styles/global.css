@@ -1,6 +1,6 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
 
 @layer base {
   :root {
@@ -16,7 +16,11 @@
   }
 
   body {
-    @apply bg-obsidian font-sans text-sand antialiased;
+    background-color: #0b0d12;
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    color: #e5d6b6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     background-image:
       radial-gradient(circle at top left, rgba(192, 192, 192, 0.2), transparent 34%),
       radial-gradient(circle at bottom right, rgba(192, 192, 192, 0.12), transparent 28%),
@@ -25,13 +29,13 @@
   }
 
   a {
-    @apply transition duration-200;
+    transition: all 200ms;
   }
 
   a:focus-visible,
   button:focus-visible,
   summary:focus-visible {
-    @apply outline-none ring-2 ring-platinum ring-offset-2 ring-offset-obsidian;
+    @apply focus-ring;
   }
 
   img {
@@ -97,11 +101,11 @@
   }
 
   .panel-link {
-    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-platinum focus-visible:ring-offset-2 focus-visible:ring-offset-obsidian;
+    @apply focus-ring;
   }
 
   .btn {
-    @apply inline-flex min-h-11 max-w-full min-w-0 select-none items-center justify-center gap-2 overflow-hidden text-ellipsis rounded-full px-5 py-3 text-center text-sm font-semibold leading-tight whitespace-nowrap transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-platinum focus-visible:ring-offset-2 focus-visible:ring-offset-obsidian disabled:cursor-not-allowed disabled:opacity-55 hover:scale-[1.02] active:scale-[0.98];
+    @apply inline-flex min-h-11 max-w-full min-w-0 select-none items-center justify-center gap-2 overflow-hidden text-ellipsis rounded-full px-5 py-3 text-center text-sm font-semibold leading-tight whitespace-nowrap transition-all duration-500 ease-luxury disabled:cursor-not-allowed disabled:opacity-55 hover:scale-[1.02] active:scale-[0.98] focus-ring;
   }
 
   .btn > span {
@@ -162,7 +166,8 @@
 
   .form-help,
   .form-error {
-    @apply text-xs leading-relaxed;
+    font-size: 0.75rem;
+    line-height: 1.625;
   }
 
   .form-help {
@@ -195,6 +200,10 @@
   select[aria-invalid='true'] ~ .form-error,
   textarea[aria-invalid='true'] ~ .form-error {
     @apply block;
+  }
+
+  .focus-ring {
+    @apply outline-none focus-visible:ring-2 focus-visible:ring-sage/50 focus-visible:ring-offset-2 focus-visible:ring-offset-obsidian;
   }
 }
 

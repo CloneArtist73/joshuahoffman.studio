@@ -1,0 +1,151 @@
+---
+import Layout from '../components/Layout.astro';
+import ImageCard from '../components/ImageCard.astro';
+import ServiceCard from '../components/ServiceCard.astro';
+import ProductCard from '../components/ProductCard.astro';
+import CTAButton from '../components/CTAButton.astro';
+import { images, getFeaturedImages, getImageBySlug } from '../data/images';
+import { services } from '../data/services';
+import { products } from '../data/products';
+import { ctas } from '../data/ctas';
+import { siteConfig } from '../data/site';
+
+const featuredImages = getFeaturedImages(4);
+const printProducts = products.slice(0, 3).map(p => ({
+  product: p,
+  image: getImageBySlug(p.imageSlug)
+})).filter(item => !!item.image);
+
+// A "Bleed Hero" variation for mobile
+const heroImage = "/images/ice-formations-on-a-surface.jpeg";
+---
+
+<Layout title="Design Lab - Mobile Rhythm Prototype">
+  <div class="bg-amber/10 border-b border-ember/20 p-4 text-center">
+    <p class="text-xs uppercase tracking-widest text-ember font-semibold">
+      Mobile Rhythm Prototype - View on Mobile or Resize Browser
+    </p>
+  </div>
+
+  <!-- 1. THE BLEED HERO (Mobile Only) -->
+  <section class="section-block pt-10 overflow-hidden">
+    <div class="shell">
+      <div class="space-y-6">
+        <span class="eyebrow">Joshua Hoffman Studio</span>
+        <h1 class="headline max-w-4xl">Breaking the stack: The Bleed Hero</h1>
+        <p class="max-w-copy text-base text-steel sm:text-lg">
+          On mobile, the image escapes the container to the right, creating an asymmetric editorial flow.
+        </p>
+        <div class="flex flex-col gap-3 sm:flex-row">
+          <CTAButton href="#" label="Primary Action" />
+          <CTAButton href="#" label="Secondary" variant="secondary" />
+        </div>
+      </div>
+    </div>
+    
+    <div class="mt-10 sm:hidden">
+      <!-- Image bleeds off the right edge -->
+      <div class="w-[calc(100%+1.25rem)] -mr-5 surface overflow-hidden shadow-soft rounded-r-none border-r-0">
+        <img 
+          src={heroImage} 
+          class="aspect-[16/9] w-full object-cover" 
+          alt="Bleed Hero Example" 
+        />
+      </div>
+    </div>
+    
+    <!-- Desktop Fallback (Normal Shell) -->
+    <div class="hidden sm:block shell mt-10">
+       <div class="surface overflow-hidden shadow-soft">
+        <img src={heroImage} class="aspect-[21/9] w-full object-cover" alt="Desktop Hero" />
+       </div>
+    </div>
+  </section>
+
+  <!-- 2. THE SNAP SCROLLER -->
+  <section class="section-block bg-white/[0.02] overflow-hidden">
+    <div class="shell mb-8">
+      <div class="max-w-3xl space-y-4">
+        <h2 class="text-3xl sm:text-4xl">Snap Scrollers</h2>
+        <p class="text-base text-steel sm:text-lg">
+          Instead of vertical stacking, use horizontal motion to break up the scrolling experience.
+        </p>
+      </div>
+    </div>
+
+    <!-- Container that handles the mobile scroller vs desktop grid switch -->
+    <div class="sm:shell sm:px-0">
+      <!-- Mobile: Horizontal Scroller -->
+      <div class="flex flex-nowrap overflow-x-auto snap-x snap-mandatory gap-5 px-5 pb-8 no-scrollbar touch-auto sm:hidden">
+        {printProducts.map((item) => (
+          <div class="w-[80vw] flex-none snap-center">
+            <ProductCard image={item.image!} product={item.product} />
+          </div>
+        ))}
+        <!-- Spacer to ensure the last item doesn't get cut off and has padding-right -->
+        <div class="w-1 flex-none h-1"></div>
+      </div>
+
+      <!-- Desktop: Standard Grid -->
+      <div class="hidden sm:grid sm:grid-cols-3 gap-6">
+        {printProducts.map((item) => (
+          <ProductCard image={item.image!} product={item.product} />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. STAGGERED RHYTHM -->
+  <section class="section-block">
+    <div class="shell mb-10">
+      <div class="max-w-3xl space-y-4">
+        <h2 class="text-3xl sm:text-4xl">Staggered Rhythm</h2>
+        <p class="text-base text-steel sm:text-lg">
+          Varying the width and indentation of cards to create a more organic, gallery-wall feeling.
+        </p>
+      </div>
+    </div>
+
+    <div class="shell space-y-12 sm:space-y-0 sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:gap-6">
+      <!-- Item 1: Full width -->
+      <div class="w-full">
+        <ImageCard image={featuredImages[0]} context="design_lab" />
+      </div>
+
+      <!-- Item 2: Indented Left -->
+      <div class="w-[85%] mr-auto sm:w-full">
+        <ImageCard image={featuredImages[1]} context="design_lab" />
+      </div>
+
+      <!-- Item 3: Indented Right -->
+      <div class="w-[85%] ml-auto sm:w-full">
+        <ImageCard image={featuredImages[2]} context="design_lab" />
+      </div>
+
+      <!-- Item 4: Centered Small -->
+      <div class="w-[90%] mx-auto sm:w-full">
+        <ImageCard image={featuredImages[3]} context="design_lab" />
+      </div>
+    </div>
+  </section>
+
+  <section class="section-block bg-ember/5 text-center">
+    <div class="shell">
+      <h2 class="text-2xl mb-4">Does this feel less "linear"?</h2>
+      <p class="text-steel mb-8">These patterns break the predictable rhythm of a standard vertical stack.</p>
+      <div class="flex justify-center gap-4">
+        <CTAButton href="/" label="Back to Live Site" variant="secondary" />
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+</style>

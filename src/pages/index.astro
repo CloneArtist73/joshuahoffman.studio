@@ -76,14 +76,27 @@ const hasPrintProducts = previewProducts.length > 0;
         </p>
       </div>
 
-      <div class="grid gap-6 lg:grid-cols-3">
-        {hasPrintProducts ? (
-          previewProducts.map(({ product, image }) => <ProductCard image={image} product={product} />)
-        ) : (
-          <article class="surface p-6 text-sm text-steel">
-            Selected print inquiries are handled directly. Use contact options below for custom sizing, signed work, or availability.
-          </article>
-        )}
+      <div class="overflow-hidden -mx-5 px-5 sm:mx-0 sm:px-0">
+        <!-- Mobile: Snap Scroller -->
+        <div class="flex flex-nowrap overflow-x-auto snap-x snap-mandatory gap-5 pb-8 no-scrollbar touch-auto sm:hidden">
+          {previewProducts.map(({ product, image }) => (
+            <div class="w-[85vw] flex-none snap-center">
+              <ProductCard image={image} product={product} />
+            </div>
+          ))}
+          <div class="w-1 flex-none h-1"></div>
+        </div>
+
+        <!-- Desktop: Grid -->
+        <div class="hidden sm:grid gap-6 lg:grid-cols-3">
+          {hasPrintProducts ? (
+            previewProducts.map(({ product, image }) => <ProductCard image={image} product={product} />)
+          ) : (
+            <article class="surface p-6 text-sm text-steel">
+              Selected print inquiries are handled directly. Use contact options below for custom sizing, signed work, or availability.
+            </article>
+          )}
+        </div>
       </div>
     </div>
   </section>

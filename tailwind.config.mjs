@@ -29,6 +29,9 @@ export default {
       letterSpacing: {
         hush: '0.24em',
       },
+      transitionTimingFunction: {
+        luxury: 'cubic-bezier(0.16, 1, 0.3, 1)',
+      },
     },
   },
   plugins: [],

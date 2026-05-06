@@ -209,9 +209,24 @@ const fallbackCta =
         <span class="eyebrow">Related work</span>
         <h2 class="text-3xl sm:text-4xl">Three nearby frames for people who want to keep looking.</h2>
       </div>
-      <div class="grid items-start gap-6 lg:grid-cols-3">
-        {relatedImages.map((relatedImage) => <ImageCard context="image_page_related" image={relatedImage} />)}
+
+      <div class="overflow-hidden -mx-5 px-5 sm:mx-0 sm:px-0">
+        <!-- Mobile: Snap Scroller -->
+        <div class="flex flex-nowrap overflow-x-auto snap-x snap-mandatory gap-5 pb-8 no-scrollbar touch-auto sm:hidden">
+          {relatedImages.map((relatedImage) => (
+            <div class="w-[85vw] flex-none snap-center">
+              <ImageCard context="image_page_related" image={relatedImage} />
+            </div>
+          ))}
+          <div class="w-1 flex-none h-1"></div>
+        </div>
+
+        <!-- Desktop: Grid -->
+        <div class="hidden sm:grid items-start gap-6 lg:grid-cols-3">
+          {relatedImages.map((relatedImage) => <ImageCard context="image_page_related" image={relatedImage} />)}
+        </div>
       </div>
+
       {
         relatedImages.length === 0 && (
           <p class="max-w-copy text-sm text-steel">
