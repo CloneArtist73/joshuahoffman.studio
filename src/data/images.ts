@@ -295,7 +295,7 @@ export const images: ImageItem[] = [
     slug: 'milky-way-over-trees',
     status: 'public',
     title: 'Milky Way over trees',
-    category: 'portrait',
+    category: 'astrophotography',
     tags: ['astrophotography', 'night', 'trees', 'milky-way', 'landscape'],
     imageSrc: '/images/milky-way-over-trees.png',
     alt: 'A vertical photograph showing the Milky Way galaxy arching over a line of trees against a dark night sky.',

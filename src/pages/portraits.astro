@@ -24,7 +24,7 @@ const galleryImages = service.gallerySlugs
 >
   <Hero
     eyebrow="Portrait sessions"
-    imageSrc={service.imageSrc ?? '/images/placeholders/portrait-session.svg'}
+    imageSrc={service.imageSrc}
     primaryCta={{
       label: service.ctaLabel,
       href: '/contact/?type=Portrait%20session',
@@ -47,21 +47,33 @@ const galleryImages = service.gallerySlugs
     title={service.heroTitle}
   />
 
-  <section class="section-block pt-0">
-    <div class="shell grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-      <article class="surface p-6 sm:p-8">
-        <span class="eyebrow">Who this is for</span>
-        <div class="mt-5 space-y-3">
-          {service.idealFor.map((item) => <p class="text-steel">{item}</p>)}
-        </div>
-      </article>
-      <article class="surface p-6 sm:p-8">
-        <span class="eyebrow">What the session includes</span>
-        <div class="mt-5 space-y-3">
-          {service.includes.map((item) => <p class="text-steel">{item}</p>)}
-        </div>
-        {service.startingPrice && <p class="mt-6 text-sm font-semibold text-paper">{service.startingPrice}</p>}
-      </article>
+  <section class="section-block section-rule">
+    <div class="shell grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
+      <div class="space-y-4">
+        <span class="eyebrow">Portrait approach</span>
+        <p class="editorial-statement">
+          A good portrait should give direction without sanding the person down.
+        </p>
+        <p class="max-w-copy text-base leading-relaxed text-steel sm:text-lg">
+          The session is planned around where the image needs to live first: personal archive, artist profile, family record, press use, or a public-facing page.
+        </p>
+      </div>
+
+      <div class="grid gap-6 sm:grid-cols-2">
+        <article class="surface p-6 sm:p-8">
+          <span class="eyebrow">Who this is for</span>
+          <ul class="quiet-list mt-5">
+            {service.idealFor.map((item) => <li>{item}</li>)}
+          </ul>
+        </article>
+        <article class="surface p-6 sm:p-8">
+          <span class="eyebrow">What the session includes</span>
+          <ul class="quiet-list mt-5">
+            {service.includes.map((item) => <li>{item}</li>)}
+          </ul>
+          {service.startingPrice && <p class="mt-6 text-sm font-semibold text-paper">{service.startingPrice}</p>}
+        </article>
+      </div>
     </div>
   </section>
 
@@ -76,9 +88,9 @@ const galleryImages = service.gallerySlugs
     )
   }
 
-  <section class="section-block pt-0">
+  <section class="section-block section-rule">
     <div class="shell">
-      <div class="surface flex flex-col gap-4 p-8 sm:flex-row sm:items-center sm:justify-between">
+      <div class="flex flex-col gap-5 border-y border-platinum/10 py-10 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 class="text-3xl">Ready to make something direct and usable?</h2>
           <p class="mt-3 max-w-copy text-steel">

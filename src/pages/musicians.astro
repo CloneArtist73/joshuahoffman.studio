@@ -31,7 +31,7 @@ const musicianUseCases = [
 >
   <Hero
     eyebrow="Musician / artist portraits"
-    imageSrc={service.imageSrc ?? '/images/placeholders/musician-stage.svg'}
+    imageSrc={service.imageSrc}
     primaryCta={{
       label: service.ctaLabel,
       href: '/contact/?type=Musician%20%2F%20artist%20portraits',
@@ -54,26 +54,38 @@ const musicianUseCases = [
     title={service.heroTitle}
   />
 
-  <section class="section-block pt-0">
-    <div class="shell grid gap-6 lg:grid-cols-3">
-      <article class="surface p-6 sm:p-8">
-        <span class="eyebrow">Built for</span>
-        <div class="mt-5 space-y-3">
-          {service.idealFor.map((item) => <p class="text-steel">{item}</p>)}
-        </div>
-      </article>
-      <article class="surface p-6 sm:p-8">
-        <span class="eyebrow">Use cases</span>
-        <div class="mt-5 space-y-3">
-          {musicianUseCases.map((item) => <p class="text-steel">{item}</p>)}
-        </div>
-      </article>
-      <article class="surface p-6 sm:p-8">
-        <span class="eyebrow">What this includes</span>
-        <div class="mt-5 space-y-3">
-          {service.includes.map((item) => <p class="text-steel">{item}</p>)}
-        </div>
-      </article>
+  <section class="section-block section-rule">
+    <div class="shell grid gap-8 lg:grid-cols-[0.82fr_1.18fr] lg:items-start">
+      <div class="space-y-4">
+        <span class="eyebrow">Artist work</span>
+        <p class="editorial-statement">
+          The photograph has to work where the music is judged quickly: posters, press, release pages, and small screens.
+        </p>
+        <p class="max-w-copy text-base leading-relaxed text-steel sm:text-lg">
+          Planning starts with sound, references, use, and timing so the session produces images with enough friction to feel connected to the work.
+        </p>
+      </div>
+
+      <div class="grid gap-6 lg:grid-cols-3">
+        <article class="surface p-6 sm:p-8">
+          <span class="eyebrow">Built for</span>
+          <ul class="quiet-list mt-5">
+            {service.idealFor.map((item) => <li>{item}</li>)}
+          </ul>
+        </article>
+        <article class="surface p-6 sm:p-8">
+          <span class="eyebrow">Use cases</span>
+          <ul class="quiet-list mt-5">
+            {musicianUseCases.map((item) => <li>{item}</li>)}
+          </ul>
+        </article>
+        <article class="surface p-6 sm:p-8">
+          <span class="eyebrow">What this includes</span>
+          <ul class="quiet-list mt-5">
+            {service.includes.map((item) => <li>{item}</li>)}
+          </ul>
+        </article>
+      </div>
     </div>
   </section>
 
@@ -88,9 +100,9 @@ const musicianUseCases = [
     )
   }
 
-  <section class="section-block pt-0">
+  <section class="section-block section-rule">
     <div class="shell">
-      <div class="surface flex flex-col gap-4 p-8 sm:flex-row sm:items-center sm:justify-between">
+      <div class="flex flex-col gap-5 border-y border-platinum/10 py-10 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 class="text-3xl">Need work that feels closer to the sound than the template?</h2>
           <p class="mt-3 max-w-copy text-steel">

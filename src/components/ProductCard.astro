@@ -8,13 +8,15 @@ interface Props {
 }
 
 const { product, image } = Astro.props;
+const availableFormats =
+  product.availableFormats.length > 0 ? product.availableFormats.join(' · ') : 'Custom sizing by inquiry';
 ---
 
-<article class="surface flex h-full flex-col">
-  <a class="panel-link block shrink-0 rounded-t-panel focus-visible:ring-inset focus-visible:ring-offset-0" href={`/p/${image.slug}/`}>
+<article class="surface flex h-full flex-col overflow-hidden transition-colors duration-300 hover:border-platinum/30 hover:bg-dusk/80">
+  <a class="panel-link group block shrink-0 focus-visible:ring-inset focus-visible:ring-offset-0" href={`/p/${image.slug}/`}>
     <img
       alt={image.alt}
-      class="aspect-[5/4] w-full rounded-t-panel object-cover"
+      class="aspect-[5/4] w-full object-cover transition duration-700 ease-luxury group-hover:scale-[1.025] group-hover:opacity-95"
       decoding="async"
       height="1000"
       loading="lazy"
@@ -25,14 +27,14 @@ const { product, image } = Astro.props;
   </a>
   <div class="flex flex-1 flex-col space-y-4 p-6">
     <div class="space-y-2">
-      <span class="tag-pill">Prints</span>
-      <h3 class="text-2xl">{product.title}</h3>
-      <p class="text-sm text-steel">{product.shortDescription}</p>
+      <span class="text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-sage">Print inquiry</span>
+      <h3 class="text-2xl leading-tight text-paper">{product.title}</h3>
+      <p class="text-sm leading-relaxed text-steel">{product.shortDescription}</p>
     </div>
     <dl class="grid gap-3 border-t border-white/10 pt-4 text-sm">
       <div>
         <dt class="font-semibold text-paper">Available sizes</dt>
-        <dd class="mt-1 text-steel">{product.availableFormats.join(' · ')}</dd>
+        <dd class="mt-1 text-steel">{availableFormats}</dd>
       </div>
       <div>
         <dt class="font-semibold text-paper">Ordering</dt>

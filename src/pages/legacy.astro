@@ -24,7 +24,7 @@ const galleryImages = service.gallerySlugs
 >
   <Hero
     eyebrow="Legacy / memorial work"
-    imageSrc={service.imageSrc ?? '/images/placeholders/legacy-light.svg'}
+    imageSrc={service.imageSrc}
     primaryCta={{
       label: service.ctaLabel,
       href: '/contact/?type=Legacy%20%2F%20memorial%20work',
@@ -46,29 +46,35 @@ const galleryImages = service.gallerySlugs
     title={service.heroTitle}
   />
 
-  <section class="section-block pt-0">
-    <div class="shell grid gap-6 lg:grid-cols-3">
-      <article class="surface p-6 sm:p-8">
+  <section class="section-block section-rule">
+    <div class="shell grid gap-8 lg:grid-cols-[0.92fr_1.08fr] lg:items-start">
+      <div class="space-y-5">
         <span class="eyebrow">Approach</span>
-        <div class="rich-copy mt-5 max-w-copy">
+        <p class="editorial-statement">
+          Memory work needs privacy, pacing, and photographs that do not ask people to perform.
+        </p>
+        <div class="rich-copy max-w-copy">
           <p>{service.longDescription}</p>
           <p>
             The goal is to make space for memory, family, grief, and care without turning people into symbols. Sessions are paced around what the people involved can actually hold.
           </p>
         </div>
-      </article>
-      <article class="surface p-6 sm:p-8">
-        <span class="eyebrow">Good fit for</span>
-        <div class="mt-5 space-y-3">
-          {service.idealFor.map((item) => <p class="text-steel">{item}</p>)}
-        </div>
-      </article>
-      <article class="surface p-6 sm:p-8">
-        <span class="eyebrow">What this includes</span>
-        <div class="mt-5 space-y-3">
-          {service.includes.map((item) => <p class="text-steel">{item}</p>)}
-        </div>
-      </article>
+      </div>
+
+      <div class="grid gap-6 sm:grid-cols-2">
+        <article class="surface p-6 sm:p-8">
+          <span class="eyebrow">Good fit for</span>
+          <ul class="quiet-list mt-5">
+            {service.idealFor.map((item) => <li>{item}</li>)}
+          </ul>
+        </article>
+        <article class="surface p-6 sm:p-8">
+          <span class="eyebrow">What this includes</span>
+          <ul class="quiet-list mt-5">
+            {service.includes.map((item) => <li>{item}</li>)}
+          </ul>
+        </article>
+      </div>
     </div>
   </section>
 
@@ -83,9 +89,9 @@ const galleryImages = service.gallerySlugs
     )
   }
 
-  <section class="section-block pt-0">
+  <section class="section-block section-rule">
     <div class="shell">
-      <div class="surface flex flex-col gap-4 p-8 sm:flex-row sm:items-center sm:justify-between">
+      <div class="flex flex-col gap-5 border-y border-platinum/10 py-10 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 class="text-3xl">If you need to ask quietly, that is enough.</h2>
           <p class="mt-3 max-w-copy text-steel">

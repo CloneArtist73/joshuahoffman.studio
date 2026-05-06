@@ -18,14 +18,35 @@ const inquiryGuidance = [
   title="Contact"
 >
   <section class="section-block">
-    <div class="shell grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
-      <div class="space-y-5">
+    <div class="shell space-y-8">
+      <div class="grid gap-6 lg:grid-cols-[0.95fr_1.05fr] lg:items-end">
+        <div class="space-y-5">
         <span class="eyebrow">Contact</span>
         <h1 class="headline max-w-3xl">Start with a short message.</h1>
-        <p class="max-w-copy text-base text-steel sm:text-lg">
+        <p class="max-w-copy text-base leading-relaxed text-steel sm:text-lg">
           Reach out about portrait sessions, legacy work, musician portraits, print questions, licensing, or anything else that fits the site.
         </p>
-        <div class="surface space-y-5 p-6">
+        <div class="flex flex-col gap-3 sm:flex-row">
+          <CTAButton href="#inquiry-form" label="Go to Form" variant="secondary" />
+          <CTAButton
+            href={`mailto:${siteConfig.email}`}
+            label="Email Directly"
+            tracking={contactClick({ location: 'contact_intro_email_cta' })}
+            trackingMeta={{
+              'data-link-type': 'email_contact',
+              'data-link-location': 'contact_intro_email_cta',
+            }}
+            variant="ghost"
+          />
+        </div>
+        </div>
+        <p class="editorial-statement max-w-2xl lg:justify-self-end">
+          A clear first note is enough. Details can be narrowed before anything is scheduled or ordered.
+        </p>
+      </div>
+
+      <div class="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
+        <div class="surface order-2 space-y-5 p-6 lg:order-1">
           <p class="text-sm text-steel">
             Direct email: <a
               class="panel-link text-paper underline decoration-white/20 underline-offset-4 hover:decoration-platinum"
@@ -55,9 +76,8 @@ const inquiryGuidance = [
             variant="ghost"
           />
         </div>
-      </div>
 
-      <div class="space-y-5">
+      <div class="order-1 space-y-5 lg:order-2" id="inquiry-form">
         <ContactForm />
         <noscript>
           <p class="text-sm text-steel">
@@ -78,6 +98,7 @@ const inquiryGuidance = [
         <p class="text-sm text-steel">
           Joshua replies directly. For the clearest reply, include timing, location, and the kind of photographs or print question you have in mind.
         </p>
+      </div>
       </div>
     </div>
   </section>

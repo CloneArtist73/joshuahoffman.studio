@@ -26,9 +26,9 @@ const aspectClass =
 const categoryLabel = getImageCategoryLabel(image.category);
 ---
 
-<article class="surface">
+<article class="group">
   <a
-    class="panel-link group block rounded-panel"
+    class="panel-link block"
     href={`/p/${image.slug}/`}
     {...galleryImageClick({
       imageSlug: image.slug,
@@ -36,10 +36,10 @@ const categoryLabel = getImageCategoryLabel(image.category);
       location: context,
     })}
   >
-    <div class={`overflow-hidden rounded-t-panel ${aspectClass}`}>
+    <div class={`image-frame transition-colors duration-300 group-hover:border-platinum/35 ${aspectClass}`}>
       <img
         alt={image.alt}
-        class="h-full w-full object-cover transition-transform duration-700 ease-luxury group-hover:scale-[1.03] group-hover:duration-1000"
+        class="h-full w-full object-cover transition duration-700 ease-luxury group-hover:scale-[1.025] group-hover:opacity-95"
         decoding="async"
         height="1600"
         loading={eager ? 'eager' : 'lazy'}
@@ -48,12 +48,12 @@ const categoryLabel = getImageCategoryLabel(image.category);
         width="1200"
       />
     </div>
-    <div class="space-y-3 p-5 transition-transform duration-500 ease-luxury group-hover:-translate-y-1">
-      {showCategory && <span class="tag-pill">{categoryLabel}</span>}
-      <h3 class="text-2xl transition-colors group-hover:text-white">{image.title}</h3>
-      <p class="text-sm text-steel">{image.hook}</p>
-      <span class="inline-flex items-center text-sm font-semibold text-paper">
-        View image
+    <div class="space-y-2 pt-4">
+      {showCategory && <span class="text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-sage">{categoryLabel}</span>}
+      <h3 class="text-2xl leading-tight text-paper transition-colors group-hover:text-sand">{image.title}</h3>
+      <p class="text-sm leading-relaxed text-steel">{image.hook}</p>
+      <span class="inline-flex items-center text-sm font-semibold text-sand underline decoration-platinum/20 underline-offset-4 transition-colors group-hover:text-paper group-hover:decoration-platinum/70">
+        Open photograph
       </span>
     </div>
   </a>

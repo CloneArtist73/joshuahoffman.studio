@@ -17,6 +17,7 @@ const printProducts = products
   .filter((entry): entry is { product: (typeof products)[number]; image: NonNullable<ReturnType<typeof getImageBySlug>> } =>
     Boolean(entry.image) && isPublicImage(entry.image) && isPublicReadyProduct(entry.product, entry.image),
   );
+const printHeroImage = printProducts[0]?.image;
 ---
 
 <Layout
@@ -25,41 +26,56 @@ const printProducts = products
   title="Fine-Art Prints"
 >
   <section class="section-block">
-    <div class="shell grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
+    <div class="shell grid gap-10 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
       <div class="space-y-4">
         <span class="eyebrow">Fine-art prints</span>
         <h1 class="headline max-w-4xl">Selected photographs available for print inquiries and custom sizing.</h1>
-        <p class="max-w-copy text-base text-steel sm:text-lg">
-          Choose a frame that stays with you, then ask directly about sizes, paper, signed work, availability, and licensing.
+        <p class="max-w-copy text-base leading-relaxed text-steel sm:text-lg">
+          Choose a frame that stays with you, then ask directly about sizes, paper, signed work, availability, and licensing before anything moves to order.
         </p>
+        <div class="flex flex-col gap-3 sm:flex-row">
+          <CTAButton
+            href="/contact/?type=Print%20or%20product%20question"
+            label="Ask About a Print"
+            tracking={contactClick({ location: 'prints_intro', intent: 'custom_print' })}
+            trackingMeta={{
+              'data-link-type': 'booking_inquiry',
+              'data-link-location': 'prints_intro',
+              'data-link-intent': 'custom_print',
+            }}
+          />
+          <CTAButton href="/gallery/" label="Explore Gallery" variant="secondary" />
+        </div>
       </div>
-      <div class="flex flex-col gap-3 sm:flex-row lg:justify-end">
-        <CTAButton href="/gallery/" label="Explore Gallery" variant="secondary" />
-        <CTAButton
-          href="/contact/?type=Print%20or%20product%20question"
-          label="Ask About a Print"
-          tracking={contactClick({ location: 'prints_intro', intent: 'custom_print' })}
-          trackingMeta={{
-            'data-link-type': 'booking_inquiry',
-            'data-link-location': 'prints_intro',
-            'data-link-intent': 'custom_print',
-          }}
-        />
-      </div>
+      {printHeroImage && (
+        <a class="panel-link image-frame group block" href={`/p/${printHeroImage.slug}/`}>
+          <img
+            alt={printHeroImage.alt}
+            class="aspect-[16/10] w-full object-cover transition duration-700 ease-luxury group-hover:scale-[1.02] group-hover:opacity-95"
+            decoding="async"
+            fetchpriority="high"
+            height="1000"
+            loading="eager"
+            sizes="(min-width: 1024px) 50vw, calc(100vw - 2.5rem)"
+            src={printHeroImage.imageSrc}
+            width="1600"
+          />
+        </a>
+      )}
     </div>
   </section>
 
   {printService && (
-    <section class="section-block pt-0">
+    <section class="section-block section-rule">
       <div class="shell">
-        <div class="surface grid gap-6 p-6 sm:p-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
+        <div class="grid gap-6 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
           <div class="space-y-3">
             <span class="eyebrow">How print inquiries work</span>
             <h2 class="text-3xl sm:text-4xl">Confirm the details before anything moves to order.</h2>
           </div>
           <div class="grid gap-3 sm:grid-cols-2">
             {printService.includes.map((item) => (
-              <p class="text-sm text-steel">{item}</p>
+              <p class="border-l border-platinum/20 pl-4 text-sm leading-relaxed text-steel">{item}</p>
             ))}
           </div>
         </div>
@@ -67,7 +83,7 @@ const printProducts = products
     </section>
   )}
 
-  <section class="section-block pt-0">
+  <section class="section-block section-rule">
     <div class="shell grid gap-6 lg:grid-cols-2">
       {printProducts.length > 0 ? (
         printProducts.map(({ product, image }) => <ProductCard image={image} product={product} />)

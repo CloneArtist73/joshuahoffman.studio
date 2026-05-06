@@ -2,7 +2,7 @@
 import CTAButton from './CTAButton.astro';
 import ActiveLink from './ActiveLink.astro';
 import { primaryNavLinks, secondaryNavLinks, siteConfig } from '../data/site';
-import { bookSessionClick } from '../utils/analytics';
+import { contactClick } from '../utils/analytics';
 
 const normalizePath = (path: string) => (path === '/' ? path : path.replace(/\/$/, ''));
 const currentPath = normalizePath(Astro.url.pathname);
@@ -10,9 +10,9 @@ const isCurrentLink = (href: string) => normalizePath(href) === currentPath;
 const hasCurrentSecondaryLink = secondaryNavLinks.some((item) => isCurrentLink(item.href));
 ---
 
-<header class="sticky top-0 z-40 border-b border-white/10 bg-obsidian/80 backdrop-blur">
-  <div class="shell flex items-center justify-between gap-3 py-4 sm:gap-4">
-    <a class="panel-link min-w-0 max-w-[16rem] lg:max-w-[15rem] xl:max-w-none" href="/">
+<header class="sticky top-0 z-40 border-b border-platinum/10 bg-obsidian/90 backdrop-blur">
+  <div class="shell flex items-center justify-between gap-2 py-4 sm:gap-4">
+    <a class="panel-link min-w-0 max-w-[12rem] sm:max-w-[16rem] lg:max-w-[15rem] xl:max-w-none" href="/">
       <span class="block truncate font-display text-2xl text-paper">{siteConfig.brandName}</span>
       <span class="copy-muted block truncate text-xs uppercase tracking-hush">
         {siteConfig.ownerName} · {siteConfig.serviceArea}
@@ -23,7 +23,7 @@ const hasCurrentSecondaryLink = secondaryNavLinks.some((item) => isCurrentLink(i
       {
         primaryNavLinks.map((item) => (
           <ActiveLink
-            class="panel-link whitespace-nowrap text-sm transition"
+            class="panel-link whitespace-nowrap rounded-full px-3 py-2 text-sm transition"
             href={item.href}
           >
             {item.label}
@@ -34,7 +34,7 @@ const hasCurrentSecondaryLink = secondaryNavLinks.some((item) => isCurrentLink(i
         {
           secondaryNavLinks.map((item) => (
             <ActiveLink
-              class="panel-link whitespace-nowrap text-sm transition"
+              class="panel-link whitespace-nowrap rounded-full px-3 py-2 text-sm transition"
               href={item.href}
             >
               {item.label}
@@ -59,7 +59,7 @@ const hasCurrentSecondaryLink = secondaryNavLinks.some((item) => isCurrentLink(i
               secondaryNavLinks.map((item) => (
                 <ActiveLink
                   activeClass="bg-white/10 text-paper"
-                  class="panel-link rounded-2xl px-3 py-2 text-sm"
+                  class="panel-link rounded-panel px-3 py-2 text-sm"
                   data-menu-link
                   href={item.href}
                   inactiveClass="text-steel hover:bg-white/5 hover:text-paper"
@@ -74,19 +74,19 @@ const hasCurrentSecondaryLink = secondaryNavLinks.some((item) => isCurrentLink(i
 
       <CTAButton
         class="shrink-0 whitespace-nowrap"
-        href="/contact/?type=Portrait%20session"
+        href="/contact/"
         label="Start an Inquiry"
         trackingMeta={{
           'data-link-type': 'booking_inquiry',
-          'data-link-intent': 'portrait_booking',
+          'data-link-intent': 'general_inquiry',
           'data-link-location': 'header_desktop_cta',
         }}
-        tracking={bookSessionClick({ service: 'portrait', location: 'header' })}
+        tracking={contactClick({ service: 'custom', location: 'header' })}
       />
     </nav>
 
     <details class="relative lg:hidden" data-site-menu>
-      <summary aria-label="Open site navigation" class="panel-link inline-flex min-h-11 cursor-pointer items-center rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-paper">
+      <summary aria-label="Open site navigation" class="panel-link inline-flex min-h-11 cursor-pointer items-center rounded-full border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-paper sm:px-4">
         Menu
       </summary>
       <div class="surface absolute right-0 top-[calc(100%+0.75rem)] min-w-64 p-4 shadow-soft">
@@ -95,7 +95,7 @@ const hasCurrentSecondaryLink = secondaryNavLinks.some((item) => isCurrentLink(i
             [...primaryNavLinks, ...secondaryNavLinks].map((item) => (
               <ActiveLink
                 activeClass="bg-white/10 text-paper"
-                class="panel-link rounded-2xl px-3 py-2 text-sm"
+                class="panel-link rounded-panel px-3 py-2 text-sm"
                 data-menu-link
                 href={item.href}
                 inactiveClass="text-steel hover:bg-white/5 hover:text-paper"
@@ -106,16 +106,16 @@ const hasCurrentSecondaryLink = secondaryNavLinks.some((item) => isCurrentLink(i
           }
           <div class="pt-2">
             <CTAButton
-              href="/contact/?type=Portrait%20session"
+              href="/contact/"
               label="Start an Inquiry"
               class="w-full"
               trackingMeta={{
                 'data-menu-link': 'true',
                 'data-link-type': 'booking_inquiry',
-                'data-link-intent': 'portrait_booking',
+                'data-link-intent': 'general_inquiry',
                 'data-link-location': 'header_mobile_cta',
               }}
-              tracking={bookSessionClick({ service: 'portrait', location: 'mobile_menu' })}
+              tracking={contactClick({ service: 'custom', location: 'mobile_menu' })}
             />
           </div>
         </nav>

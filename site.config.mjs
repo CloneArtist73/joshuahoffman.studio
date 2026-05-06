@@ -4,11 +4,11 @@ const siteConfig = {
   brandName: 'Joshua Hoffman Studio',
   defaultTitle: 'Joshua Hoffman Studio',
   defaultDescription:
-    'Photography for people, families, artists, and rooms that need something real.',
+    'Portraits, legacy photography, artist images, and fine-art print inquiries from Joshua Hoffman Studio in Upstate New York.',
   heroHeadline:
-    'Photography for people, families, artists, and rooms that need something real.',
+    'Portraits, legacy work, artist images, and prints with emotional weight.',
   heroSupport:
-    "A quiet visual home for Joshua's portrait work, legacy photography, musician images, and selected fine-art prints.",
+    'Direct photography for people, families, artists, and collectors who want the image to hold its ground.',
   email: 'info@joshuahoffman.studio',
   serviceArea: 'Upstate New York',
   instagramUrl: 'https://www.instagram.com/joshuahoffmanphotography/',

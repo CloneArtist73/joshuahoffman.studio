@@ -9,6 +9,12 @@ const directEmailHref = `mailto:${siteConfig.email}?subject=Photography%20inquir
 
 {hasConfiguredForm ? (
 <div class="surface p-6 sm:p-8">
+  <div
+    class="mb-5 hidden rounded-panel border border-ember/50 bg-ember/10 p-4 text-sm text-sand"
+    data-contact-error
+    role="alert"
+  >
+  </div>
   <form
     action={siteConfig.contactForm.action}
     method="POST"
@@ -101,7 +107,7 @@ const directEmailHref = `mailto:${siteConfig.email}?subject=Photography%20inquir
         and Joshua will reply directly.
       </p>
       <button
-        class="btn btn-primary w-full whitespace-nowrap sm:w-auto"
+        class="btn btn-primary w-full shrink-0 whitespace-nowrap sm:w-auto"
         data-default-label="Start an Inquiry"
         type="submit"
       >
@@ -139,8 +145,21 @@ const directEmailHref = `mailto:${siteConfig.email}?subject=Photography%20inquir
   const params = new URLSearchParams(window.location.search);
   const inquiryType = params.get('type');
   const imageSlug = params.get('image');
+  const errorType = params.get('error');
   const messageField = document.getElementById('message');
   const inquirySelect = document.getElementById('inquiry-type');
+  const errorPanel = document.querySelector('[data-contact-error]');
+
+  const errorMessages = {
+    missing: 'Please fill in each required field and send the note again.',
+    email: 'Please enter a valid email address so Joshua can reply directly.',
+    send: 'The form could not send the message. Email Joshua directly, or try again in a few minutes.',
+  };
+
+  if (errorType && errorPanel instanceof HTMLElement) {
+    errorPanel.textContent = errorMessages[errorType] || errorMessages.send;
+    errorPanel.classList.remove('hidden');
+  }
 
   if (inquiryType && inquirySelect instanceof HTMLSelectElement) {
     inquirySelect.value = inquiryType;

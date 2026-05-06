@@ -25,7 +25,7 @@ const categories = [...new Set(images.map((image) => image.category))];
 const showFilters = enableFilter && categories.length > 1;
 ---
 
-<section class="section-block">
+<section class="section-block section-rule">
   <div class="shell">
     {
       (heading || intro) && (
@@ -63,7 +63,7 @@ const showFilters = enableFilter && categories.length > 1;
       )
     }
 
-    <div class="mt-10 grid items-start gap-6 sm:grid-cols-2 xl:grid-cols-3" id={id}>
+    <div class="mt-10 grid items-start gap-x-6 gap-y-12 sm:grid-cols-2 xl:grid-cols-3" id={id}>
       {
         images.map((image, index) => (
           <div
