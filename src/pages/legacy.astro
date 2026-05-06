@@ -14,7 +14,8 @@ if (!service) {
 
 const galleryImages = service.gallerySlugs
   .map((slug) => getImageBySlug(slug))
-  .filter((image): image is NonNullable<ReturnType<typeof getImageBySlug>> => Boolean(image) && isPublicImage(image));
+  .filter((image): image is NonNullable<typeof image> => image !== undefined)
+  .filter(isPublicImage);
 ---
 
 <Layout
