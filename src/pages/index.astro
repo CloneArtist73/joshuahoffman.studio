@@ -20,7 +20,7 @@ const previewProducts = products
     image: getImageBySlug(product.imageSlug),
   }))
   .filter((entry): entry is { product: (typeof products)[number]; image: NonNullable<ReturnType<typeof getImageBySlug>> } =>
-    Boolean(entry.image) && isPublicImage(entry.image) && isPublicReadyProduct(entry.product, entry.image),
+    entry.image !== undefined && isPublicImage(entry.image) && isPublicReadyProduct(entry.product, entry.image),
   )
   .slice(0, 3);
 

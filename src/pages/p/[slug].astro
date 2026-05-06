@@ -31,7 +31,12 @@ const metadata = [
   ['Location', image.location],
   ['Medium', image.medium],
   ['Best format', image.bestFormat],
-].filter((entry): entry is [string, string] => Boolean(entry[1]) && !/^\[.+\]$/.test(entry[1]));
+].filter(
+  (entry): entry is [string, string] =>
+    typeof entry[1] === 'string' &&
+    entry[1].length > 0 &&
+    !/^\[.+\]$/.test(entry[1]),
+);
 
 const imageOrientation = image.orientation ?? 'vertical';
 const imageDimensions = {
@@ -81,7 +86,7 @@ const serviceCtas = {
 
 const fallbackCta =
   image.serviceCTA && image.serviceCTA in serviceCtas
-    ? serviceCtas[image.serviceCTA]
+    ? serviceCtas[image.serviceCTA as keyof typeof serviceCtas]
     : {
         label: 'Contact Joshua',
         href: '/contact/',
