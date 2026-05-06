@@ -39,10 +39,13 @@
   }
 
   h1,
-  h2,
+  h2 {
+    @apply font-display text-paper;
+  }
+
   h3,
   h4 {
-    @apply font-display text-paper;
+    @apply font-display text-sand;
   }
 
   input,
@@ -98,7 +101,7 @@
   }
 
   .btn {
-    @apply inline-flex min-h-11 max-w-full min-w-0 select-none items-center justify-center gap-2 overflow-hidden text-ellipsis rounded-full px-5 py-3 text-center text-sm font-semibold leading-tight whitespace-nowrap transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-platinum focus-visible:ring-offset-2 focus-visible:ring-offset-obsidian disabled:cursor-not-allowed disabled:opacity-55;
+    @apply inline-flex min-h-11 max-w-full min-w-0 select-none items-center justify-center gap-2 overflow-hidden text-ellipsis rounded-full px-5 py-3 text-center text-sm font-semibold leading-tight whitespace-nowrap transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-platinum focus-visible:ring-offset-2 focus-visible:ring-offset-obsidian disabled:cursor-not-allowed disabled:opacity-55 hover:scale-[1.02] active:scale-[0.98];
   }
 
   .btn > span {

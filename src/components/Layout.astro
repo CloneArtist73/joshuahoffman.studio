@@ -57,7 +57,12 @@ const useGa4 =
     <meta content={seo.image} property="og:image" />
     <meta content={seo.type} property="og:type" />
     <meta content={seo.canonical} property="og:url" />
+    <meta content={siteConfig.brandName} property="og:site_name" />
+    <meta content="en_US" property="og:locale" />
     <meta content="summary_large_image" name="twitter:card" />
+    <meta content={seo.title} name="twitter:title" />
+    <meta content={seo.description} name="twitter:description" />
+    <meta content={seo.image} name="twitter:image" />
     <meta content="#0c0c0c" name="theme-color" />
     <meta content={Astro.generator} name="generator" />
     <title>{seo.title}</title>
