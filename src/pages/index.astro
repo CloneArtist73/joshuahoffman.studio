@@ -23,7 +23,6 @@ const previewProducts = products
   .slice(0, 3);
 
 const hasPrintProducts = previewProducts.length > 0;
-const heroSecondaryImages = featuredImages.slice(0, 2);
 const trustNotes = [
   ['Work', 'Portraits, legacy photography, musician images, and selected prints'],
   ['Area', siteConfig.serviceArea],
@@ -79,8 +78,8 @@ const trustNotes = [
         </dl>
       </div>
 
-      <div class="grid gap-4 sm:grid-cols-[0.72fr_1.28fr] lg:gap-5">
-        <figure class="image-frame sm:col-start-2 sm:row-span-2">
+      <div class="lg:justify-self-end">
+        <figure class="image-frame">
           <img
             alt="Close detail of ice formations with quiet texture and muted light."
             class="aspect-[4/5] w-full object-cover sm:aspect-[5/6] lg:aspect-[4/5]"
@@ -93,27 +92,6 @@ const trustNotes = [
             width="990"
           />
         </figure>
-
-        {heroSecondaryImages.map((image, index) => (
-          <a
-            class="panel-link group hidden overflow-hidden rounded-panel border border-platinum/15 bg-black sm:block"
-            href={`/p/${image.slug}/`}
-          >
-            <img
-              alt={image.alt}
-              class:list={[
-                'w-full object-cover transition duration-700 ease-luxury group-hover:scale-[1.025] group-hover:opacity-95',
-                index === 0 ? 'aspect-square' : 'aspect-[4/5]',
-              ]}
-              decoding="async"
-              height="900"
-              loading="eager"
-              sizes="(min-width: 1024px) 18vw, 28vw"
-              src={image.imageSrc}
-              width="720"
-            />
-          </a>
-        ))}
       </div>
     </div>
   </section>
