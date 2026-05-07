@@ -11,7 +11,7 @@ const hasCurrentSecondaryLink = secondaryNavLinks.some((item) => isCurrentLink(i
 ---
 
 <header class="sticky top-0 z-40 border-b border-platinum/10 bg-obsidian/90 backdrop-blur">
-  <div class="shell flex items-center justify-between gap-2 py-4 sm:gap-4">
+  <div class="shell relative flex items-center justify-between gap-2 py-4 sm:gap-4">
     <a class="panel-link min-w-0 max-w-[12rem] sm:max-w-[16rem] lg:max-w-[15rem] xl:max-w-none" href="/">
       <span class="block truncate font-display text-2xl text-paper">{siteConfig.brandName}</span>
       <span class="copy-muted block truncate text-xs uppercase tracking-hush">
@@ -85,7 +85,7 @@ const hasCurrentSecondaryLink = secondaryNavLinks.some((item) => isCurrentLink(i
       />
     </nav>
 
-    <details class="relative lg:hidden" data-site-menu>
+    <details class="absolute right-4 top-1/2 -translate-y-1/2 lg:hidden" data-site-menu>
       <summary aria-label="Open site navigation" class="panel-link inline-flex min-h-11 cursor-pointer items-center rounded-full border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-paper sm:px-4">
         Menu
       </summary>
