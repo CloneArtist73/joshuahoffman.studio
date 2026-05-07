@@ -33,3 +33,10 @@ coverage/
 .env
 .env.*
 !.env.example
+# Obsidian (note-taking app) files - remove if not using Obsidian
+.obsidian/workspace.json
+.obsidian/graph.json
+.obsidian/core-plugins.json
+
+Untitled.canvas
+Untitled 1.canvas
