@@ -9,17 +9,17 @@ const galleryImages = getGalleryImages();
 ---
 
 <Layout
-  description="Curated portrait, legacy, musician, print, and personal work with simple filtering and direct paths into each image."
+  description="A focused gallery of public photographs with paths into physical prints, astrophotography, portraits, licensing, and related inquiries."
   path="/gallery/"
   title="Gallery"
 >
   <section class="section-block pb-8">
     <div class="shell grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
       <div class="space-y-4">
-        <span class="eyebrow">Curated gallery</span>
+        <span class="eyebrow">Gallery</span>
         <h1 class="headline max-w-4xl">A focused edit of finished photographs.</h1>
         <p class="max-w-copy text-base leading-relaxed text-steel sm:text-lg">
-          Browse the work that is ready to show publicly. Each photograph opens into context, print or licensing paths, and a direct way to ask about related work.
+          Browse the work that is ready to show publicly. Each photograph opens into print, licensing, or service inquiry paths without pretending every image is a full storefront product.
         </p>
       </div>
       <div class="flex flex-col gap-3 sm:flex-row lg:justify-end">
@@ -46,7 +46,7 @@ const galleryImages = getGalleryImages();
         heading="Browse by category"
         id="main-gallery-grid"
         images={galleryImages}
-        intro="Use the categories to move quickly across night-sky, urban, personal, panoramic, and print-ready work."
+        intro="Use the categories to move across astrophotography, urban work, personal photographs, panoramic images, portraits, and print-ready work."
       />
     ) : (
       <section class="section-block pt-0">

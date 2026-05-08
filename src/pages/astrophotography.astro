@@ -1,0 +1,118 @@
+---
+import CTAButton from '../components/CTAButton.astro';
+import GalleryGrid from '../components/GalleryGrid.astro';
+import Hero from '../components/Hero.astro';
+import Layout from '../components/Layout.astro';
+import { getImageBySlug, isPublicImage } from '../data/images';
+import { getServiceBySlug } from '../data/services';
+import { bookSessionClick, contactClick } from '../utils/analytics';
+
+const service = getServiceBySlug('astrophotography');
+if (!service) {
+  throw new Error('Astrophotography service data is missing.');
+}
+
+const galleryImages = service.gallerySlugs
+  .map((slug) => getImageBySlug(slug))
+  .filter((image): image is NonNullable<ReturnType<typeof getImageBySlug>> => Boolean(image) && isPublicImage(image));
+---
+
+<Layout
+  description={service.longDescription}
+  ogImage="/images/star-trails-over-trees.jpg"
+  path="/astrophotography/"
+  title="Astrophotography"
+>
+  <Hero
+    eyebrow="Astrophotography"
+    imageSrc={service.imageSrc}
+    imageAlt="Long-exposure star trails over trees and a nearby structure."
+    primaryCta={{
+      label: service.ctaLabel,
+      href: '/contact/?type=Astrophotography',
+      eventName: 'book_session_click',
+      eventProps: {
+        service: service.slug,
+        location: 'astrophotography_hero',
+      },
+    }}
+    secondaryCta={{
+      label: 'View Prints',
+      href: '/prints/',
+      eventName: 'print_buy_click',
+      eventProps: {
+        location: 'astrophotography_hero',
+        destination: 'prints_page',
+      },
+    }}
+    text={service.heroBody}
+    title={service.heroTitle}
+  />
+
+  <section class="section-block section-rule">
+    <div class="shell grid gap-8 lg:grid-cols-[0.86fr_1.14fr] lg:items-start">
+      <div class="space-y-4">
+        <span class="eyebrow">Real sky, real place</span>
+        <p class="editorial-statement">
+          The skies and settings shown here are photographed on location. They are not AI-generated skies or fabricated composites.
+        </p>
+        <p class="max-w-copy text-base leading-relaxed text-steel sm:text-lg">
+          Custom work starts with the actual place. Weather, darkness, moon phase, access, timing, and what the sky is likely to do all matter before a session is treated as workable.
+        </p>
+      </div>
+
+      <div class="grid gap-6 sm:grid-cols-2">
+        <article class="surface p-6 sm:p-8">
+          <span class="eyebrow">Good fit for</span>
+          <ul class="quiet-list mt-5">
+            {service.idealFor.map((item) => <li>{item}</li>)}
+          </ul>
+        </article>
+        <article class="surface p-6 sm:p-8">
+          <span class="eyebrow">What gets planned</span>
+          <ul class="quiet-list mt-5">
+            {service.includes.map((item) => <li>{item}</li>)}
+          </ul>
+          {service.startingPrice && <p class="mt-6 text-sm font-semibold text-paper">{service.startingPrice}</p>}
+        </article>
+      </div>
+    </div>
+  </section>
+
+  {
+    galleryImages.length > 0 && (
+      <GalleryGrid
+        context="astrophotography_supporting_gallery"
+        heading="Astrophotography examples"
+        images={galleryImages}
+        intro="Real on-location night-sky and skyscape photographs that can lead to physical prints, custom work, or licensing inquiries."
+      />
+    )
+  }
+
+  <section class="section-block section-rule">
+    <div class="shell">
+      <div class="flex flex-col gap-5 border-y border-platinum/10 py-10 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h2 class="text-3xl">Have a place in mind for night-sky work?</h2>
+          <p class="mt-3 max-w-copy text-steel">
+            Send the location, rough timing, access details, and what you want the finished photograph to be used for.
+          </p>
+        </div>
+        <div class="flex flex-col gap-3 sm:flex-row">
+          <CTAButton
+            href="/contact/?type=Astrophotography"
+            label={service.ctaLabel}
+            tracking={bookSessionClick({ service: service.slug, location: 'astrophotography_footer_cta' })}
+          />
+          <CTAButton
+            href="/contact/?type=Licensing"
+            label="Ask About Licensing"
+            tracking={contactClick({ location: 'astrophotography_footer_license', intent: 'licensing' })}
+            variant="secondary"
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

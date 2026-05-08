@@ -37,11 +37,20 @@ export const ctas: Record<string, CtaItem> = {
     },
   },
   legacyConversation: {
-    label: 'Start a Conversation',
-    href: '/contact/?type=Legacy%20%2F%20memorial%20work',
+    label: 'Ask About Restoration',
+    href: '/contact/?type=Photo%20restoration%20%2F%20legacy%20prints',
     eventName: 'book_session_click',
     eventProps: {
       service: 'legacy',
+      location: 'shared_cta',
+    },
+  },
+  astrophotographyInquiry: {
+    label: 'Ask About Astrophotography',
+    href: '/contact/?type=Astrophotography',
+    eventName: 'book_session_click',
+    eventProps: {
+      service: 'astrophotography',
       location: 'shared_cta',
     },
   },

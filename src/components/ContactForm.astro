@@ -67,10 +67,11 @@ const directEmailHref = `mailto:${siteConfig.email}?subject=Photography%20inquir
       <span class="form-field-label">Inquiry type</span>
       <select aria-describedby="inquiry-type-help inquiry-type-error" id="inquiry-type" name="inquiryType" required>
         <option value="">Select one</option>
-        <option value="Portrait session">Portrait session</option>
-        <option value="Legacy / memorial work">Legacy / memorial work</option>
-        <option value="Musician / artist portraits">Musician / artist portraits</option>
         <option value="Print or product question">Print or product question</option>
+        <option value="Astrophotography">Astrophotography</option>
+        <option value="Portrait session">Portrait session</option>
+        <option value="Musician / artist portraits">Musician / artist portraits</option>
+        <option value="Photo restoration / legacy prints">Photo restoration / legacy prints</option>
         <option value="Licensing">Licensing</option>
         <option value="Other">Other</option>
       </select>
@@ -84,10 +85,10 @@ const directEmailHref = `mailto:${siteConfig.email}?subject=Photography%20inquir
         aria-describedby="message-help message-error"
         id="message"
         name="message"
-        placeholder="Tell Joshua what you need, what you are drawn to, and any timing that matters."
+        placeholder="Tell Joshua what you need, which image or print you are asking about, and any timing or location that matters."
         required
       ></textarea>
-      <span class="form-help" id="message-help">Include timing, location, and the kind of work you have in mind.</span>
+      <span class="form-help" id="message-help">For astrophotography, include the place, timing, and any access details you already know.</span>
       <span class="form-error" id="message-error">Add a brief message.</span>
     </label>
 

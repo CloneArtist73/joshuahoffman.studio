@@ -7,9 +7,9 @@ export const products: ProductItem[] = [
     imageSlug: 'after-the-show',
     title: 'After the Show',
     shortDescription:
-      'A post-performance portrait built for buyers who want a print with residue and atmosphere.',
+      'A physical print from a post-performance portrait. Storefront link still needs to be confirmed before public sale.',
     availableFormats: ['8 x 10', '12 x 18', '16 x 24'],
-    routeKeys: ['fineArtAmerica', 'etsy'],
+    routeKeys: [],
     inquiryAllowed: true,
   },
   {
@@ -18,9 +18,9 @@ export const products: ProductItem[] = [
     imageSlug: 'kitchen-window',
     title: 'Kitchen Window',
     shortDescription:
-      'A quieter personal frame that works well in smaller rooms, hallways, and reading spaces.',
+      'A physical print from a quiet domestic frame. Storefront link still needs to be confirmed before public sale.',
     availableFormats: ['8 x 10', '11 x 14', '16 x 20'],
-    routeKeys: ['shopify', 'pixieset'],
+    routeKeys: [],
     inquiryAllowed: true,
   },
   {
@@ -29,9 +29,9 @@ export const products: ProductItem[] = [
     imageSlug: 'quiet-amp',
     title: 'Quiet Amp',
     shortDescription:
-      'A print-forward still life with enough negative space to hold up at larger wall sizes.',
+      'A physical print from a simple still life. Storefront link still needs to be confirmed before public sale.',
     availableFormats: ['12 x 12', '20 x 20', '24 x 24'],
-    routeKeys: ['etsy', 'shopify'],
+    routeKeys: [],
     inquiryAllowed: true,
   },
   {
@@ -40,9 +40,9 @@ export const products: ProductItem[] = [
     imageSlug: 'room-with-flowers',
     title: 'Room with Flowers',
     shortDescription:
-      'A memory-based photograph suited to collectors who want warmth without sentimentality.',
+      'A physical print from an existing photograph. Storefront link still needs to be confirmed before public sale.',
     availableFormats: ['8 x 10', '12 x 16', '18 x 24'],
-    routeKeys: ['fineArtAmerica'],
+    routeKeys: [],
     inquiryAllowed: true,
   },
   {
@@ -50,7 +50,8 @@ export const products: ProductItem[] = [
     status: 'public',
     imageSlug: 'star-trails-over-trees',
     title: 'Star Trails Over Trees',
-    shortDescription: 'A night-sky photograph for buyers who want quiet scale, movement, and a strong sense of time.',
+    shortDescription:
+      'A physical night-sky print from real on-location photography. Ask about sizing, paper, and availability.',
     availableFormats: ['Custom sizing by inquiry'],
     routeKeys: [],
     inquiryAllowed: true,
@@ -61,9 +62,9 @@ export const products: ProductItem[] = [
     imageSlug: 'city-street-perspective',
     title: 'City street perspective',
     shortDescription:
-      'An urban geometry print built around rail lines, layered architecture, and evening city light.',
+      'A physical city print built around rail lines, architecture, and evening light.',
     availableFormats: ['8 x 10', '16 x 20', '16 x 24'],
-    routeKeys: ['etsy', 'fineArtAmerica'],
+    routeKeys: [],
     inquiryAllowed: true,
   },
   {
@@ -71,7 +72,8 @@ export const products: ProductItem[] = [
     status: 'public',
     imageSlug: 'albany-skyline-at-night',
     title: 'Albany Skyline at Night',
-    shortDescription: 'A panoramic night view of Albany built around skyline lights, distance, and quiet urban geometry.',
+    shortDescription:
+      'A physical panoramic print of Albany at night, available by custom sizing inquiry.',
     availableFormats: ['Custom sizing by inquiry'],
     routeKeys: [],
     inquiryAllowed: true,
@@ -81,7 +83,8 @@ export const products: ProductItem[] = [
     status: 'public',
     imageSlug: 'milky-way-over-trees',
     title: 'Milky Way over trees',
-    shortDescription: 'A vertical photograph showing the Milky Way galaxy arching over a line of trees against a dark night sky.',
+    shortDescription:
+      'A physical astrophotography print made from real on-location night-sky work.',
     availableFormats: ['Custom sizing by inquiry'],
     routeKeys: [],
     inquiryAllowed: true,

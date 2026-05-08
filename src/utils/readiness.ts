@@ -1,4 +1,5 @@
 import type { ExternalLink, ImageItem, ProductItem } from '../data/types';
+import { externalLinks } from '../data/externalLinks';
 
 export const placeholderImagePathSegment = '/images/placeholders/';
 
@@ -18,7 +19,15 @@ export function isPublicReadyProduct(
     return false;
   }
 
-  return image === undefined ? true : isPublicReadyImage(image);
+  if (image !== undefined && !isPublicReadyImage(image)) {
+    return false;
+  }
+
+  const hasLiveRoute = product.routeKeys
+    .map((routeKey) => externalLinks[routeKey])
+    .some(isLiveExternalRoute);
+
+  return hasLiveRoute || product.inquiryAllowed === true;
 }
 
 export function isLiveExternalRoute(route: ExternalLink | null | undefined) {
@@ -26,13 +35,18 @@ export function isLiveExternalRoute(route: ExternalLink | null | undefined) {
     return false;
   }
 
-  const hasTemplateToken = route.url.includes('{imageSlug}') || route.url.includes('{productSlug}');
+  const url = route.url.trim();
+  if (!/^https?:\/\//i.test(url)) {
+    return false;
+  }
+
+  const hasTemplateToken = url.includes('{imageSlug}') || url.includes('{productSlug}');
   const markedPlaceholder = /replace with|before launch|once .* finalized/i.test(route.note ?? '');
   const genericStorefrontUrl = [
     /^https:\/\/www\.etsy\.com\/search\?/i,
     /^https:\/\/shopify\.com\/products\//i,
     /^https:\/\/www\.pixieset\.com\/prints\//i,
-  ].some((pattern) => pattern.test(route.url));
+  ].some((pattern) => pattern.test(url));
 
   return !hasTemplateToken && !markedPlaceholder && !genericStorefrontUrl;
 }

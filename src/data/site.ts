@@ -3,9 +3,10 @@ import rawSiteConfig from '../../site.config.mjs';
 export const siteConfig = rawSiteConfig;
 
 export const primaryNavLinks = [
-  { href: '/gallery/', label: 'Gallery' },
-  { href: '/portraits/', label: 'Portraits' },
   { href: '/prints/', label: 'Prints' },
+  { href: '/gallery/', label: 'Gallery' },
+  { href: '/astrophotography/', label: 'Astrophotography' },
+  { href: '/portraits/', label: 'Portraits' },
   { href: '/contact/', label: 'Contact' },
 ] as const;
 

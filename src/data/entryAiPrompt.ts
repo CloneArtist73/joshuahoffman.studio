@@ -18,9 +18,9 @@ export const entryAiPrompt = {
     { label: 'Qwen 2.5 1.5B', value: 'qwen' },
     { label: 'GPT-OSS 20B', value: 'gpt20b' },
   ],
-  template: `You are reviewing one photograph for joshuahoffman.studio, a quiet photography site for portraits, legacy work, musician images, personal work, and selected prints.
+  template: `You are reviewing one photograph for joshuahoffman.studio, a print-first photography site for physical prints, real on-location astrophotography, portraits, musician images, restoration-style print work, personal work, and licensing inquiries.
 
-Use the image itself as evidence. Do not invent the subject's identity, location, year, client names, storefront URLs, or print availability.
+Use the image itself as evidence. Do not invent the subject's identity, location, year, client names, storefront URLs, capture conditions, or print availability.
 
 Return only valid JSON matching the requested schema.
 
@@ -36,8 +36,8 @@ Image file context:
 
 Site voice examples:
 - A musician portrait made after the room emptied out.
-- A family image built around touch, not performance.
-- A quiet frame that leans into mood without turning decorative.
+- A real night-sky photograph made around the place, the weather, and the timing.
+- A physical print inquiry for buyers who need size, paper, or availability confirmed.
 
 Avoid generic gallery or sales language such as "breathtaking", "mesmerizing", "stunning", "dramatic",
 "perfect for", "capturing the", or "adding depth". Prefer concrete, restrained language that could sit

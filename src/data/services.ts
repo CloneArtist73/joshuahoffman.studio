@@ -2,72 +2,103 @@ import type { ServiceItem } from './types';
 
 export const services: ServiceItem[] = [
   {
+    slug: 'prints',
+    title: 'Physical Prints',
+    shortDescription:
+      'Selected photographs available as physical prints through confirmed storefront links or direct inquiry.',
+    longDescription:
+      'Prints are the main commercial focus of the site. Each public print should lead to a real storefront when one is ready; custom sizes, signed work, and special requests can still start with a direct note.',
+    ctaLabel: 'View Prints',
+    pageHref: '/prints/',
+    heroTitle: 'Physical prints from photographs that can hold a wall.',
+    heroBody:
+      'Browse the current print edit, use a confirmed buy link when it is available, or ask directly about sizing, paper, signed work, and availability.',
+    idealFor: [
+      'People looking for a finished wall print',
+      'Buyers who need a specific size or paper choice',
+      'Collectors asking about signed work or availability',
+    ],
+    includes: [
+      'Confirmed storefront links when a product page is ready',
+      'Direct inquiry for custom sizes, signed prints, and special requests',
+      'Physical prints treated as the primary product',
+      'Licensing and digital use handled separately by inquiry',
+    ],
+    gallerySlugs: [
+      'star-trails-over-trees',
+      'milky-way-over-trees',
+      'albany-skyline-at-night',
+      'city-street-perspective',
+    ],
+  },
+  {
+    slug: 'astrophotography',
+    title: 'Astrophotography',
+    shortDescription:
+      'Real night-sky and skyscape photographs made on location, planned around the actual place and sky.',
+    longDescription:
+      'Astrophotography work is planned around darkness, weather, timing, access, moon phase, and the real setting. The skies and locations are photographed on location, not AI-generated and not fabricated composites.',
+    startingPrice: 'Custom work quoted after location, timing, and conditions are discussed',
+    ctaLabel: 'Ask About Astrophotography',
+    imageSrc: '/images/star-trails-over-trees.jpg',
+    pageHref: '/astrophotography/',
+    heroTitle: 'Astrophotography planned around the real sky and the real place.',
+    heroBody:
+      'Night-sky work depends on weather, darkness, moon phase, timing, access, and the location itself. The plan starts there before a date is treated as workable.',
+    idealFor: [
+      'Print buyers drawn to night-sky and skyscape work',
+      'People who want a real place photographed under the night sky',
+      'Projects that need planning around darkness, timing, and access',
+    ],
+    includes: [
+      'Planning around location, weather, moon phase, darkness, and timing',
+      'A realistic conversation about access, safety, and what the sky may allow',
+      'Photographs made from real on-location work',
+      'Print and licensing questions handled directly after the image is selected',
+    ],
+    gallerySlugs: ['star-trails-over-trees', 'milky-way-over-trees', 'albany-skyline-at-night'],
+  },
+  {
     slug: 'portrait',
     title: 'Portrait Sessions',
     shortDescription:
-      'Honest portrait sessions for people who want to be seen clearly, not overly posed.',
+      'Portraits for individuals, couples, families, artists, and personal work that needs to feel like the person.',
     longDescription:
-      'Honest portrait sessions for people who want to be seen clearly, not overly posed. Built for individuals, families, artists, and anyone who needs images with presence.',
+      'Portrait sessions stay flexible and practical: individual portraits, couples, families, artists, and tasteful personal sessions, including weddings or boudoir when the fit is right.',
     startingPrice: 'Pricing by project after a short planning conversation',
-    ctaLabel: 'Start an Inquiry',
+    ctaLabel: 'Start a Portrait Inquiry',
     pageHref: '/portraits/',
-    heroTitle: 'Honest portraits with enough room for a person to stay themselves.',
+    heroTitle: 'Portraits with direction, without turning the person into a template.',
     heroBody:
-      'These sessions are made for individuals, couples, families, and artists who want photographs that feel direct rather than over-managed.',
+      'Sessions are planned around where the photographs need to live: a wall, a family record, a website, a press kit, or a private set of images.',
     idealFor: [
-      'Individuals who need updated portraits with weight',
-      'Families who want work that feels lived-in rather than staged',
-      'Artists and makers who need photographs with presence',
+      'Individuals who need portraits that still feel like them',
+      'Couples, families, weddings, or boudoir handled with taste and flexibility',
+      'Artists and makers who need direct, usable photographs',
     ],
     includes: [
-      'Planning call and clear session outline',
-      'A focused shoot built around direct portraiture',
-      'Edited image delivery and simple licensing guidance',
-      'Usage, privacy, and delivery expectations clarified before the date is set',
+      'Planning around use, privacy, timing, and location',
+      'A focused shoot with enough direction to make the session useful',
+      'Edited image delivery with basic usage guidance',
+      'Clear expectations before the date is set',
     ],
     gallerySlugs: ['before-the-vow', 'studio-stillness', 'soft-jacket'],
-  },
-  {
-    slug: 'legacy',
-    title: 'Legacy / Memorial Work',
-    shortDescription:
-      'Sensitive photography built around memory, family, grief, and the people we do not want forgotten.',
-    longDescription:
-      'Sensitive photography built around memory, family, grief, and the people we do not want forgotten. These sessions are handled carefully and personally.',
-    startingPrice: 'Pricing by project after a careful planning conversation',
-    ctaLabel: 'Start a Conversation',
-    pageHref: '/legacy/',
-    heroTitle: 'Memory work handled carefully, without pushing people into performance.',
-    heroBody:
-      'Legacy sessions are built for families who need photographs that feel respectful, steady, and emotionally accurate.',
-    idealFor: [
-      'Families documenting elders, illness, or transitions',
-      'People preserving domestic spaces and ordinary rituals',
-      'Anyone needing images around remembrance, grief, or closeness',
-    ],
-    includes: [
-      'A slower planning conversation before photographs are made',
-      'Flexible pacing built around the people involved',
-      'Image delivery suited to family sharing, albums, or prints',
-      'Privacy and family-sharing expectations handled before the session',
-    ],
-    gallerySlugs: ['hands-at-rest', 'father-and-daughter', 'empty-chair-sunday'],
   },
   {
     slug: 'musician',
     title: 'Musician / Artist Portraits',
     shortDescription:
-      'Portraits for musicians, performers, and artists who need images that feel like their work sounds.',
+      'Portraits for musicians and artists who need images for press, releases, posters, and social use.',
     longDescription:
-      'Portraits for musicians, performers, and artists who need images that feel like their work sounds: direct, emotional, and usable across press, social, posters, and releases.',
+      'Artist sessions are built around where the image has to work first: press kits, release pages, posters, websites, social crops, and the look of the project itself.',
     startingPrice: 'Pricing by project after a short planning conversation',
     ctaLabel: 'Start an Artist Inquiry',
     pageHref: '/musicians/',
-    heroTitle: 'Portraits for artists who need more than promo gloss.',
+    heroTitle: 'Artist portraits that fit the project before they fit a template.',
     heroBody:
-      'Built for musicians, bands, performers, and artists who need press photos, release visuals, promo frames, and portraits with a little friction in them.',
+      'Planning starts with the project, references, use, and timing so the photographs have a clear job once they leave the session.',
     idealFor: [
-      'Press photos that feel like the work, not a template',
+      'Press photos that match the project',
       'Album art, release campaigns, and poster visuals',
       'Social portraits and media kit updates',
     ],
@@ -80,29 +111,30 @@ export const services: ServiceItem[] = [
     gallerySlugs: ['after-the-show', 'green-room', 'soft-jacket'],
   },
   {
-    slug: 'prints',
-    title: 'Fine-Art Prints',
+    slug: 'legacy',
+    title: 'Photo Restoration / Legacy Prints',
     shortDescription:
-      'Selected photographs are available as direct print inquiries for sizing, signed work, and licensing.',
+      'Old photo touchups, restoration-style edits, reprints, and fresh prints from existing photographs.',
     longDescription:
-      'Selected photographs are available as direct print inquiries. For custom sizing, signed work, or special requests, send a note with the image that brought you here.',
-    ctaLabel: 'View Print Options',
-    pageHref: '/prints/',
-    heroTitle: 'Selected photographs available for print inquiries and custom sizing.',
+      'Legacy work is a quieter secondary service for people who already have a photograph that needs care: cleanup, restoration-style editing, reprints, or a fresh physical print.',
+    startingPrice: 'Pricing by project after the image and print needs are reviewed',
+    ctaLabel: 'Ask About Restoration',
+    pageHref: '/legacy/',
+    heroTitle: 'Old photographs cleaned up and printed with care.',
     heroBody:
-      'Print buyers can explore a small edited selection, then ask directly about sizing, paper, signed work, availability, or licensing.',
+      'Send the existing photograph, explain what you want improved, and start with a practical conversation about touchups, reprints, and fresh physical prints.',
     idealFor: [
-      'Collectors who want a small edited selection rather than a full archive dump',
-      'Gift buyers who want a specific size or simple availability guidance',
-      'People who need a custom size, signed print, or licensing conversation',
+      'Old photographs that need cleanup or touchups',
+      'Family images that need a better print',
+      'Existing photographs being prepared for display or sharing',
     ],
     includes: [
-      'A concise print edit built from the strongest work',
-      'Direct inquiry for sizing, paper, signed work, and availability',
-      'Licensing conversation when an image needs to live outside a wall print',
-      'A direct reply before any custom order or license moves forward',
+      'Review of the existing photograph before quoting',
+      'Restoration-style edits and cleanup where the file allows it',
+      'Reprints or fresh physical prints from existing images',
+      'Privacy and handling expectations clarified before work begins',
     ],
-    gallerySlugs: ['room-with-flowers', 'kitchen-window', 'quiet-amp'],
+    gallerySlugs: ['hands-at-rest', 'father-and-daughter', 'empty-chair-sunday'],
   },
 ];
 

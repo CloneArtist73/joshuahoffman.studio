@@ -21,17 +21,17 @@ const printHeroImage = printProducts[0]?.image;
 ---
 
 <Layout
-  description="Selected photographs are available as prints. For custom sizing, signed work, availability, or licensing, send a direct inquiry."
+  description="Physical prints from Joshua Hoffman Studio. Buy through confirmed storefront links when available, or ask directly about sizing, paper, signed work, and availability."
   path="/prints/"
-  title="Fine-Art Prints"
+  title="Physical Prints"
 >
   <section class="section-block">
     <div class="shell grid gap-10 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
       <div class="space-y-4">
-        <span class="eyebrow">Fine-art prints</span>
-        <h1 class="headline max-w-4xl">Selected photographs available for print inquiries and custom sizing.</h1>
+        <span class="eyebrow">Physical prints</span>
+        <h1 class="headline max-w-4xl">Selected photographs available as physical prints.</h1>
         <p class="max-w-copy text-base leading-relaxed text-steel sm:text-lg">
-          Choose a frame that stays with you, then ask directly about sizes, paper, signed work, availability, and licensing before anything moves to order.
+          Use a confirmed storefront link when a product page is ready. For custom sizing, paper, signed work, availability, licensing, or digital use, send a direct inquiry.
         </p>
         <div class="flex flex-col gap-3 sm:flex-row">
           <CTAButton
@@ -70,8 +70,8 @@ const printHeroImage = printProducts[0]?.image;
       <div class="shell">
         <div class="grid gap-6 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
           <div class="space-y-3">
-            <span class="eyebrow">How print inquiries work</span>
-            <h2 class="text-3xl sm:text-4xl">Confirm the details before anything moves to order.</h2>
+            <span class="eyebrow">How print buying works</span>
+            <h2 class="text-3xl sm:text-4xl">Buy through real links, ask directly for custom work.</h2>
           </div>
           <div class="grid gap-3 sm:grid-cols-2">
             {printService.includes.map((item) => (
@@ -89,7 +89,7 @@ const printHeroImage = printProducts[0]?.image;
         printProducts.map(({ product, image }) => <ProductCard image={image} product={product} />)
       ) : (
         <div class="surface p-6 text-sm text-steel">
-          Print products are being prepared. Use the contact page for custom sizing, signed work, availability, or licensing questions.
+          Public print products are being prepared. Use the contact page for custom sizing, signed work, availability, or licensing questions.
         </div>
       )}
     </div>

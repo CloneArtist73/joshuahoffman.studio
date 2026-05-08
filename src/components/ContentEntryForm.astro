@@ -68,6 +68,8 @@ const fallbackCategoryOptions = [
   { slug: 'musician', label: 'Musician' },
   { slug: 'print', label: 'Print' },
   { slug: 'personal', label: 'Personal' },
+  { slug: 'astrophotography', label: 'Astrophotography' },
+  { slug: 'panoramic', label: 'Panoramic' },
 ];
 const categoryOptions = (Array.isArray(parsedSeedData.categories) ? parsedSeedData.categories : fallbackCategoryOptions)
   .map((category) => ({
@@ -506,6 +508,8 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
                 <span>Service CTA</span>
                 <select id="image-service-cta" name="imageServiceCta">
                   <option value="">None</option>
+                  <option value="prints">Prints</option>
+                  <option value="astrophotography">Astrophotography</option>
                   <option value="portrait">Portrait</option>
                   <option value="legacy">Legacy</option>
                   <option value="musician">Musician</option>
@@ -627,34 +631,6 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
               <p class="copy-muted">
                 Use exact listing URLs only.
               </p>
-
-            <fieldset class="space-y-3" id="shared-route-keys-fieldset">
-              <legend class="text-sm font-semibold text-paper">Shared route keys</legend>
-              <p class="copy-muted">
-                Use only when shared routes contain real URLs.
-              </p>
-              <div class="grid gap-3 sm:grid-cols-2">
-                <label class="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-paper">
-                  <input class="h-4 w-4" name="routeKey" type="checkbox" value="fineArtAmerica" />
-                  Fine Art America
-                </label>
-
-                <label class="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-paper">
-                  <input class="h-4 w-4" name="routeKey" type="checkbox" value="etsy" />
-                  Etsy
-                </label>
-
-                <label class="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-paper">
-                  <input class="h-4 w-4" name="routeKey" type="checkbox" value="shopify" />
-                  Shopify
-                </label>
-
-                <label class="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-paper">
-                  <input class="h-4 w-4" name="routeKey" type="checkbox" value="pixieset" />
-                  Pixieset
-                </label>
-              </div>
-            </fieldset>
 
             <div class="grid gap-5">
               <label class="space-y-2 text-sm text-paper" for="fine-art-america-url">
@@ -1128,6 +1104,8 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
     { slug: 'musician', label: 'Musician' },
     { slug: 'print', label: 'Print' },
     { slug: 'personal', label: 'Personal' },
+    { slug: 'astrophotography', label: 'Astrophotography' },
+    { slug: 'panoramic', label: 'Panoramic' },
   ];
   const seedCategoryEntries = Array.isArray(seedData.categories) && seedData.categories.length
     ? seedData.categories
@@ -1155,7 +1133,7 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
   let editableCategories = normalizeCategoryEntries(seedCategoryEntries);
   let imageCategories = editableCategories.map((category) => category.slug);
   const orientations = ['vertical', 'horizontal', 'square'];
-  const serviceCtas = ['portrait', 'legacy', 'musician', 'custom'];
+  const serviceCtas = ['prints', 'astrophotography', 'portrait', 'legacy', 'musician', 'custom'];
   const aiReviewSchema = {
     type: 'object',
     properties: {
@@ -1749,9 +1727,7 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
   }
 
   function getSharedRouteKeysFromForm() {
-    return sharedRouteCheckboxes
-      .filter((checkbox) => checkbox.checked && sharedPlatformKeys.has(checkbox.value))
-      .map((checkbox) => checkbox.value);
+    return [];
   }
 
   function setSharedRouteKeysInForm(routeKeys) {
@@ -2684,8 +2660,7 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
       'other-url',
     ];
 
-    return directFieldIds.some((fieldId) => document.getElementById(fieldId)?.value.trim()) ||
-      sharedRouteCheckboxes.some((checkbox) => checkbox.checked);
+    return directFieldIds.some((fieldId) => document.getElementById(fieldId)?.value.trim());
   }
 
   function updateOutboundLinksPanelState(productEnabled = getEffectiveCreateProductState()) {
@@ -2840,8 +2815,7 @@ const entryAiPromptJson = JSON.stringify(entryAiPrompt).replace(/</g, '\\u003c')
   function getCurrentModeRouteKeys(formData, imageSlug) {
     const directEntries = buildDirectEntries(imageSlug, formData);
     const directKeys = directEntries.map((entry) => entry.key);
-    const sharedKeys = getSharedRouteKeysFromForm();
-    return uniqueList([...sharedKeys, ...directKeys]);
+    return uniqueList(directKeys);
   }
 
   function updateOutputs() {

@@ -48,6 +48,24 @@ const imageDimensions = {
 }[imageOrientation];
 
 const serviceCtas = {
+  prints: {
+    label: ctas.customPrintInquiry.label,
+    href: `/contact/?type=Print%20or%20product%20question&image=${encodeURIComponent(image.slug)}`,
+    tracking: contactClick({
+      location: 'image_page_primary_cta',
+      imageSlug: image.slug,
+      intent: 'custom_print',
+    }),
+  },
+  astrophotography: {
+    label: 'Ask About Astrophotography',
+    href: `/contact/?type=Astrophotography&image=${encodeURIComponent(image.slug)}`,
+    tracking: bookSessionClick({
+      service: 'astrophotography',
+      location: 'image_page_primary_cta',
+      imageSlug: image.slug,
+    }),
+  },
   portrait: {
     label: 'Start a Portrait Inquiry',
     href: '/contact/?type=Portrait%20session',
@@ -58,8 +76,8 @@ const serviceCtas = {
     }),
   },
   legacy: {
-    label: 'Start a Conversation',
-    href: '/contact/?type=Legacy%20%2F%20memorial%20work',
+    label: 'Ask About Restoration',
+    href: '/contact/?type=Photo%20restoration%20%2F%20legacy%20prints',
     tracking: bookSessionClick({
       service: 'legacy',
       location: 'image_page_primary_cta',
@@ -167,7 +185,7 @@ const fallbackCta =
 
             <CTAButton
               href={`/contact/?type=Licensing&image=${encodeURIComponent(image.slug)}`}
-              label="License Image"
+              label="Ask About Licensing"
               tracking={contactClick({
                 location: 'image_page_license_cta',
                 imageSlug: image.slug,
@@ -191,7 +209,7 @@ const fallbackCta =
             View related work
           </a>
           <p class="max-w-copy text-sm text-steel">
-            Print, licensing, and session questions go directly to Joshua, so the next step stays specific to this image.
+            Physical print orders use confirmed storefront links when they are ready. Custom prints, licensing, and digital use go through direct inquiry.
           </p>
         </div>
 

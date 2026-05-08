@@ -65,7 +65,7 @@ function getRouteUrl(url: string) {
     includeInquiry && (
       <CTAButton
         href={inquiryHref}
-        label={hasRoutes ? 'Ask About Custom Print' : 'Ask About This Print'}
+        label={hasRoutes ? 'Ask About Sizing or Signed Work' : 'Ask About This Print'}
         tracking={contactClick({
           location: 'product_routes',
           imageSlug,
@@ -86,7 +86,7 @@ function getRouteUrl(url: string) {
   {
     !includeInquiry && !hasRoutes && (
       <p class="text-sm text-steel">
-        Direct print availability is handled by request for this image.
+        Direct print availability is handled by inquiry for this image.
       </p>
     )
   }

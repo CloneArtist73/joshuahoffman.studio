@@ -19,7 +19,7 @@
 
 ## Key page routes
 
-- Static routes: `/`, `/gallery`, `/portraits`, `/legacy`, `/musicians`, `/prints`, `/contact`, `/about`, `/contact/thank-you/`
+- Static routes: `/`, `/gallery`, `/prints`, `/astrophotography`, `/portraits`, `/legacy`, `/musicians`, `/contact`, `/about`, `/contact/thank-you/`
 - Error route: `/404`
 - Dynamic route: `/p/[slug]/` (generated from `src/data/images.ts`)
 - Local helper route: `/entry/` (development helper only; noindex, disallowed in `robots.txt`, excluded from the sitemap, and pruned from normal static build output)
@@ -66,10 +66,15 @@
 - `/entry/readiness.json` reports draft/public content readiness issues locally and is pruned with `/entry/`.
 - The entry helper is optional and uses browser file-write APIs, so it is intended for local authoring and can show capability fallbacks in unsupported browsers.
 
+## Automation workflow
+
+- This file is maintained via `Automation ID: update-agents-md` and should be updated before any release-bound content refresh if new project workflows appear.
+- TODO: Confirm whether `package.json` defines additional scripts in this repository before adding them here.
+
 ## TODO (grounded in repo state)
 
-- `src/data/externalLinks.ts` contains platform templates (Fine Art America, Etsy, Shopify, Pixieset), but these are still placeholder URLs and should be replaced with real product pages before launch.
+- `src/data/externalLinks.ts` starts empty by design; add confirmed per-product storefront URLs before wiring route keys into public print products.
 - `src/data/images.ts` and `src/data/products.ts` use `status: 'draft' | 'public'`; only public-ready image/product records should be promoted before launch.
 - `src/data/products.ts` routeKeys are populated, but public product cards render live routes only when real external URLs exist; otherwise inquiry fallback should remain enabled.
 - `site.config.mjs` analytics is currently set to GA4 (`provider: 'ga4'`) with `gaMeasurementId` set; verify the measurement ID in GA4 before launch.
-- `site.config.mjs` still has `contactForm.provider = 'none'` and requires a real static form endpoint/provider hookup (Day 2) while keeping the `/contact/thank-you/` success route.
+- `site.config.mjs` uses `contactForm.provider = 'php'` with `/contact.php`; confirm the static host runs the handler while keeping the `/contact/thank-you/` success route.

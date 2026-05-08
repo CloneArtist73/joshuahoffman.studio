@@ -227,7 +227,7 @@ export const images: ImageItem[] = [
     alt: 'Illustrative domestic memory photograph centered on an empty chair.',
     hook: 'A domestic image about absence, routine, and what remains in a room.',
     story:
-      'This page stands in for photographs that can function both as memory work and as independent prints. The right replacement image should feel plainspoken and personal. It is the kind of work that can move between family meaning and public viewing without losing itself.',
+      'This page stands in for photographs that can work both as family records and as physical prints. The right replacement image should feel plainspoken and personal. It should be able to move between private meaning and public viewing without being oversold.',
     orientation: 'horizontal',
     year: '2026',
     location: '[Service Area]',
@@ -243,15 +243,16 @@ export const images: ImageItem[] = [
     tags: ['astrophotography', 'night-sky', 'star-trails', 'landscape'],
     imageSrc: '/images/star-trails-over-trees.jpg',
     alt: 'A long-exposure photograph showing circular star trails over silhouetted trees and a building.',
-    hook: 'The slow, silent rotation of the night sky.',
-    story: 'This long-exposure captures the apparent movement of stars across the sky, creating concentric circles of light. The foreground features silhouetted trees and the edge of a structure, grounding the celestial movement in a specific, quiet location. It is a study in time and celestial mechanics.',
+    hook: 'Star trails over trees and a nearby structure, photographed on location.',
+    story:
+      'This is a real long-exposure night-sky photograph, made with the trees and structure in place. The circular trails come from the apparent movement of the stars during the exposure. It is not an AI sky or a fabricated setting.',
     orientation: 'horizontal',
     medium: 'Digital photograph',
     bestFormat: 'Large wall print or gallery display',
     featured: true,
-    serviceCTA: 'custom',
+    printAvailable: true,
+    serviceCTA: 'astrophotography',
     productSlug: 'star-trails-over-trees-print',
-    // Add productSlug and outbound links when this image is ready to sell.
   },
   {
     slug: 'city-street-perspective',
@@ -261,16 +262,16 @@ export const images: ImageItem[] = [
     tags: ['urban', 'architecture', 'street-photography', 'manhattan', 'perspective'],
     imageSrc: '/images/city-street-perspective.jpg',
     alt: 'A view down a set of parallel train tracks in a city street, flanked by tall buildings.',
-    hook: 'The geometry of the city, viewed from the tracks.',
-    story: 'The tracks draw the eye deep into the frame, creating a strong sense of linear perspective. The surrounding architecture—a mix of modern and historical styles—frames the passage, suggesting movement and the passage of time. It is a quiet moment of urban geometry.',
+    hook: 'Rail lines, buildings, and evening city light.',
+    story:
+      'The tracks pull the frame forward through the city. The buildings on both sides do most of the work: scale, direction, and a clear line through the street. This image is available as a physical print or as a licensing inquiry.',
     orientation: 'vertical',
     medium: 'Digital photograph',
     bestFormat: 'Gallery display',
     featured: true,
     printAvailable: true,
-    serviceCTA: 'custom',
+    serviceCTA: 'prints',
     productSlug: 'city-street-perspective-print',
-    // Add productSlug and outbound links when this image is ready to sell.
   },
   {
     slug: 'albany-skyline-at-night',
@@ -279,17 +280,17 @@ export const images: ImageItem[] = [
     category: 'panoramic',
     tags: ['cityscape', 'night', 'skyline', 'urban', 'panorama', 'albany'],
     imageSrc: '/images/albany-skyline-at-night.jpg',
-    alt: 'A panoramic view of Albany, Ny\'s skyline at night.',
-    hook: 'The quiet geometry of the city of Albany after dark.',
-    story: 'This panoramic view captures the scale and rhythm of the modern metropolis after sunset. The clustered lights and towering structures create a sense of both immense energy and quiet solitude. It is a study in urban geometry and the enduring presence of human endeavor.',
+    alt: 'A panoramic view of Albany, New York, skyline at night.',
+    hook: 'Albany at night, built for a wide physical print.',
+    story:
+      'This panoramic photograph looks across Albany after dark. The skyline, distance, and rows of light make the image work best as a wider print. Licensing or digital use can be discussed by inquiry.',
     orientation: 'horizontal',
     medium: 'Digital photograph',
     bestFormat: 'Large wall print or gallery display',
     featured: true,
     printAvailable: true,
-    serviceCTA: 'custom',
+    serviceCTA: 'prints',
     productSlug: 'albany-skyline-at-night-print',
-    // Add productSlug and outbound links when this image is ready to sell.
   },
   {
     slug: 'milky-way-over-trees',
@@ -299,15 +300,16 @@ export const images: ImageItem[] = [
     tags: ['astrophotography', 'night', 'trees', 'milky-way', 'landscape'],
     imageSrc: '/images/milky-way-over-trees.png',
     alt: 'A vertical photograph showing the Milky Way galaxy arching over a line of trees against a dark night sky.',
-    hook: 'The quiet expanse of the cosmos meeting the rooted earth.',
-    story: 'This image captures the deep contrast between the organic, grounded presence of the trees and the vast, ethereal sweep of the Milky Way. The composition emphasizes the scale of the night sky, making the terrestrial elements feel intimate and contained. It is a study in natural contrasts and quiet observation.',
+    hook: 'The Milky Way over a real tree line.',
+    story:
+      'This is real on-location astrophotography. The tree line and the night sky were photographed as part of the same place, planned around darkness, timing, and sky conditions. It is not an AI-generated sky or a fabricated composite.',
     orientation: 'vertical',
     medium: 'Digital photograph',
     bestFormat: 'Large wall print or gallery display',
     featured: true,
-    serviceCTA: 'custom',
+    printAvailable: true,
+    serviceCTA: 'astrophotography',
     productSlug: 'milky-way-over-trees-print',
-    // Add productSlug and outbound links when this image is ready to sell.
   },
 ];
 

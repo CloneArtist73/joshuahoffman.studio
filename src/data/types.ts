@@ -13,7 +13,7 @@ export type Platform =
   | 'pixieset'
   | 'other';
 
-export type ServiceSlug = 'portrait' | 'legacy' | 'musician' | 'prints' | 'custom';
+export type ServiceSlug = 'prints' | 'astrophotography' | 'portrait' | 'legacy' | 'musician' | 'custom';
 
 export type AnalyticsProps = Record<string, string | number | boolean>;
 

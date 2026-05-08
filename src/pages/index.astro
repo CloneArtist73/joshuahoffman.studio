@@ -8,7 +8,7 @@ import { getFeaturedImages, getImageBySlug, isPublicImage } from '../data/images
 import { products } from '../data/products';
 import { services } from '../data/services';
 import { siteConfig } from '../data/site';
-import { contactClick } from '../utils/analytics';
+import { contactClick, printBuyClick } from '../utils/analytics';
 import { isPublicReadyProduct } from '../utils/readiness';
 
 const featuredImages = getFeaturedImages(6);
@@ -24,9 +24,9 @@ const previewProducts = products
 
 const hasPrintProducts = previewProducts.length > 0;
 const trustNotes = [
-  ['Work', 'Portraits, legacy photography, musician images, and selected prints'],
+  ['Main focus', 'Physical prints from selected photographs'],
   ['Area', siteConfig.serviceArea],
-  ['Next step', 'A short inquiry, then a direct reply from Joshua'],
+  ['Also available', 'Astrophotography, portraits, artist work, restoration, and licensing by inquiry'],
 ] as const;
 ---
 
@@ -34,7 +34,7 @@ const trustNotes = [
   description={siteConfig.heroSupport}
   ogImage="/images/ice-formations-on-a-surface.jpeg"
   path="/"
-  title="Portraits, memory work, musician images, and prints with emotional weight"
+  title="Physical Prints and Astrophotography"
 >
   <section class="section-block overflow-hidden pt-10 sm:pt-14">
     <div class="shell grid gap-10 lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)] lg:items-center">
@@ -43,25 +43,27 @@ const trustNotes = [
           <span class="eyebrow">Joshua Hoffman Studio · {siteConfig.serviceArea}</span>
           <h1 class="headline max-w-4xl">{siteConfig.heroHeadline}</h1>
           <p class="max-w-copy text-base leading-relaxed text-steel sm:text-lg">
-            {siteConfig.heroSupport} The site is built as a direct visual path: look at the work, choose the right kind of inquiry, and start a specific conversation.
+            {siteConfig.heroSupport} Start with the print edit, then use inquiry paths for custom sizing, signed work, astrophotography, portraits, licensing, or restoration-style print work.
           </p>
         </div>
 
         <div class="flex flex-col gap-3 sm:flex-row">
           <CTAButton
-            href="/contact/"
-            label="Start an Inquiry"
-            tracking={contactClick({ location: 'homepage_hero_primary' })}
+            href="/prints/"
+            label="View Prints"
+            tracking={printBuyClick({ location: 'homepage_hero_primary' })}
             trackingMeta={{
-              'data-link-intent': 'general_inquiry',
+              'data-link-type': 'print_browse',
+              'data-link-intent': 'prints',
               'data-link-location': 'homepage_hero_primary',
             }}
           />
           <CTAButton
-            href="/gallery/"
-            label="View the Work"
+            href="/contact/"
+            label="Start an Inquiry"
+            tracking={contactClick({ location: 'homepage_hero_secondary' })}
             trackingMeta={{
-              'data-link-type': 'gallery_navigation',
+              'data-link-type': 'booking_inquiry',
               'data-link-location': 'homepage_hero_secondary',
             }}
             variant="secondary"
@@ -101,17 +103,17 @@ const trustNotes = [
       <div class="grid gap-6 lg:grid-cols-[0.86fr_1.14fr] lg:items-end">
         <div class="max-w-3xl space-y-4">
         <span class="eyebrow">Choose the right path</span>
-        <h2 class="text-3xl sm:text-4xl">Portraits, legacy work, musician sessions, and prints.</h2>
+        <h2 class="text-3xl sm:text-4xl">Prints first, with other work handled by inquiry.</h2>
         <p class="text-base leading-relaxed text-steel sm:text-lg">
-          Start with the kind of work you need, then move into a focused gallery or a direct inquiry when something feels close.
+          Browse physical prints first. Astrophotography, portraits, musician work, restoration-style edits, and licensing stay direct and specific.
         </p>
         </div>
         <p class="editorial-statement max-w-2xl lg:justify-self-end">
-          The work should feel specific before the session, print, or license conversation begins.
+          Storefront links appear only when a real product page is ready. Custom questions still go straight to Joshua.
         </p>
       </div>
 
-      <div class="grid gap-6 lg:grid-cols-2 xl:grid-cols-4">
+      <div class="grid gap-6 lg:grid-cols-2 xl:grid-cols-5">
         {services.map((service) => <ServiceCard context="homepage_path_cards" service={service} />)}
       </div>
     </div>
@@ -121,16 +123,16 @@ const trustNotes = [
     context="homepage_featured_gallery"
     heading="Featured work"
     images={featuredImages}
-    intro="A compact edit of finished photographs: night sky, city geometry, quiet scale, and print-ready frames."
+    intro="A compact edit of public photographs, led by night-sky, city, panoramic, and print-ready work."
   />
 
   <section class="section-block section-rule">
     <div class="shell space-y-8">
       <div class="max-w-3xl space-y-4">
         <span class="eyebrow">Selected prints</span>
-        <h2 class="text-3xl sm:text-4xl">Photographs that can live beyond a screen.</h2>
+        <h2 class="text-3xl sm:text-4xl">Physical prints are the main product.</h2>
         <p class="text-base leading-relaxed text-steel sm:text-lg">
-          Browse a small print edit, then ask directly about sizing, availability, signed work, or licensing.
+          Use the print page to check the current edit. Buy through confirmed storefront links when they are available, or ask directly about size, paper, signed work, and availability.
         </p>
       </div>
 
@@ -164,9 +166,9 @@ const trustNotes = [
       <div class="grid gap-8 border-y border-platinum/10 py-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
         <div class="space-y-4">
           <span class="eyebrow">Inquiry</span>
-          <h2 class="text-3xl sm:text-4xl">Need portraits, legacy work, a print question, or something harder to categorize?</h2>
+          <h2 class="text-3xl sm:text-4xl">Have a print question, location idea, or licensing request?</h2>
           <p class="max-w-copy text-base leading-relaxed text-steel sm:text-lg">
-            Start with a short message. Joshua replies directly about portraits, memorial work, musician sessions, prints, licensing, and the practical details around each.
+            Start with a short message. Joshua replies directly about prints, astrophotography, portraits, musician work, restoration-style print work, and licensing.
           </p>
         </div>
         <div class="flex flex-col gap-3 sm:flex-row lg:flex-col">
@@ -180,10 +182,10 @@ const trustNotes = [
             }}
           />
           <CTAButton
-            href="/gallery/"
-            label="Explore Gallery"
+            href="/prints/"
+            label="View Prints"
             trackingMeta={{
-              'data-link-type': 'gallery_navigation',
+              'data-link-type': 'print_browse',
               'data-link-location': 'homepage_inquiry_block',
             }}
             variant="secondary"

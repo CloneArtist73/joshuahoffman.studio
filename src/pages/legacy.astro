@@ -21,14 +21,14 @@ const galleryImages = service.gallerySlugs
 <Layout
   description={service.longDescription}
   path="/legacy/"
-  title="Legacy and Memorial Photography"
+  title="Photo Restoration and Legacy Prints"
 >
   <Hero
-    eyebrow="Legacy / memorial work"
+    eyebrow="Photo restoration / legacy prints"
     imageSrc={service.imageSrc}
     primaryCta={{
       label: service.ctaLabel,
-      href: '/contact/?type=Legacy%20%2F%20memorial%20work',
+      href: '/contact/?type=Photo%20restoration%20%2F%20legacy%20prints',
       eventName: 'book_session_click',
       eventProps: {
         service: service.slug,
@@ -52,12 +52,12 @@ const galleryImages = service.gallerySlugs
       <div class="space-y-5">
         <span class="eyebrow">Approach</span>
         <p class="editorial-statement">
-          Memory work needs privacy, pacing, and photographs that do not ask people to perform.
+          Some photographs already exist. The work is to clean them up, prepare them well, and make a better print.
         </p>
         <div class="rich-copy max-w-copy">
           <p>{service.longDescription}</p>
           <p>
-            The goal is to make space for memory, family, grief, and care without turning people into symbols. Sessions are paced around what the people involved can actually hold.
+            The first step is practical: review the file or scan, talk through what should change, and decide whether the finished piece is a touchup, a reprint, or a fresh physical print.
           </p>
         </div>
       </div>
@@ -83,9 +83,9 @@ const galleryImages = service.gallerySlugs
     galleryImages.length > 0 && (
       <GalleryGrid
         context="legacy_supporting_gallery"
-        heading="Legacy work examples"
+        heading="Legacy print examples"
         images={galleryImages}
-        intro="A respectful supporting edit showing how memory-based work can live across portraits, domestic details, and family photographs."
+        intro="A small supporting edit for photographs that can move from an old file or family image into a cleaner print."
       />
     )
   }
@@ -94,13 +94,13 @@ const galleryImages = service.gallerySlugs
     <div class="shell">
       <div class="flex flex-col gap-5 border-y border-platinum/10 py-10 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 class="text-3xl">If you need to ask quietly, that is enough.</h2>
+          <h2 class="text-3xl">Have an old photograph that needs work?</h2>
           <p class="mt-3 max-w-copy text-steel">
-            A short message is enough to start. Joshua can answer questions about timing, privacy, location, and how these sessions are handled.
+            Send a short note about the photograph, what you have now, and whether you need cleanup, restoration-style edits, reprints, or a fresh physical print.
           </p>
         </div>
         <CTAButton
-          href="/contact/?type=Legacy%20%2F%20memorial%20work"
+          href="/contact/?type=Photo%20restoration%20%2F%20legacy%20prints"
           label={service.ctaLabel}
           tracking={bookSessionClick({ service: service.slug, location: 'legacy_footer_cta' })}
         />
